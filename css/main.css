@@ -137,8 +137,8 @@ html, body {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  height: 44px;
-  border-radius: 22px;
+  height: 54px;
+  border-radius: 27px;
   background: rgba(200, 240, 53, 0.1);
   border: 0.5px solid rgba(200, 240, 53, 0.22);
   box-shadow: 0 2px 12px rgba(200, 240, 53, 0.08);
