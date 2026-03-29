@@ -57,8 +57,8 @@ export function updateNavIndicator(activeBtn) {
   if (!nav || !indicator || !activeBtn) return;
   const navRect = nav.getBoundingClientRect();
   const btnRect = activeBtn.getBoundingClientRect();
-  const left = btnRect.left - navRect.left + 2;
-  const width = btnRect.width - 4;
+  const left = btnRect.left - navRect.left + 1;
+  const width = btnRect.width - 2;
   indicator.style.left = left + 'px';
   indicator.style.width = width + 'px';
 }
