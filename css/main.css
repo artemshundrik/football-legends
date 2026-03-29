@@ -59,7 +59,7 @@ html, body {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding: 16px 16px calc(100px + env(safe-area-inset-bottom, 0px));
+  padding: 16px 16px 110px;
 }
 .scroll-body::-webkit-scrollbar { display: none; }
 
@@ -102,45 +102,79 @@ html, body {
   border: 0.5px solid rgba(200,240,53,0.2);
 }
 
-/* ── Bottom Nav ── */
+/* ── Bottom Nav — Liquid Glass ── */
 .bottom-nav {
   position: fixed;
-  bottom: 0; left: 0; right: 0;
-  height: calc(72px + env(safe-area-inset-bottom, 0px));
-  background: var(--surface);
-  border-top: 0.5px solid var(--border);
+  bottom: max(20px, env(safe-area-inset-bottom, 20px));
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 420px;
+  height: 64px;
+  background: rgba(12, 18, 30, 0.75);
+  backdrop-filter: blur(40px) saturate(180%);
+  -webkit-backdrop-filter: blur(40px) saturate(180%);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 32px;
   display: flex;
-  z-index: 100;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  align-items: center;
+  z-index: 1000;
+  padding: 0 8px;
+  box-shadow:
+    0 8px 40px rgba(0, 0, 0, 0.55),
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 -1px 0 rgba(0, 0, 0, 0.3) inset;
+  transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+.bottom-nav.hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) translateY(24px);
+}
+
+/* Sliding glass indicator */
+.nav-indicator {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 44px;
+  border-radius: 22px;
+  background: rgba(200, 240, 53, 0.1);
+  border: 0.5px solid rgba(200, 240, 53, 0.22);
+  box-shadow: 0 2px 12px rgba(200, 240, 53, 0.08);
+  transition: left 0.4s cubic-bezier(0.34, 1.56, 0.64, 1),
+              width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
 .nav-item {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--muted);
-  font-size: 10px;
+  color: rgba(240, 244, 255, 0.38);
+  font-size: 9px;
   font-family: 'Manrope', sans-serif;
-  font-weight: 500;
-  transition: color 0.15s;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: color 0.2s ease, transform 0.15s ease;
   position: relative;
+  padding: 8px 4px;
+  border-radius: 22px;
+  -webkit-tap-highlight-color: transparent;
 }
+.nav-item:active { transform: scale(0.88); }
 .nav-item.active { color: var(--accent); }
-.nav-item svg { width: 22px; height: 22px; }
-.nav-dot {
-  position: absolute;
-  top: 8px; right: calc(50% - 18px);
-  width: 6px; height: 6px;
-  background: var(--danger);
-  border-radius: 50%;
-  display: none;
+.nav-item svg {
+  width: 22px; height: 22px;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
-.nav-dot.show { display: block; }
+.nav-item.active svg { transform: scale(1.1); }
 
 /* ── HOME ── */
 .home-hero {
@@ -397,7 +431,7 @@ html, body {
 
 .confirm-bar {
   position: fixed;
-  bottom: calc(72px + env(safe-area-inset-bottom, 0px)); left: 0; right: 0;
+  bottom: calc(104px + env(safe-area-inset-bottom, 0px)); left: 0; right: 0;
   padding: 12px 16px;
   background: rgba(8,12,20,0.9);
   backdrop-filter: blur(10px);
@@ -630,6 +664,56 @@ html, body {
 .flash-label.w { color: var(--accent); }
 .flash-label.l { color: var(--danger); }
 .flash-detail { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+/* ── Match action bar ── */
+.match-action-bar {
+  padding: 0 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  flex-shrink: 0;
+}
+
+/* ── Coming Soon ── */
+.coming-soon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 48px 24px;
+  background: var(--surface);
+  border-radius: 20px;
+  border: 0.5px solid var(--border);
+  margin-top: 8px;
+}
+.coming-soon-icon { font-size: 52px; margin-bottom: 16px; }
+.coming-soon-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px; letter-spacing: 1.5px;
+  margin-bottom: 10px;
+}
+.coming-soon-desc { font-size: 13px; color: var(--muted); line-height: 1.7; max-width: 280px; }
+
+/* ── Profile ── */
+.profile-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 32px 16px 24px;
+}
+.profile-avatar {
+  width: 80px; height: 80px;
+  background: var(--surface);
+  border-radius: 24px;
+  border: 0.5px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.profile-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px; letter-spacing: 1.5px;
+  margin-bottom: 4px;
+}
+.profile-sub { font-size: 12px; color: var(--muted); }
 
 /* ── Animate-in ── */
 @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }

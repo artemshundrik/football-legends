@@ -23,6 +23,15 @@ export function goTo(screenId) {
   next.classList.add('active');
   currentScreen = screenId;
 
+  // Show/hide global nav
+  const nav = document.getElementById('bottom-nav');
+  if (screenId === 'match') {
+    nav.classList.add('hidden');
+  } else {
+    nav.classList.remove('hidden');
+    updateNavActive(screenId);
+  }
+
   next.querySelectorAll('.anim-in').forEach((el, i) => {
     el.style.animationName = 'none';
     requestAnimationFrame(() => {
@@ -30,6 +39,28 @@ export function goTo(screenId) {
       el.style.animationDelay = (i * 0.06) + 's';
     });
   });
+}
+
+export function updateNavActive(screenId) {
+  const items = document.querySelectorAll('.nav-item');
+  items.forEach(btn => btn.classList.remove('active'));
+  const active = document.querySelector(`.nav-item[data-screen="${screenId}"]`);
+  if (active) {
+    active.classList.add('active');
+    updateNavIndicator(active);
+  }
+}
+
+export function updateNavIndicator(activeBtn) {
+  const nav = document.getElementById('bottom-nav');
+  const indicator = document.getElementById('nav-indicator');
+  if (!nav || !indicator || !activeBtn) return;
+  const navRect = nav.getBoundingClientRect();
+  const btnRect = activeBtn.getBoundingClientRect();
+  const left = btnRect.left - navRect.left + 6;
+  const width = btnRect.width - 12;
+  indicator.style.left = left + 'px';
+  indicator.style.width = width + 'px';
 }
 
 export function goToEra() {
@@ -259,11 +290,8 @@ export function playAgain() {
   goToEra();
 }
 
-export function confirmLeave() {
-  const tg = window.Telegram?.WebApp;
-  if (tg?.showConfirm) {
-    tg.showConfirm('Вийти з матчу?', ok => { if (ok) goTo('era'); });
-  } else {
-    goTo('era');
+export function confirmLeave(target = 'era') {
+  if (confirm('Вийти з матчу? Прогрес буде втрачено.')) {
+    goTo(target);
   }
 }
