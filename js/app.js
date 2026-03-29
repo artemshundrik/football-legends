@@ -2,13 +2,20 @@ import { TEAMS } from './data.js';
 import {
   goTo,
   goToEra,
+  goToGoatCategories,
   goToHome,
   filterTeams,
   renderTeams,
   startMatch,
+  startGoatBracket,
+  setGoatEraMode,
   useBooster,
   resolveRound,
+  acknowledgeBattle,
   playAgain,
+  playGoatAgain,
+  goToGoatCategoriesFromResult,
+  shareGoatResult,
   confirmLeave,
   updateNavActive,
   updateNavIndicator,
@@ -17,13 +24,32 @@ import {
 // ── Wire up screens ──
 document.getElementById('btn-hero-play').addEventListener('click', goToEra);
 document.getElementById('btn-mode-era').addEventListener('click', goToEra);
+document.getElementById('btn-mode-goat').addEventListener('click', goToGoatCategories);
 document.getElementById('btn-era-back').addEventListener('click', () => goTo('home'));
+document.getElementById('btn-goat-cats-back').addEventListener('click', () => goTo('home'));
+document.getElementById('btn-goat-back').addEventListener('click', goToGoatCategories);
 document.getElementById('confirm-bar-btn').addEventListener('click', startMatch);
 document.getElementById('btn-match-back').addEventListener('click', confirmLeave);
 document.getElementById('booster-btn').addEventListener('click', useBooster);
 document.getElementById('fight-btn').addEventListener('click', resolveRound);
+document.getElementById('battle-ok-btn').addEventListener('click', acknowledgeBattle);
 document.getElementById('btn-play-again').addEventListener('click', playAgain);
 document.getElementById('btn-result-home').addEventListener('click', goToHome);
+document.getElementById('btn-goat-again').addEventListener('click', playGoatAgain);
+document.getElementById('btn-goat-categories').addEventListener('click', goToGoatCategoriesFromResult);
+
+document.getElementById('goat-categories').addEventListener('click', event => {
+  const card = event.target.closest('[data-goat-category], [data-goat-special]');
+  if (!card) return;
+  startGoatBracket(card.dataset.goatCategory || card.dataset.goatSpecial);
+});
+
+document.getElementById('goat-era-tabs').addEventListener('click', event => {
+  const btn = event.target.closest('[data-goat-era]');
+  if (!btn) return;
+  setGoatEraMode(btn.dataset.goatEra);
+});
+document.getElementById('btn-goat-share').addEventListener('click', shareGoatResult);
 
 document.querySelectorAll('.filter-tab').forEach(btn => {
   btn.addEventListener('click', () => filterTeams(btn.dataset.filter, btn));

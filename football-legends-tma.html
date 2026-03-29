@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Легенди Футболу</title>
+<script>
+  window.location.replace('./index.html' + window.location.search + window.location.hash);
+</script>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
@@ -790,6 +793,7 @@
         <button class="filter-tab" onclick="filterTeams('90s',this)">90-ті</button>
         <button class="filter-tab" onclick="filterTeams('2000s',this)">2000-ні</button>
         <button class="filter-tab" onclick="filterTeams('2010s',this)">2010-ні</button>
+        <button class="filter-tab" onclick="filterTeams('2020s',this)">2020-ні</button>
       </div>
 
       <div class="teams-list" id="teams-list"></div>
@@ -896,12 +900,89 @@ if (tg) {
 
 // ── Data ──
 const TEAMS = [
+  { id:'psg25', name:'Paris Saint-Germain', year:'2024/25', emoji:'🔴', bg:'rgba(10,40,120,0.16)', rating:96, type:'club', era:'2020s',
+    ability:'Мюнхен 2025: після виграної атаки суперник -10 у захисті',
+    star:'Dembélé',
+    players:[
+      {n:'Dembélé',pos:'ПАП',stat:94},{n:'Doué',pos:'ПАП',stat:90},{n:'Kvaratskhelia',pos:'ЛП',stat:92},
+      {n:'Vitinha',pos:'ЦП',stat:91},{n:'Marquinhos',pos:'ЦЗ',stat:89},{n:'Donnarumma',pos:'ВРТ',stat:92}
+    ]},
+  { id:'mancity23', name:'Manchester City', year:'2022/23', emoji:'🔷', bg:'rgba(90,170,230,0.14)', rating:96, type:'club', era:'2020s',
+    ability:'Позиційна машина: після перемоги в тактиці вся команда +8',
+    star:'Haaland',
+    players:[
+      {n:'Haaland',pos:'НАП',stat:96},{n:'De Bruyne',pos:'ЦП',stat:95},{n:'Bernardo',pos:'ПП',stat:91},
+      {n:'Rodri',pos:'ЦП',stat:92},{n:'Stones',pos:'ЦЗ',stat:88},{n:'Ederson',pos:'ВРТ',stat:90}
+    ]},
+  { id:'real22', name:'Real Madrid', year:'2021/22', emoji:'⚪', bg:'rgba(210,210,210,0.12)', rating:96, type:'club', era:'2020s',
+    ability:'Ремонтада: якщо програєш раунд, зірка отримує +12',
+    star:'Benzema',
+    players:[
+      {n:'Benzema',pos:'НАП',stat:96},{n:'Vinícius',pos:'ЛП',stat:91},{n:'Modrić',pos:'ЦП',stat:92},
+      {n:'Casemiro',pos:'ЦП',stat:89},{n:'Alaba',pos:'ЦЗ',stat:88},{n:'Courtois',pos:'ВРТ',stat:95}
+    ]},
+  { id:'chelsea21', name:'Chelsea FC', year:'2020/21', emoji:'🔵', bg:'rgba(0,50,160,0.12)', rating:92, type:'club', era:'2020s',
+    ability:'Тухель-блок: у захисних раундах команда +10 DEF',
+    star:'Kanté',
+    players:[
+      {n:'Kanté',pos:'ЦП',stat:92},{n:'Mount',pos:'ЦП',stat:87},{n:'Havertz',pos:'НАП',stat:88},
+      {n:'Jorginho',pos:'ЦП',stat:86},{n:'Rüdiger',pos:'ЦЗ',stat:88},{n:'Mendy',pos:'ВРТ',stat:90}
+    ]},
   { id:'barca11', name:'FC Barcelona', year:'2010/11', emoji:'🔵', bg:'rgba(0,80,200,0.12)', rating:97, type:'club', era:'2010s',
     ability:'Тікі-така: при програші тактики, наступний ПАС раунд +15',
     star:'Messi',
     players:[
       {n:'Messi',pos:'НАП',stat:97},{n:'Villa',pos:'НАП',stat:88},{n:'Pedro',pos:'НАП',stat:82},
       {n:'Xavi',pos:'ЦП',stat:94},{n:'Puyol',pos:'ЦЗ',stat:91},{n:'Valdes',pos:'ВРТ',stat:85}
+    ]},
+  { id:'real17', name:'Real Madrid', year:'2016/17', emoji:'⚪', bg:'rgba(210,210,210,0.12)', rating:97, type:'club', era:'2010s',
+    ability:'Ліга чемпіонів: у вирішальному раунді зірка і капітан +10',
+    star:'Ronaldo',
+    players:[
+      {n:'Ronaldo',pos:'НАП',stat:97},{n:'Modrić',pos:'ЦП',stat:93},{n:'Kroos',pos:'ЦП',stat:92},
+      {n:'Ramos',pos:'ЦЗ',stat:92},{n:'Marcelo',pos:'ЛБ',stat:90},{n:'Navas',pos:'ВРТ',stat:90}
+    ]},
+  { id:'bayern20', name:'Bayern Munich', year:'2019/20', emoji:'🔴', bg:'rgba(220,20,20,0.12)', rating:97, type:'club', era:'2010s',
+    ability:'Тріплет Фліка: після перемоги суперник -8 в усіх раундах',
+    star:'Lewandowski',
+    players:[
+      {n:'Lewandowski',pos:'НАП',stat:97},{n:'Müller',pos:'НАП',stat:91},{n:'Gnabry',pos:'ПП',stat:90},
+      {n:'Kimmich',pos:'ЦП',stat:91},{n:'Alphonso Davies',pos:'ЛБ',stat:89},{n:'Neuer',pos:'ВРТ',stat:94}
+    ]},
+  { id:'liverpool19', name:'Liverpool FC', year:'2018/19', emoji:'🔴', bg:'rgba(200,0,0,0.12)', rating:95, type:'club', era:'2010s',
+    ability:'Heavy Metal: після виграної атаки вся команда +6 SPD',
+    star:'Salah',
+    players:[
+      {n:'Salah',pos:'ПАП',stat:94},{n:'Mané',pos:'ЛП',stat:92},{n:'Van Dijk',pos:'ЦЗ',stat:93},
+      {n:'Alisson',pos:'ВРТ',stat:91},{n:'Alexander-Arnold',pos:'ПБ',stat:88},{n:'Fabinho',pos:'ЦП',stat:87}
+    ]},
+  { id:'france18', name:'Франція', year:'ЧС 2018', emoji:'🇫🇷', bg:'rgba(0,30,180,0.12)', rating:94, type:'national', era:'2010s',
+    ability:'Контратака: якщо програєш атаку, наступний раунд +12 SPD',
+    star:'Mbappé',
+    players:[
+      {n:'Mbappé',pos:'НАП',stat:94},{n:'Griezmann',pos:'НАП',stat:91},{n:'Pogba',pos:'ЦП',stat:90},
+      {n:'Kanté',pos:'ЦП',stat:92},{n:'Varane',pos:'ЦЗ',stat:90},{n:'Lloris',pos:'ВРТ',stat:89}
+    ]},
+  { id:'germany14', name:'Германія', year:'ЧС 2014', emoji:'🇩🇪', bg:'rgba(200,200,200,0.12)', rating:95, type:'national', era:'2010s',
+    ability:'7:1: після виграної атаки суперник -12 до моралі',
+    star:'Müller',
+    players:[
+      {n:'Müller',pos:'НАП',stat:92},{n:'Kroos',pos:'ЦП',stat:92},{n:'Lahm',pos:'ПБ',stat:91},
+      {n:'Schweinsteiger',pos:'ЦП',stat:89},{n:'Hummels',pos:'ЦЗ',stat:89},{n:'Neuer',pos:'ВРТ',stat:95}
+    ]},
+  { id:'barca06', name:'FC Barcelona', year:'2005/06', emoji:'🔵', bg:'rgba(0,80,200,0.12)', rating:95, type:'club', era:'2000s',
+    ability:'Магія Роналдіньйо: зірка +15 у технічних раундах',
+    star:'Ronaldinho',
+    players:[
+      {n:'Ronaldinho',pos:'ЛП',stat:97},{n:'Eto\'o',pos:'НАП',stat:91},{n:'Deco',pos:'ЦП',stat:89},
+      {n:'Xavi',pos:'ЦП',stat:90},{n:'Puyol',pos:'ЦЗ',stat:91},{n:'Valdes',pos:'ВРТ',stat:84}
+    ]},
+  { id:'barca09', name:'FC Barcelona', year:'2008/09', emoji:'🔵', bg:'rgba(0,80,200,0.12)', rating:96, type:'club', era:'2000s',
+    ability:'Секступл: після перемоги в атаці наступний раунд +10',
+    star:'Messi',
+    players:[
+      {n:'Messi',pos:'ПАП',stat:95},{n:'Eto\'o',pos:'НАП',stat:91},{n:'Henry',pos:'ЛП',stat:90},
+      {n:'Xavi',pos:'ЦП',stat:93},{n:'Puyol',pos:'ЦЗ',stat:91},{n:'Valdes',pos:'ВРТ',stat:84}
     ]},
   { id:'milan03', name:'AC Milan', year:'2002/03', emoji:'🔴', bg:'rgba(220,30,30,0.12)', rating:94, type:'club', era:'2000s',
     ability:'Фортеця Мальдіні: перший гол суперника не зараховується',
@@ -916,6 +997,20 @@ const TEAMS = [
     players:[
       {n:'Zidane',pos:'ЦП',stat:98},{n:'Raul',pos:'НАП',stat:90},{n:'Figo',pos:'ПАП',stat:91},
       {n:'Roberto Carlos',pos:'ЛБ',stat:90},{n:'Hierro',pos:'ЦЗ',stat:87},{n:'Casillas',pos:'ВРТ',stat:91}
+    ]},
+  { id:'manutd08', name:'Manchester United', year:'2007/08', emoji:'🔴', bg:'rgba(190,0,0,0.12)', rating:95, type:'club', era:'2000s',
+    ability:'Фінал у Москві: у пенальті вся команда +12',
+    star:'Ronaldo',
+    players:[
+      {n:'Ronaldo',pos:'ПП',stat:96},{n:'Rooney',pos:'НАП',stat:91},{n:'Tevez',pos:'НАП',stat:88},
+      {n:'Scholes',pos:'ЦП',stat:89},{n:'Ferdinand',pos:'ЦЗ',stat:91},{n:'Van der Sar',pos:'ВРТ',stat:91}
+    ]},
+  { id:'spain08', name:'Іспанія', year:'Євро 2008', emoji:'🇪🇸', bg:'rgba(200,40,0,0.12)', rating:94, type:'national', era:'2000s',
+    ability:'Початок домінації: після виграної тактики пасуючі +10',
+    star:'Villa',
+    players:[
+      {n:'Villa',pos:'НАП',stat:93},{n:'Torres',pos:'НАП',stat:91},{n:'Xavi',pos:'ЦП',stat:92},
+      {n:'Iniesta',pos:'ЦП',stat:90},{n:'Puyol',pos:'ЦЗ',stat:89},{n:'Casillas',pos:'ВРТ',stat:92}
     ]},
   { id:'manutd99', name:'Man United', year:'1998/99', emoji:'🔴', bg:'rgba(200,0,0,0.1)', rating:93, type:'club', era:'90s',
     ability:'Камбек Фергюсона: при 0:2 всі атрибути +10',
@@ -951,6 +1046,13 @@ const TEAMS = [
     players:[
       {n:'Ribéry',pos:'ЛП',stat:91},{n:'Robben',pos:'ПП',stat:91},{n:'Müller',pos:'НАП',stat:89},
       {n:'Lahm',pos:'ПБ',stat:91},{n:'Boateng',pos:'ЦЗ',stat:89},{n:'Neuer',pos:'ВРТ',stat:95}
+    ]},
+  { id:'argentina22', name:'Аргентина', year:'ЧС 2022', emoji:'🇦🇷', bg:'rgba(120,180,230,0.12)', rating:96, type:'national', era:'2020s',
+    ability:'Скаліонета: після поразки команда отримує +10 до всіх атрибутів',
+    star:'Messi',
+    players:[
+      {n:'Messi',pos:'НАП',stat:97},{n:'Di María',pos:'ПАП',stat:90},{n:'Álvarez',pos:'НАП',stat:88},
+      {n:'De Paul',pos:'ЦП',stat:86},{n:'Romero',pos:'ЦЗ',stat:88},{n:'Martínez',pos:'ВРТ',stat:91}
     ]},
 ];
 

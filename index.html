@@ -47,19 +47,25 @@
           <div class="mode-desc">Легендарні команди в прямому протистоянні</div>
           <div class="mode-new">НОВЕ</div>
         </div>
+        <div class="mode-card blue" id="btn-mode-goat">
+          <div class="mode-icon">👑</div>
+          <div class="mode-name">GOAT Bracket</div>
+          <div class="mode-desc">Обирай кращого в дуелях 1 на 1 до самого фіналу</div>
+          <div class="mode-new">HOT</div>
+        </div>
         <div class="mode-card gold" style="opacity:0.5">
           <div class="mode-icon">🃏</div>
           <div class="mode-name">Колекція</div>
           <div class="mode-desc">Збирай картки гравців усіх ер</div>
           <div class="mode-lock">🔒</div>
         </div>
-        <div class="mode-card blue" style="opacity:0.5">
+        <div class="mode-card red" style="opacity:0.5">
           <div class="mode-icon">🏆</div>
           <div class="mode-name">Турнір</div>
           <div class="mode-desc">8 команд, олімпійська система</div>
           <div class="mode-lock">🔒</div>
         </div>
-        <div class="mode-card red" style="opacity:0.5">
+        <div class="mode-card gold" style="opacity:0.5">
           <div class="mode-icon">🌍</div>
           <div class="mode-name">Рейтинг</div>
           <div class="mode-desc">Глобальний рейтинг гравців</div>
@@ -129,6 +135,7 @@
         <button class="filter-tab" data-filter="90s">90-ті</button>
         <button class="filter-tab" data-filter="2000s">2000-ні</button>
         <button class="filter-tab" data-filter="2010s">2010-ні</button>
+        <button class="filter-tab" data-filter="2020s">2020-ні</button>
       </div>
 
       <div class="teams-list" id="teams-list"></div>
@@ -143,21 +150,25 @@
   <div class="screen" id="screen-match">
     <div class="app-header">
       <div class="header-back" id="btn-match-back">←</div>
-      <div class="header-title" id="match-header-title">МАТЧ</div>
+      <div class="match-header-spacer"></div>
       <div class="header-badge" id="match-round-badge">1/5</div>
     </div>
-    <div class="scroll-body" style="padding-bottom: 80px;">
+    <div class="scroll-body match-body">
 
       <div class="match-scoreboard">
         <div class="scoreboard-teams">
-          <div class="sb-team">
+          <div class="sb-side">
+            <div class="sb-team-crest"><img id="sb-my-crest" alt="My team crest"></div>
             <div class="sb-team-name" id="sb-my-name">ТИ</div>
-            <div class="sb-score my" id="sb-my-score">0</div>
           </div>
-          <div class="sb-sep">:</div>
-          <div class="sb-team">
-            <div class="sb-team-name" id="sb-opp-name">СУПЕРНИК</div>
+          <div class="sb-score-line">
+            <div class="sb-score my" id="sb-my-score">0</div>
+            <div class="sb-sep">:</div>
             <div class="sb-score opp" id="sb-opp-score">0</div>
+          </div>
+          <div class="sb-side">
+            <div class="sb-team-crest"><img id="sb-opp-crest" alt="Opponent team crest"></div>
+            <div class="sb-team-name" id="sb-opp-name">СУПЕРНИК</div>
           </div>
         </div>
         <div class="rounds-track" id="rounds-track"></div>
@@ -175,6 +186,57 @@
       <div class="match-actions">
         <button class="booster-btn" id="booster-btn">⚡ <span id="booster-count">2</span></button>
         <button class="fight-btn" id="fight-btn" disabled>БИТИСЯ!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ GOAT CATEGORY SELECT ════════ -->
+  <div class="screen" id="screen-goat-cats">
+    <div class="app-header">
+      <div class="header-back" id="btn-goat-cats-back">←</div>
+      <div class="header-title">GOAT BRACKET</div>
+      <div style="width:32px"></div>
+    </div>
+    <div class="scroll-body">
+      <div class="era-intro anim-in goat-intro">
+        <div class="era-icon">👑</div>
+        <div>
+          <div class="era-intro-title">Обери категорію</div>
+          <div class="era-intro-desc">Обирай між категоріями, окремими decade-сітками на 16 легенд або Best XI Bracket. Кожен режим веде до повноцінного фіналу.</div>
+        </div>
+      </div>
+      <div class="filter-tabs anim-in" id="goat-era-tabs"></div>
+      <div class="goat-categories" id="goat-categories"></div>
+    </div>
+  </div>
+
+  <!-- ════════ GOAT BRACKET ════════ -->
+  <div class="screen" id="screen-goat">
+    <div class="app-header">
+      <div class="header-back" id="btn-goat-back">←</div>
+      <div class="header-title" id="goat-screen-title">GOAT BRACKET</div>
+      <div class="header-badge" id="goat-round-badge">1/4</div>
+    </div>
+    <div class="scroll-body goat-body">
+      <div class="goat-summary anim-in">
+        <div class="goat-summary-top">
+          <div>
+            <div class="goat-summary-label" id="goat-category-label">Нападники</div>
+            <div class="goat-summary-title" id="goat-stage-title">Чвертьфінал</div>
+          </div>
+          <div class="goat-progress" id="goat-progress">Пара 1 з 4</div>
+        </div>
+        <div class="goat-bracket-track" id="goat-bracket-track"></div>
+      </div>
+
+      <div class="goat-matchup anim-in">
+        <div class="goat-vs-chip">ОБЕРИ КРАЩОГО</div>
+        <div class="goat-pair" id="goat-pair"></div>
+      </div>
+
+      <div class="goat-history anim-in">
+        <div class="section-head">Твій шлях</div>
+        <div class="goat-history-list" id="goat-history-list"></div>
       </div>
     </div>
   </div>
@@ -221,9 +283,15 @@
 
   <!-- Round flash -->
   <div class="round-flash" id="round-flash">
-    <div class="flash-box">
-      <div class="flash-label" id="flash-label">ПЕРЕМОГА!</div>
-      <div class="flash-detail" id="flash-detail">91 vs 78</div>
+    <div class="flash-box battle-box" id="battle-box">
+      <div class="battle-topline" id="flash-label">ДУЕЛЬ</div>
+      <div class="battle-arena" id="battle-arena">
+        <div class="battle-card me" id="battle-me-card"></div>
+        <div class="battle-vs" id="battle-vs">VS</div>
+        <div class="battle-card opp" id="battle-opp-card"></div>
+      </div>
+      <div class="battle-result" id="flash-detail">91 vs 78</div>
+      <button class="battle-ok-btn" id="battle-ok-btn">OK</button>
     </div>
   </div>
 
@@ -238,6 +306,22 @@
       <div class="result-btns">
         <button class="result-play-again" id="btn-play-again">ГРАТИ ЗНОВУ</button>
         <button class="result-home-btn" id="btn-result-home">На головну</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="goat-result-overlay">
+    <div class="result-sheet goat-result-sheet">
+      <div class="result-pill"></div>
+      <div class="result-tropy" id="goat-res-trophy">👑</div>
+      <div class="result-headline win" id="goat-res-headline">ТВІЙ GOAT</div>
+      <div class="result-subline" id="goat-res-subline">Messi виграв усю сітку</div>
+      <div class="goat-result-card" id="goat-result-card"></div>
+      <div class="goat-result-path" id="goat-result-path"></div>
+      <div class="result-btns">
+        <button class="result-play-again" id="btn-goat-again">ЩЕ СІТКА</button>
+        <button class="result-home-btn" id="btn-goat-share">Поділитися</button>
+        <button class="result-home-btn" id="btn-goat-categories">Інша категорія</button>
       </div>
     </div>
   </div>
