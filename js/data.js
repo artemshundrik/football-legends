@@ -12,6 +12,27 @@ export const TIER_LABELS = {
   bronze: 'БРОНЗА',
 };
 
+const svgDataUri = svg => `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+const FFF_CREST = svgDataUri(`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0%" stop-color="#123a9b"/>
+      <stop offset="100%" stop-color="#0a1f5c"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0%" stop-color="#f7dc82"/>
+      <stop offset="100%" stop-color="#c49a2d"/>
+    </linearGradient>
+  </defs>
+  <path d="M64 10c19 0 37 5 37 5v35c0 29-16 50-37 68C43 100 27 79 27 50V15s18-5 37-5Z" fill="url(#bg)" stroke="url(#gold)" stroke-width="5" />
+  <path d="M64 26c9 0 17 2 17 2v20c0 16-7 27-17 37-10-10-17-21-17-37V28s8-2 17-2Z" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="2"/>
+  <text x="64" y="54" text-anchor="middle" font-family="Arial, sans-serif" font-size="28" font-weight="700" fill="#fff">FFF</text>
+  <text x="64" y="79" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" letter-spacing="2" fill="#f7dc82">FRANCE</text>
+  <circle cx="64" cy="93" r="5" fill="#f7dc82"/>
+</svg>
+`);
+
 const POS_AVATAR = {
   'НАП': '⚡', 'ЦП': '🎯', 'ЦЗ': '🛡️', 'ВРТ': '🧤',
   'ПБ': '🏃', 'ЛБ': '🏃', 'ПП': '⚡', 'ЛП': '⚡', 'ПАП': '⚡',
@@ -902,7 +923,7 @@ export const TEAMS = [
   },
   {
     id: 'france18', name: 'Франція', year: 'ЧС 2018',
-    emoji: '🇫🇷', crest: W('France national football team seal.svg'), bg: 'rgba(0,30,180,0.14)',
+    emoji: '🇫🇷', crest: FFF_CREST, bg: 'rgba(0,30,180,0.14)',
     rating: 94, type: 'national', era: '2010s',
     ability: 'Контратака: якщо програєш атаку, наступний раунд +12 SPD',
     star: 'Mbappé',
@@ -933,7 +954,7 @@ export const TEAMS = [
   // ─── ЗБІРНІ 2000-ні ──────────────────────────────────────────────
   {
     id: 'france98', name: 'Франція', year: 'ЧС 1998',
-    emoji: '🇫🇷', crest: W('France national football team seal.svg'), bg: 'rgba(0,30,180,0.12)',
+    emoji: '🇫🇷', crest: FFF_CREST, bg: 'rgba(0,30,180,0.12)',
     rating: 95, type: 'national', era: '2000s',
     ability: 'Зізу-ефект: Зідан +15 у вирішальному раунді',
     star: 'Zidane',
@@ -1102,6 +1123,399 @@ export const TEAMS = [
     ],
   },
 ];
+
+export const STATS_LEADERBOARDS = {
+  players: {
+    hero: {
+      kicker: 'Гравець-орієнтир',
+      title: 'Messi тримає планку індивідуальної величі',
+      desc: 'У статистичному хабі можна швидко порівняти, хто домінував у персональних нагородах, єврокубках і головних турнірах збірних.',
+      value: '8',
+      metric: 'Ballon d’Or',
+    },
+    categories: [
+      {
+        id: 'ballon-dor',
+        label: 'Золоті м’ячі',
+        icon: '🏆',
+        note: 'Найбільше перемог у Ballon d’Or серед чоловіків.',
+        rows: [
+          { rank: 1, name: 'Lionel Messi', meta: 'Аргентина', value: '8' },
+          { rank: 2, name: 'Cristiano Ronaldo', meta: 'Португалія', value: '5' },
+          { rank: 3, name: 'Michel Platini', meta: 'Франція', value: '3' },
+          { rank: 4, name: 'Johan Cruyff', meta: 'Нідерланди', value: '3' },
+          { rank: 5, name: 'Marco van Basten', meta: 'Нідерланди', value: '3' },
+        ],
+      },
+      {
+        id: 'golden-shoe',
+        label: 'Золоті бутси',
+        icon: '👟',
+        note: 'Європейська Golden Shoe за найкращого бомбардира ліги.',
+        rows: [
+          { rank: 1, name: 'Lionel Messi', meta: 'Барселона / Аргентина', value: '6' },
+          { rank: 2, name: 'Cristiano Ronaldo', meta: 'Sporting / Real / Juve / Portugal', value: '4' },
+          { rank: 3, name: 'Gerd Müller', meta: 'Bayern / Німеччина', value: '2' },
+          { rank: 4, name: 'Eusébio', meta: 'Benfica / Португалія', value: '2' },
+          { rank: 5, name: 'Fernando Gomes', meta: 'Porto / Португалія', value: '2' },
+        ],
+      },
+      {
+        id: 'intl-goals',
+        label: 'Голи за збірну',
+        icon: '⚽',
+        note: 'Найкращі бомбардири в історії чоловічого міжнародного футболу.',
+        rows: [
+          { rank: 1, name: 'Cristiano Ronaldo', meta: 'Португалія', value: '143' },
+          { rank: 2, name: 'Lionel Messi', meta: 'Аргентина', value: '115' },
+          { rank: 3, name: 'Ali Daei', meta: 'Іран', value: '108' },
+          { rank: 4, name: 'Sunil Chhetri', meta: 'Індія', value: '95' },
+          { rank: 5, name: 'Mokhtar Dahari', meta: 'Малайзія', value: '89' },
+        ],
+      },
+      {
+        id: 'ucl-players',
+        label: 'Ліга чемпіонів',
+        icon: '⭐',
+        note: 'Гравці з найбільшою кількістю титулів Кубка чемпіонів / ЛЧ.',
+        rows: [
+          { rank: 1, name: 'Paco Gento', meta: 'Real Madrid', value: '6' },
+          { rank: 2, name: 'Dani Carvajal', meta: 'Real Madrid', value: '6' },
+          { rank: 3, name: 'Luka Modrić', meta: 'Real Madrid / Хорватія', value: '6' },
+          { rank: 4, name: 'Toni Kroos', meta: 'Real Madrid / Німеччина', value: '6' },
+          { rank: 5, name: 'Nacho', meta: 'Real Madrid', value: '6' },
+        ],
+      },
+      {
+        id: 'ucl-scorers',
+        label: 'Бомбардири ЛЧ',
+        icon: '🎯',
+        note: 'Найкращі бомбардири в історії Кубка чемпіонів / Ліги чемпіонів.',
+        rows: [
+          { rank: 1, name: 'Cristiano Ronaldo', meta: 'Man United / Real / Juve', value: '141' },
+          { rank: 2, name: 'Lionel Messi', meta: 'Barcelona / PSG', value: '129' },
+          { rank: 3, name: 'Robert Lewandowski', meta: 'Dortmund / Bayern / Barcelona', value: '107' },
+          { rank: 4, name: 'Karim Benzema', meta: 'Lyon / Real Madrid', value: '90' },
+          { rank: 5, name: 'Raúl González', meta: 'Real Madrid / Schalke', value: '71' },
+        ],
+      },
+      {
+        id: 'world-cup-players',
+        label: 'Чемпіонати світу',
+        icon: '🌍',
+        note: 'Гравці з найбільшою кількістю титулів чемпіона світу.',
+        rows: [
+          { rank: 1, name: 'Pelé', meta: 'Бразилія', value: '3' },
+          { rank: 2, name: 'Cafu', meta: 'Бразилія', value: '2' },
+          { rank: 3, name: 'Ronaldo', meta: 'Бразилія', value: '2' },
+          { rank: 4, name: 'Garrincha', meta: 'Бразилія', value: '2' },
+          { rank: 5, name: 'Djalma Santos', meta: 'Бразилія', value: '2' },
+        ],
+      },
+      {
+        id: 'world-cup-scorers',
+        label: 'Бомбардири ЧС',
+        icon: '🥅',
+        note: 'Найкращі бомбардири в історії фінальних турнірів чемпіонату світу.',
+        rows: [
+          { rank: 1, name: 'Miroslav Klose', meta: 'Німеччина', value: '16' },
+          { rank: 2, name: 'Ronaldo', meta: 'Бразилія', value: '15' },
+          { rank: 3, name: 'Gerd Müller', meta: 'Західна Німеччина', value: '14' },
+          { rank: 4, name: 'Just Fontaine', meta: 'Франція', value: '13' },
+          { rank: 5, name: 'Lionel Messi', meta: 'Аргентина', value: '13' },
+        ],
+      },
+      {
+        id: 'euro-players',
+        label: 'Чемпіонати Європи',
+        icon: '🇪🇺',
+        note: 'Гравці з найбільшою кількістю титулів чемпіона Європи.',
+        rows: [
+          { rank: 1, name: 'Xavi', meta: 'Іспанія', value: '2' },
+          { rank: 2, name: 'Andrés Iniesta', meta: 'Іспанія', value: '2' },
+          { rank: 3, name: 'Iker Casillas', meta: 'Іспанія', value: '2' },
+          { rank: 4, name: 'Fernando Torres', meta: 'Іспанія', value: '2' },
+          { rank: 5, name: 'Cesc Fàbregas', meta: 'Іспанія', value: '2' },
+        ],
+      },
+      {
+        id: 'euro-scorers',
+        label: 'Бомбардири Євро',
+        icon: '🎯',
+        note: 'Найкращі бомбардири в історії фінальних турнірів Євро.',
+        rows: [
+          { rank: 1, name: 'Cristiano Ronaldo', meta: 'Португалія', value: '14' },
+          { rank: 2, name: 'Michel Platini', meta: 'Франція', value: '9' },
+          { rank: 3, name: 'Antoine Griezmann', meta: 'Франція', value: '7' },
+          { rank: 4, name: 'Alan Shearer', meta: 'Англія', value: '7' },
+          { rank: 5, name: 'Álvaro Morata', meta: 'Іспанія', value: '7' },
+        ],
+      },
+    ],
+  },
+  clubs: {
+    hero: {
+      kicker: 'Клубна домінація',
+      title: 'Real Madrid задає стелю для єврокубкової історії',
+      desc: 'Тут можна швидко дивитися, які клуби реально будували династії: в Європі, у чемпіонатах та в сезонних тріумфах.',
+      value: '15',
+      metric: 'Кубків чемпіонів',
+    },
+    categories: [
+      {
+        id: 'ucl-clubs',
+        label: 'Ліга чемпіонів',
+        icon: '👑',
+        note: 'Найуспішніші клуби в Кубку чемпіонів / ЛЧ.',
+        rows: [
+          { rank: 1, name: 'Real Madrid', meta: 'Іспанія', value: '15' },
+          { rank: 2, name: 'AC Milan', meta: 'Італія', value: '7' },
+          { rank: 3, name: 'Bayern Munich', meta: 'Німеччина', value: '6' },
+          { rank: 4, name: 'Liverpool', meta: 'Англія', value: '6' },
+          { rank: 5, name: 'FC Barcelona', meta: 'Іспанія', value: '5' },
+        ],
+      },
+      {
+        id: 'league-titles',
+        label: 'Чемпіонати',
+        icon: '🏟️',
+        note: 'Великі клубні рекорди за титулами у національних лігах.',
+        rows: [
+          { rank: 1, name: 'Linfield', meta: 'Північна Ірландія', value: '57' },
+          { rank: 2, name: 'Rangers', meta: 'Шотландія', value: '55' },
+          { rank: 3, name: 'Celtic', meta: 'Шотландія', value: '54' },
+          { rank: 4, name: 'Benfica', meta: 'Португалія', value: '38' },
+          { rank: 5, name: 'Real Madrid', meta: 'Ла Ліга', value: '36' },
+        ],
+      },
+      {
+        id: 'continental-trebles',
+        label: 'Требли',
+        icon: '🔥',
+        note: 'Сезони, де клуб брав лігу, кубок і Кубок чемпіонів / ЛЧ.',
+        rows: [
+          { rank: 1, name: 'FC Barcelona', meta: '2008/09, 2014/15', value: '2' },
+          { rank: 2, name: 'Bayern Munich', meta: '2012/13, 2019/20', value: '2' },
+          { rank: 3, name: 'Celtic', meta: '1966/67', value: '1' },
+          { rank: 4, name: 'Ajax', meta: '1971/72', value: '1' },
+          { rank: 5, name: 'Manchester United', meta: '1998/99', value: '1' },
+        ],
+      },
+      {
+        id: 'ucl-matches',
+        label: 'Матчі в ЛЧ',
+        icon: '📋',
+        note: 'Найбільше матчів в історії Кубка чемпіонів / Ліги чемпіонів.',
+        rows: [
+          { rank: 1, name: 'Real Madrid', meta: 'Європейська класика', value: '514' },
+          { rank: 2, name: 'Bayern Munich', meta: 'Німеччина', value: '417' },
+          { rank: 3, name: 'FC Barcelona', meta: 'Іспанія', value: '372' },
+          { rank: 4, name: 'Juventus', meta: 'Італія', value: '321' },
+          { rank: 5, name: 'Benfica', meta: 'Португалія', value: '318' },
+        ],
+      },
+      {
+        id: 'ucl-wins',
+        label: 'Перемоги в ЛЧ',
+        icon: '✅',
+        note: 'Найбільше перемог в історії Кубка чемпіонів / Ліги чемпіонів.',
+        rows: [
+          { rank: 1, name: 'Real Madrid', meta: 'Європейська класика', value: '310' },
+          { rank: 2, name: 'Bayern Munich', meta: 'Німеччина', value: '252' },
+          { rank: 3, name: 'FC Barcelona', meta: 'Іспанія', value: '217' },
+          { rank: 4, name: 'Manchester United', meta: 'Англія', value: '161' },
+          { rank: 5, name: 'Juventus', meta: 'Італія', value: '161' },
+        ],
+      },
+    ],
+  },
+  national: {
+    hero: {
+      kicker: 'Сила збірних',
+      title: 'Бразилія залишається головним орієнтиром мундіалів',
+      desc: 'Окремий блок для збірних показує, хто найкраще конвертував покоління в титули на ЧС, Євро та континентальних турнірах.',
+      value: '5',
+      metric: 'Кубків світу',
+    },
+    categories: [
+      {
+        id: 'world-cup-national',
+        label: 'Чемпіонати світу',
+        icon: '🌎',
+        note: 'Найбільше титулів чемпіона світу серед збірних.',
+        rows: [
+          { rank: 1, name: 'Бразилія', meta: '1958, 1962, 1970, 1994, 2002', value: '5' },
+          { rank: 2, name: 'Німеччина', meta: '1954, 1974, 1990, 2014', value: '4' },
+          { rank: 3, name: 'Італія', meta: '1934, 1938, 1982, 2006', value: '4' },
+          { rank: 4, name: 'Аргентина', meta: '1978, 1986, 2022', value: '3' },
+          { rank: 5, name: 'Франція', meta: '1998, 2018', value: '2' },
+        ],
+      },
+      {
+        id: 'euro-national',
+        label: 'Чемпіонати Європи',
+        icon: '🏁',
+        note: 'Найуспішніші збірні в історії чоловічого Євро.',
+        rows: [
+          { rank: 1, name: 'Іспанія', meta: '1964, 2008, 2012, 2024', value: '4' },
+          { rank: 2, name: 'Німеччина', meta: '1972, 1980, 1996', value: '3' },
+          { rank: 3, name: 'Італія', meta: '1968, 2020', value: '2' },
+          { rank: 4, name: 'Франція', meta: '1984, 2000', value: '2' },
+          { rank: 5, name: 'Португалія', meta: '2016', value: '1' },
+        ],
+      },
+      {
+        id: 'copa-america-national',
+        label: 'Copa América',
+        icon: '🎺',
+        note: 'Лідери південноамериканського континентального футболу.',
+        rows: [
+          { rank: 1, name: 'Аргентина', meta: 'Останній титул: 2024', value: '16' },
+          { rank: 2, name: 'Уругвай', meta: 'Найбільша історична вага турніру', value: '15' },
+          { rank: 3, name: 'Бразилія', meta: 'Ера Роналдо, Роналдіньо, Неймара', value: '9' },
+          { rank: 4, name: 'Чилі', meta: '2015, 2016', value: '2' },
+          { rank: 5, name: 'Парагвай', meta: '1953, 1979', value: '2' },
+        ],
+      },
+    ],
+  },
+};
+
+export const STATS_CATEGORY_LOGOS = {
+  'ballon-dor': {
+    short: 'Ballon d’Or',
+    src: W('Ballon d Or logo.png'),
+  },
+  'golden-shoe': {
+    short: 'Golden Shoe',
+    src: W('Bota de oro.svg'),
+  },
+  'intl-goals': {
+    short: 'Intl Goals',
+    src: W('Golden Boot trophy.png'),
+  },
+  'ucl-players': {
+    short: 'UCL',
+    src: W('UEFA Champions League logo.svg'),
+  },
+  'ucl-scorers': {
+    short: 'UCL Goals',
+    src: W('UEFA Champions League logo.svg'),
+  },
+  'world-cup-players': {
+    short: 'World Cup',
+    src: W('FIFA World Cup Trophy cropped.jpg'),
+  },
+  'world-cup-scorers': {
+    short: 'WC Goals',
+    src: W('FIFA World Cup Trophy cropped.jpg'),
+  },
+  'euro-players': {
+    short: 'EURO',
+    src: W('UEFA Euro 2024 logo.svg'),
+  },
+  'euro-scorers': {
+    short: 'EURO Goals',
+    src: W('UEFA Euro 2024 logo.svg'),
+  },
+  'ucl-clubs': {
+    short: 'UCL',
+    src: W('UEFA Champions League logo.svg'),
+  },
+  'ucl-matches': {
+    short: 'UCL Apps',
+    src: W('UEFA Champions League logo.svg'),
+  },
+  'ucl-wins': {
+    short: 'UCL Wins',
+    src: W('UEFA Champions League logo.svg'),
+  },
+  'league-titles': {
+    short: 'League',
+    src: W('Trophy.svg'),
+  },
+  'continental-trebles': {
+    short: 'Treble',
+    src: W('Golden trophy.svg'),
+  },
+  'world-cup-national': {
+    short: 'World Cup',
+    src: W('FIFA World Cup Trophy cropped.jpg'),
+  },
+  'euro-national': {
+    short: 'EURO',
+    src: W('UEFA Euro 2024 logo.svg'),
+  },
+  'copa-america-national': {
+    short: 'Copa América',
+    src: W('Logo Conmebol Copa America 2024.svg'),
+  },
+};
+
+export const STATS_ENTITY_MEDIA = {
+  players: {
+    'Lionel Messi': { wikiTitle: 'Lionel_Messi', avatar: '🐐', accent: 'rgba(120,180,230,0.18)' },
+    'Cristiano Ronaldo': { wikiTitle: 'Cristiano_Ronaldo', avatar: '🚀', accent: 'rgba(240,240,240,0.18)' },
+    'Ali Daei': { wikiTitle: 'Ali_Daei', avatar: '⚽', accent: 'rgba(200,240,255,0.16)' },
+    'Sunil Chhetri': { wikiTitle: 'Sunil_Chhetri', avatar: '⚡', accent: 'rgba(255,180,80,0.16)' },
+    'Mokhtar Dahari': { wikiTitle: 'Mokhtar_Dahari', avatar: '🎯', accent: 'rgba(255,220,120,0.16)' },
+    'Michel Platini': { wikiTitle: 'Michel_Platini', avatar: '🎩', accent: 'rgba(80,140,240,0.18)' },
+    'Johan Cruyff': { wikiTitle: 'Johan_Cruyff', avatar: '🌀', accent: 'rgba(255,140,50,0.18)' },
+    'Marco van Basten': { wikiTitle: 'Marco_van_Basten', avatar: '🏹', accent: 'rgba(255,90,90,0.18)' },
+    'Gerd Müller': { wikiTitle: 'Gerd_Müller', avatar: '💣', accent: 'rgba(255,210,70,0.16)' },
+    'Eusébio': { wikiTitle: 'Eusébio', avatar: '🦅', accent: 'rgba(255,210,70,0.16)' },
+    'Fernando Gomes': { wikiTitle: 'Fernando_Gomes_(footballer,_born_1956)', avatar: '⚽', accent: 'rgba(90,150,255,0.16)' },
+    'Robert Lewandowski': { wikiTitle: 'Robert_Lewandowski', avatar: '🎯', accent: 'rgba(240,240,240,0.16)' },
+    'Karim Benzema': { wikiTitle: 'Karim_Benzema', avatar: '⭐', accent: 'rgba(240,240,240,0.16)' },
+    'Raúl González': { wikiTitle: 'Raúl_(footballer)', avatar: '🤍', accent: 'rgba(240,240,240,0.16)' },
+    'Paco Gento': { wikiTitle: 'Francisco_Gento', avatar: '⚪', accent: 'rgba(255,255,255,0.18)' },
+    'Luka Modrić': { wikiTitle: 'Luka_Modrić', avatar: '🪄', accent: 'rgba(220,220,220,0.16)' },
+    'Toni Kroos': { wikiTitle: 'Toni_Kroos', avatar: '🎯', accent: 'rgba(240,240,240,0.16)' },
+    'Nacho': { wikiTitle: 'Nacho_(footballer,_born_1990)', avatar: '🛡️', accent: 'rgba(240,240,240,0.16)' },
+    'Dani Carvajal': { wikiTitle: 'Dani_Carvajal', avatar: '⚔️', accent: 'rgba(240,240,240,0.16)' },
+    'Pelé': { wikiTitle: 'Pelé', avatar: '👑', accent: 'rgba(255,210,70,0.18)' },
+    'Cafu': { wikiTitle: 'Cafu', avatar: '🏃', accent: 'rgba(255,210,70,0.18)' },
+    'Ronaldo': { wikiTitle: 'Ronaldo_(Brazilian_footballer)', avatar: '⚡', accent: 'rgba(255,210,70,0.18)' },
+    'Garrincha': { wikiTitle: 'Garrincha', avatar: '🕺', accent: 'rgba(255,210,70,0.18)' },
+    'Djalma Santos': { wikiTitle: 'Djalma_Santos', avatar: '🛡️', accent: 'rgba(255,210,70,0.18)' },
+    'Miroslav Klose': { wikiTitle: 'Miroslav_Klose', avatar: '🥅', accent: 'rgba(235,235,235,0.16)' },
+    'Just Fontaine': { wikiTitle: 'Just_Fontaine', avatar: '🎯', accent: 'rgba(90,140,240,0.16)' },
+    'Xavi': { wikiTitle: 'Xavi', avatar: '🎼', accent: 'rgba(220,50,50,0.14)' },
+    'Andrés Iniesta': { wikiTitle: 'Andrés_Iniesta', avatar: '✨', accent: 'rgba(220,50,50,0.14)' },
+    'Iker Casillas': { wikiTitle: 'Iker_Casillas', avatar: '🧤', accent: 'rgba(220,50,50,0.14)' },
+    'Fernando Torres': { wikiTitle: 'Fernando_Torres', avatar: '⚡', accent: 'rgba(220,50,50,0.14)' },
+    'Cesc Fàbregas': { wikiTitle: 'Cesc_Fàbregas', avatar: '🧠', accent: 'rgba(220,50,50,0.14)' },
+    'Antoine Griezmann': { wikiTitle: 'Antoine_Griezmann', avatar: '✨', accent: 'rgba(90,140,240,0.14)' },
+    'Alan Shearer': { wikiTitle: 'Alan_Shearer', avatar: '💥', accent: 'rgba(240,240,240,0.14)' },
+    'Álvaro Morata': { wikiTitle: 'Álvaro_Morata', avatar: '⚽', accent: 'rgba(220,50,50,0.14)' },
+  },
+  clubs: {
+    'Real Madrid': { crest: C(86), accent: 'rgba(210,210,210,0.16)', short: 'RM' },
+    'AC Milan': { crest: C(98), accent: 'rgba(190,20,20,0.16)', short: 'MIL' },
+    'Bayern Munich': { crest: C(5), accent: 'rgba(220,20,20,0.16)', short: 'FCB' },
+    'Liverpool': { crest: C(64), accent: 'rgba(200,0,0,0.16)', short: 'LIV' },
+    'FC Barcelona': { crest: C(81), accent: 'rgba(0,80,200,0.16)', short: 'BAR' },
+    'Linfield': { accent: 'rgba(70,120,255,0.18)', short: 'LIN' },
+    'Rangers': { accent: 'rgba(70,120,255,0.18)', short: 'RAN' },
+    'Celtic': { accent: 'rgba(60,180,120,0.18)', short: 'CEL' },
+    'Benfica': { accent: 'rgba(220,20,20,0.18)', short: 'SLB' },
+    'Ajax': { crest: C(674), accent: 'rgba(220,30,30,0.16)', short: 'AJA' },
+    'Manchester United': { crest: C(66), accent: 'rgba(190,0,0,0.16)', short: 'MUN' },
+    'Juventus': { crest: C(109), accent: 'rgba(240,240,240,0.12)', short: 'JUV' },
+  },
+  national: {
+    'Бразилія': { crest: W('Brazilian Football Confederation logo.svg'), accent: 'rgba(220,180,0,0.16)', short: 'BRA' },
+    'Німеччина': { crest: W('DFB-Logo 1995.svg'), accent: 'rgba(220,220,220,0.16)', short: 'GER' },
+    'Італія': { crest: W('Logo Federazione Italiana Giuoco Calcio - 2021.svg'), accent: 'rgba(0,50,180,0.16)', short: 'ITA' },
+    'Аргентина': { crest: W('Argentine Football Association logo.svg'), accent: 'rgba(120,180,230,0.18)', short: 'ARG' },
+    'Франція': { crest: FFF_CREST, accent: 'rgba(0,30,180,0.16)', short: 'FRA' },
+    'Іспанія': { crest: W('Spain national football team crest.svg'), accent: 'rgba(200,40,0,0.16)', short: 'ESP' },
+    'Португалія': { accent: 'rgba(20,160,90,0.16)', short: 'POR' },
+    'Уругвай': { accent: 'rgba(120,180,230,0.16)', short: 'URU' },
+    'Чилі': { accent: 'rgba(220,40,40,0.16)', short: 'CHI' },
+    'Парагвай': { accent: 'rgba(220,40,40,0.16)', short: 'PAR' },
+  },
+};
 
 export const ROUNDS = [
   { key: 'attack',  name: 'АТАКА',     emoji: '⚔️', hint: 'Обери гравця для атаки. Найвищий ATK перемагає.' },

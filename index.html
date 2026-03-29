@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Легенди Футболу</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
 </head>
 <body>
@@ -15,69 +15,86 @@
   <div class="screen active" id="screen-home">
     <div class="app-header">
       <div class="header-title">ЛЕГЕНДИ</div>
-      <div class="header-badge">⚽ BETA</div>
+      <div class="header-badge">Season Zero</div>
     </div>
     <div class="scroll-body">
 
       <div class="home-hero anim-in">
-        <div class="hero-pitch">
-          <div class="pitch-lines">
-            <div class="pitch-outer">
-              <div class="pitch-mid"></div>
-              <div class="pitch-circle"></div>
-              <div class="pitch-box-l"></div>
-              <div class="pitch-box-r"></div>
+        <div class="hero-orbit hero-orbit-a"></div>
+        <div class="hero-orbit hero-orbit-b"></div>
+        <div class="hero-topline">
+          <div class="hero-kicker">Головна арена</div>
+          <div class="hero-live">LIVE META</div>
+        </div>
+        <div class="hero-stage">
+          <div class="hero-stage-copy">
+            <div class="hero-title">Футбол<br>Легенд</div>
+            <div class="hero-desc">Тут не треба обирати режим одразу. Головна тепер показує твій ритм гри, останні матчі й швидкий вхід у наступну сесію.</div>
+          </div>
+          <div class="hero-score-card">
+            <div class="hero-score-label">Форма</div>
+            <div class="hero-score-value">8W</div>
+            <div class="hero-score-meta">останні 12 матчів</div>
+          </div>
+        </div>
+        <div class="hero-glow-row">
+          <div class="hero-chip">12 матчів</div>
+          <div class="hero-chip">67% вінрейт</div>
+          <div class="hero-chip">2 режими онлайн</div>
+        </div>
+        <button class="hero-play-btn btn btn-primary btn-xl" id="btn-hero-play">ДО РЕЖИМІВ</button>
+      </div>
+
+      <div class="section-head anim-in">Твій темп</div>
+      <div class="home-overview-grid anim-in">
+        <div class="home-panel spotlight">
+          <div class="home-panel-head">
+            <div>
+              <div class="home-panel-label">Поточний фокус</div>
+              <div class="home-panel-title">Епохи</div>
+            </div>
+            <div class="home-panel-pill">5 раундів</div>
+          </div>
+          <div class="home-panel-copy">Найчастіше ти граєш класичні матчі між легендарними клубами та збірними. Це зараз твій головний сценарій.</div>
+          <div class="home-panel-metrics">
+            <div><strong>8</strong><span>перемог</span></div>
+            <div><strong>4</strong><span>поразки</span></div>
+            <div><strong>+6</strong><span>різниця</span></div>
+          </div>
+        </div>
+        <div class="home-panel compact">
+          <div class="home-panel-label">Сьогодні в грі</div>
+          <div class="home-mini-stack">
+            <div class="home-mini-item">
+              <span>Найкращий матч</span>
+              <strong>Barça '11 3:2 Milan '03</strong>
+            </div>
+            <div class="home-mini-item">
+              <span>Останній GOAT</span>
+              <strong>Messi</strong>
+            </div>
+            <div class="home-mini-item">
+              <span>Наступний крок</span>
+              <strong>Запустити нову сітку</strong>
             </div>
           </div>
-          <div class="hero-badge">НОВИЙ МАТЧ</div>
-        </div>
-        <div class="hero-content">
-          <div class="hero-label">Режим Епохи</div>
-          <div class="hero-title">Легендарні<br>Команди</div>
-          <div class="hero-desc">Обери легендарну команду та зіграй 5 раундів проти опонента. Тактика, атака, захист, стандарти та пенальті.</div>
-          <button class="hero-play-btn" id="btn-hero-play">ГРАТИ ЗАРАЗ</button>
         </div>
       </div>
 
-      <div class="section-head anim-in">Всі режими</div>
-      <div class="mode-grid anim-in">
-        <div class="mode-card green" id="btn-mode-era">
-          <div class="mode-icon">🏟️</div>
-          <div class="mode-name">Епохи</div>
-          <div class="mode-desc">Легендарні команди в прямому протистоянні</div>
-          <div class="mode-new">НОВЕ</div>
-        </div>
-        <div class="mode-card blue" id="btn-mode-goat">
-          <div class="mode-icon">👑</div>
-          <div class="mode-name">GOAT Bracket</div>
-          <div class="mode-desc">Обирай кращого в дуелях 1 на 1 до самого фіналу</div>
-          <div class="mode-new">HOT</div>
-        </div>
-        <div class="mode-card gold" style="opacity:0.5">
-          <div class="mode-icon">🃏</div>
-          <div class="mode-name">Колекція</div>
-          <div class="mode-desc">Збирай картки гравців усіх ер</div>
-          <div class="mode-lock">🔒</div>
-        </div>
-        <div class="mode-card red" style="opacity:0.5">
-          <div class="mode-icon">🏆</div>
-          <div class="mode-name">Турнір</div>
-          <div class="mode-desc">8 команд, олімпійська система</div>
-          <div class="mode-lock">🔒</div>
-        </div>
-        <div class="mode-card gold" style="opacity:0.5">
-          <div class="mode-icon">🌍</div>
-          <div class="mode-name">Рейтинг</div>
-          <div class="mode-desc">Глобальний рейтинг гравців</div>
-          <div class="mode-lock">🔒</div>
-        </div>
-      </div>
-
-      <div class="section-head anim-in">Твоя статистика</div>
+      <div class="section-head anim-in">Сезонний пульс</div>
       <div class="stats-strip anim-in">
-        <div class="stat-card"><div class="stat-val">12</div><div class="stat-lbl">Матчів</div></div>
-        <div class="stat-card"><div class="stat-val">8</div><div class="stat-lbl">Перемог</div></div>
-        <div class="stat-card"><div class="stat-val">67%</div><div class="stat-lbl">Вінрейт</div></div>
+        <div class="stat-card accent"><div class="stat-val">12</div><div class="stat-lbl">Матчів</div></div>
+        <div class="stat-card accent"><div class="stat-val">8</div><div class="stat-lbl">Перемог</div></div>
+        <div class="stat-card accent"><div class="stat-val">67%</div><div class="stat-lbl">Вінрейт</div></div>
+      </div>
+
+      <div class="home-banner anim-in">
+        <div class="home-banner-copy">
+          <div class="home-panel-label">Скоро в оновленні</div>
+          <div class="home-banner-title">Турніри, колекція та глибший профіль</div>
+          <div class="home-banner-desc">Головна тепер про тебе: прогрес, історія і швидкий перехід у гру. Усі режими живуть окремо в розділі Грати.</div>
+        </div>
+        <div class="home-banner-badge">NEXT</div>
       </div>
 
       <div class="section-head anim-in">Останні матчі</div>
@@ -111,12 +128,86 @@
     </div>
   </div>
 
+  <!-- ════════ PLAY HUB ════════ -->
+  <div class="screen" id="screen-play">
+    <div class="app-header">
+      <div class="header-title">ГРАТИ</div>
+      <div class="header-badge">2 режими</div>
+    </div>
+    <div class="scroll-body">
+      <div class="section-head anim-in">Обери режим</div>
+      <div class="mode-grid anim-in">
+        <div class="mode-card green" id="btn-play-era">
+          <div class="mode-icon">🏟️</div>
+          <div class="mode-name">Епохи</div>
+          <div class="mode-desc">Легендарні команди в прямому протистоянні</div>
+          <div class="mode-new">НОВЕ</div>
+        </div>
+        <div class="mode-card blue" id="btn-play-goat">
+          <div class="mode-icon">👑</div>
+          <div class="mode-name">GOAT-Сітка</div>
+          <div class="mode-desc">Обирай кращого в дуелях 1 на 1 до самого фіналу</div>
+          <div class="mode-new">HOT</div>
+        </div>
+      </div>
+
+      <div class="section-head anim-in">Далі</div>
+      <div class="mode-grid anim-in">
+        <div class="mode-card preview">
+          <div class="mode-preview-kicker">Preview</div>
+          <div class="mode-icon">🏆</div>
+          <div class="mode-name">Турнір</div>
+          <div class="mode-desc">Сітка на 8 або 16 команд з чвертьфіналами, півфіналами й фіналом.</div>
+        </div>
+        <div class="mode-card preview">
+          <div class="mode-preview-kicker">Preview</div>
+          <div class="mode-icon">🃏</div>
+          <div class="mode-name">Колекція</div>
+          <div class="mode-desc">Альбом клубів, збірних і легенд з прогресом відкриття та рідкістю.</div>
+        </div>
+        <div class="mode-card preview">
+          <div class="mode-preview-kicker">Preview</div>
+          <div class="mode-icon">🧠</div>
+          <div class="mode-name">Драфт легенд</div>
+          <div class="mode-desc">Збираєш склад із випадкових піків і проходиш короткий турнір.</div>
+        </div>
+        <div class="mode-card preview">
+          <div class="mode-preview-kicker">Preview</div>
+          <div class="mode-icon">📚</div>
+          <div class="mode-name">Кар’єра</div>
+          <div class="mode-desc">Сезонний прогрес, цілі, серії перемог і історія твоїх проходжень.</div>
+        </div>
+        <div class="mode-card preview">
+          <div class="mode-preview-kicker">Quiz Preview</div>
+          <div class="mode-icon">🧠</div>
+          <div class="mode-name">Хто це?</div>
+          <div class="mode-desc">Вгадай легенду по фото, клубному шляху, номеру або досягненнях.</div>
+        </div>
+        <div class="mode-card preview">
+          <div class="mode-preview-kicker">Quiz Preview</div>
+          <div class="mode-icon">🛡️</div>
+          <div class="mode-name">Клуб чи збірна</div>
+          <div class="mode-desc">Швидкі раунди на логотипи, форми, роки й турнірні асоціації.</div>
+        </div>
+        <div class="mode-card preview">
+          <div class="mode-preview-kicker">Quiz Preview</div>
+          <div class="mode-icon">🎯</div>
+          <div class="mode-name">Футбольний IQ</div>
+          <div class="mode-desc">Фінали, бомбардири, володарі трофеїв і історичні футбольні факти.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ════════ ERA / TEAM SELECT ════════ -->
   <div class="screen" id="screen-era">
-    <div class="app-header">
-      <div class="header-back" id="btn-era-back">←</div>
-      <div class="header-title">РЕЖИМ ЕПОХИ</div>
-      <div style="width:32px"></div>
+    <div class="app-header app-header-detail">
+      <button class="header-back" id="btn-era-back" type="button">←</button>
+      <div class="header-main">
+        <div class="header-title">РЕЖИМ ЕПОХИ</div>
+        <div class="header-subtitle">Вибір команди</div>
+      </div>
+      <div class="header-slot"></div>
     </div>
     <div class="scroll-body" id="era-scroll">
 
@@ -142,15 +233,18 @@
     </div>
 
     <div class="confirm-bar" id="confirm-bar">
-      <button class="confirm-bar-btn" id="confirm-bar-btn">ПОЧАТИ МАТЧ</button>
+      <button class="confirm-bar-btn btn btn-primary btn-xl" id="confirm-bar-btn">ПОЧАТИ МАТЧ</button>
     </div>
   </div>
 
   <!-- ════════ MATCH ════════ -->
   <div class="screen" id="screen-match">
-    <div class="app-header">
-      <div class="header-back" id="btn-match-back">←</div>
-      <div class="match-header-spacer"></div>
+    <div class="app-header app-header-detail">
+      <button class="header-back" id="btn-match-back" type="button">←</button>
+      <div class="header-main">
+        <div class="header-title">МАТЧ ЕПОХ</div>
+        <div class="header-subtitle">Раундова дуель легенд</div>
+      </div>
       <div class="header-badge" id="match-round-badge">1/5</div>
     </div>
     <div class="scroll-body match-body">
@@ -184,25 +278,28 @@
     </div>
     <div class="match-action-bar">
       <div class="match-actions">
-        <button class="booster-btn" id="booster-btn">⚡ <span id="booster-count">2</span></button>
-        <button class="fight-btn" id="fight-btn" disabled>БИТИСЯ!</button>
+        <button class="booster-btn btn btn-glass" id="booster-btn">⚡ <span id="booster-count">2</span></button>
+        <button class="fight-btn btn btn-primary btn-xl" id="fight-btn" disabled>БИТИСЯ!</button>
       </div>
     </div>
   </div>
 
   <!-- ════════ GOAT CATEGORY SELECT ════════ -->
   <div class="screen" id="screen-goat-cats">
-    <div class="app-header">
-      <div class="header-back" id="btn-goat-cats-back">←</div>
-      <div class="header-title">GOAT BRACKET</div>
-      <div style="width:32px"></div>
+    <div class="app-header app-header-detail">
+      <button class="header-back" id="btn-goat-cats-back" type="button">←</button>
+      <div class="header-main">
+        <div class="header-title">GOAT-СІТКА</div>
+        <div class="header-subtitle">Вибір категорії</div>
+      </div>
+      <div class="header-slot"></div>
     </div>
     <div class="scroll-body">
       <div class="era-intro anim-in goat-intro">
         <div class="era-icon">👑</div>
         <div>
           <div class="era-intro-title">Обери категорію</div>
-          <div class="era-intro-desc">Обирай між категоріями, окремими decade-сітками на 16 легенд або Best XI Bracket. Кожен режим веде до повноцінного фіналу.</div>
+          <div class="era-intro-desc">Обирай між категоріями, окремими decade-сітками на 16 легенд або сіткою Best XI. Кожен режим веде до повноцінного фіналу.</div>
         </div>
       </div>
       <div class="filter-tabs anim-in" id="goat-era-tabs"></div>
@@ -212,9 +309,12 @@
 
   <!-- ════════ GOAT BRACKET ════════ -->
   <div class="screen" id="screen-goat">
-    <div class="app-header">
-      <div class="header-back" id="btn-goat-back">←</div>
-      <div class="header-title" id="goat-screen-title">GOAT BRACKET</div>
+    <div class="app-header app-header-detail">
+      <button class="header-back" id="btn-goat-back" type="button">←</button>
+      <div class="header-main">
+        <div class="header-title" id="goat-screen-title">GOAT-СІТКА</div>
+        <div class="header-subtitle">Дуелі легенд</div>
+      </div>
       <div class="header-badge" id="goat-round-badge">1/4</div>
     </div>
     <div class="scroll-body goat-body">
@@ -244,15 +344,13 @@
   <!-- ════════ RATING ════════ -->
   <div class="screen" id="screen-rating">
     <div class="app-header">
-      <div class="header-title">РЕЙТИНГ</div>
-      <div class="header-badge">🔒 Скоро</div>
+      <div class="header-title">СТАТИСТИКА</div>
+      <div class="header-badge">Топ-рекорди</div>
     </div>
     <div class="scroll-body">
-      <div class="coming-soon anim-in">
-        <div class="coming-soon-icon">🏅</div>
-        <div class="coming-soon-title">Рейтинг скоро</div>
-        <div class="coming-soon-desc">Глобальна таблиця лідерів з'явиться після запуску мультиплеєра. Грай зараз, щоб зайняти топ-місце першим.</div>
-      </div>
+      <div class="filter-tabs filter-tabs-bleed anim-in" id="stats-scope-tabs"></div>
+      <div class="filter-tabs filter-tabs-bleed anim-in" id="stats-category-tabs"></div>
+      <div class="stats-leaderboard anim-in" id="stats-leaderboard"></div>
     </div>
   </div>
 
@@ -283,48 +381,78 @@
 
   <!-- Round flash -->
   <div class="round-flash" id="round-flash">
-    <div class="flash-box battle-box" id="battle-box">
-      <div class="battle-topline" id="flash-label">ДУЕЛЬ</div>
-      <div class="battle-arena" id="battle-arena">
-        <div class="battle-card me" id="battle-me-card"></div>
-        <div class="battle-vs" id="battle-vs">VS</div>
-        <div class="battle-card opp" id="battle-opp-card"></div>
+    <div class="flash-box battle-box popup-shell popup-shell-center popup-surface popup-surface-battle" id="battle-box">
+      <div class="popup-body popup-body-battle">
+        <div class="battle-topline popup-kicker" id="flash-label">ДУЕЛЬ</div>
+        <div class="battle-arena" id="battle-arena">
+          <div class="battle-card me" id="battle-me-card"></div>
+          <div class="battle-vs" id="battle-vs">VS</div>
+          <div class="battle-card opp" id="battle-opp-card"></div>
+        </div>
+        <div class="battle-result popup-copy" id="flash-detail">91 vs 78</div>
       </div>
-      <div class="battle-result" id="flash-detail">91 vs 78</div>
-      <button class="battle-ok-btn" id="battle-ok-btn">OK</button>
+      <div class="popup-footer popup-footer-stack">
+        <button class="battle-ok-btn btn btn-primary btn-xl" id="battle-ok-btn">ДАЛІ</button>
+      </div>
     </div>
   </div>
 
   <!-- Result overlay -->
   <div class="overlay" id="result-overlay">
-    <div class="result-sheet">
-      <div class="result-pill"></div>
-      <div class="result-tropy" id="res-trophy">🏆</div>
-      <div class="result-headline" id="res-headline">ПЕРЕМОГА!</div>
-      <div class="result-subline" id="res-subline">Ти виграв 3:2 по раундах</div>
-      <div class="result-rounds" id="res-rounds"></div>
-      <div class="result-btns">
-        <button class="result-play-again" id="btn-play-again">ГРАТИ ЗНОВУ</button>
-        <button class="result-home-btn" id="btn-result-home">На головну</button>
+    <div class="result-sheet popup-shell popup-shell-sheet popup-surface popup-surface-sheet">
+      <div class="popup-body popup-body-sheet">
+        <div class="result-pill popup-pill"></div>
+        <div class="result-tropy" id="res-trophy">🏆</div>
+        <div class="result-headline popup-title" id="res-headline">ПЕРЕМОГА!</div>
+        <div class="result-subline popup-copy" id="res-subline">Ти виграв 3:2 по раундах</div>
+        <div class="result-rounds" id="res-rounds"></div>
+      </div>
+      <div class="popup-footer popup-footer-stack">
+        <button class="result-play-again btn btn-primary btn-xl" id="btn-play-again">ГРАТИ ЗНОВУ</button>
+        <button class="result-home-btn btn btn-glass btn-xl" id="btn-result-home">НА ГОЛОВНУ</button>
       </div>
     </div>
   </div>
 
   <div class="overlay" id="goat-result-overlay">
-    <div class="result-sheet goat-result-sheet">
-      <div class="result-pill"></div>
-      <div class="result-tropy" id="goat-res-trophy">👑</div>
-      <div class="result-headline win" id="goat-res-headline">ТВІЙ GOAT</div>
-      <div class="result-subline" id="goat-res-subline">Messi виграв усю сітку</div>
-      <div class="goat-result-card" id="goat-result-card"></div>
-      <div class="goat-result-path" id="goat-result-path"></div>
-      <div class="result-btns">
-        <button class="result-play-again" id="btn-goat-again">ЩЕ СІТКА</button>
-        <button class="result-home-btn" id="btn-goat-share">Поділитися</button>
-        <button class="result-home-btn" id="btn-goat-categories">Інша категорія</button>
+    <div class="result-sheet goat-result-sheet popup-shell popup-shell-sheet popup-surface popup-surface-sheet">
+      <div class="popup-body popup-body-sheet">
+        <div class="result-pill popup-pill"></div>
+        <div class="result-tropy" id="goat-res-trophy">👑</div>
+        <div class="result-headline win popup-title" id="goat-res-headline">ТВІЙ GOAT</div>
+        <div class="result-subline popup-copy" id="goat-res-subline">Messi виграв усю сітку</div>
+        <div class="goat-result-card" id="goat-result-card"></div>
+        <div class="goat-result-path" id="goat-result-path"></div>
+      </div>
+      <div class="popup-footer popup-footer-stack">
+        <button class="result-play-again btn btn-primary btn-xl" id="btn-goat-again">ЩЕ СІТКА</button>
+        <button class="result-home-btn btn btn-glass btn-xl" id="btn-goat-share">ПОДІЛИТИСЯ</button>
+        <button class="result-home-btn btn btn-glass btn-xl" id="btn-goat-categories">ІНША КАТЕГОРІЯ</button>
       </div>
     </div>
   </div>
+
+  <div class="overlay overlay-center" id="stats-profile-overlay">
+    <div class="stats-profile-card popup-shell popup-shell-center popup-surface popup-surface-dialog" id="stats-profile-card">
+      <button class="stats-profile-close" id="stats-profile-close" type="button">✕</button>
+      <div class="stats-profile-head" id="stats-profile-head"></div>
+      <div class="stats-profile-body" id="stats-profile-body"></div>
+    </div>
+  </div>
+
+  <dialog class="app-dialog" id="leave-match-dialog">
+    <form class="app-dialog-card popup-shell popup-shell-center popup-surface popup-surface-dialog" method="dialog">
+      <div class="popup-body popup-body-dialog">
+        <div class="app-dialog-kicker popup-kicker">Матч буде втрачено</div>
+        <div class="app-dialog-title popup-title">Вийти з матчу?</div>
+        <div class="app-dialog-copy popup-copy">Поточний прогрес у матчі скинеться, і ти повернешся назад.</div>
+      </div>
+      <div class="popup-footer app-dialog-footer">
+        <button class="app-dialog-btn btn btn-glass btn-xl" id="leave-match-cancel" type="button" value="cancel">Залишитись</button>
+        <button class="app-dialog-btn btn btn-primary btn-xl" id="leave-match-confirm" type="button" value="confirm">Вийти</button>
+      </div>
+    </form>
+  </dialog>
 
   <!-- ════════ GLOBAL BOTTOM NAV ════════ -->
   <nav class="bottom-nav" id="bottom-nav">
@@ -333,13 +461,13 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9,22 9,12 15,12 15,22"/></svg>
       <span>Головна</span>
     </button>
-    <button class="nav-item" data-screen="era">
+    <button class="nav-item" data-screen="play">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="5,3 19,12 5,21"/></svg>
       <span>Грати</span>
     </button>
     <button class="nav-item" data-screen="rating">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89L17 22l-5-3-5 3 1.523-9.11"/></svg>
-      <span>Рейтинг</span>
+      <span>Стата</span>
     </button>
     <button class="nav-item" data-screen="profile">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>

@@ -1,10 +1,14 @@
 import {
   TEAMS,
   ROUNDS,
+  STATS_LEADERBOARDS,
+  STATS_CATEGORY_LOGOS,
+  STATS_ENTITY_MEDIA,
   GOAT_CATEGORIES,
   GOAT_SPECIAL_BRACKETS,
   PLAYER_WIKI_TITLES,
   getTier,
+  TIER_LABELS,
   getPlayerAvatar,
   getTeamDisplayName,
   getTeamSeasonLabel,
@@ -31,6 +35,13 @@ let goatPairIndex = 0;
 let goatRoundWinners = [];
 let goatHistory = [];
 let goatBracketSize = 0;
+let pendingLeaveTarget = 'era';
+let currentStatsScope = 'players';
+const currentStatsCategory = {
+  players: 'ballon-dor',
+  clubs: 'ucl-clubs',
+  national: 'world-cup-national',
+};
 const playerPhotoCache = new Map();
 
 const GOAT_ERA_MODES = [
@@ -42,6 +53,35 @@ const GOAT_ERA_MODES = [
   { id: '2010s', label: '2010-ні' },
   { id: '2020s', label: '2020-ні' },
 ];
+const GOAT_UI_LABEL = 'GOAT-СІТКА';
+const PLAYER_NAME_ALIASES = {
+  'Lionel Messi': 'Messi',
+  'Cristiano Ronaldo': 'Cristiano',
+  'Luka Modrić': 'Modrić',
+  'Toni Kroos': 'Kroos',
+  'Andrés Iniesta': 'Iniesta',
+  'Iker Casillas': 'Casillas',
+  'Fernando Torres': 'Torres',
+  'Cesc Fàbregas': 'Fàbregas',
+  'Marco van Basten': 'Van Basten',
+  'Michel Platini': 'Platini',
+  'Johan Cruyff': 'Cruyff',
+  'Gerd Müller': 'G. Müller',
+  'Pelé': 'Pelé',
+};
+const TEAM_NAME_ALIASES = {
+  liverpool: ['Liverpool', 'Liverpool FC'],
+  'real madrid': ['Real Madrid'],
+  'fc barcelona': ['FC Barcelona', 'Barcelona'],
+  'bayern munich': ['Bayern Munich', 'Bayern'],
+  'manchester united': ['Manchester United', 'Man United'],
+  'іспанія': ['Іспанія'],
+  'франція': ['Франція'],
+  'германія': ['Германія', 'Німеччина'],
+  'аргентина': ['Аргентина'],
+  'бразилія': ['Бразилія'],
+  'італія': ['Італія'],
+};
 
 function escapeHtml(text) {
   return String(text).replace(/[&<>"']/g, char => ({
@@ -52,6 +92,74 @@ function escapeHtml(text) {
     "'": '&#39;',
   }[char]));
 }
+
+function normalizeEntityName(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/['’`".]/g, '')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
+function getInitials(label) {
+  return String(label || '')
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 3)
+    .map(part => part[0])
+    .join('')
+    .toUpperCase();
+}
+
+function buildPlayerLookup() {
+  const map = new Map();
+  const allPools = [
+    ...GOAT_CATEGORIES.map(category => category.players),
+    ...GOAT_SPECIAL_BRACKETS.map(category => category.players),
+  ];
+
+  allPools.flat().forEach(player => {
+    const key = normalizeEntityName(player.n);
+    if (!map.has(key)) map.set(key, player);
+  });
+
+  Object.entries(STATS_ENTITY_MEDIA.players).forEach(([name, media]) => {
+    const key = normalizeEntityName(name);
+    const base = map.get(key) || {};
+    map.set(key, { ...base, n: name, ...media });
+  });
+
+  Object.entries(PLAYER_NAME_ALIASES).forEach(([fullName, alias]) => {
+    const aliasKey = normalizeEntityName(alias);
+    const fullKey = normalizeEntityName(fullName);
+    if (map.has(aliasKey) && !map.has(fullKey)) map.set(fullKey, map.get(aliasKey));
+    if (map.has(fullKey) && !map.has(aliasKey)) map.set(aliasKey, map.get(fullKey));
+  });
+
+  return map;
+}
+
+function buildTeamLookup() {
+  const map = new Map();
+  TEAMS.forEach(team => {
+    const variants = new Set([
+      normalizeEntityName(team.name),
+      normalizeEntityName(getTeamDisplayName(team)),
+      normalizeEntityName(team.shortName || ''),
+    ]);
+    const aliasEntry = TEAM_NAME_ALIASES[normalizeEntityName(team.name)] || [];
+    aliasEntry.forEach(alias => variants.add(normalizeEntityName(alias)));
+    variants.forEach(variant => {
+      if (variant && !map.has(variant)) map.set(variant, team);
+    });
+  });
+  return map;
+}
+
+const statsPlayerLookup = buildPlayerLookup();
+const statsTeamLookup = buildTeamLookup();
 
 function getPlayerWikiTitle(teamId, playerName) {
   return PLAYER_WIKI_TITLES[`${teamId}:${playerName}`] || null;
@@ -217,9 +325,6 @@ function createPlayerCard(team, player, index) {
           <div class="card-rating">${player.stat}</div>
           <div class="card-pos">${escapeHtml(player.pos)}</div>
         </div>
-        <div class="card-crest-mini">
-          <img src="${team.crest}" alt="${escapeHtml(team.name)} crest" loading="lazy">
-        </div>
       </div>
       <div class="card-photo-wrap" data-team-id="${escapeHtml(team.id)}" data-player-name="${escapeHtml(player.n)}">
         <span class="card-avatar-initials">${escapeHtml(getPlayerAvatar(player))}</span>
@@ -252,8 +357,8 @@ function renderBattleOverlay(myPlayer, oppPlayer, myVal, oppVal, won) {
   const box = document.getElementById('battle-box');
 
   label.textContent = won ? 'ДУЕЛЬ ВИГРАНО' : 'ДУЕЛЬ ПРОГРАНО';
-  label.className = `battle-topline ${won ? 'win' : 'lose'}`;
-  box.className = `flash-box battle-box ${won ? 'win' : 'lose'}`;
+  label.className = `battle-topline popup-kicker ${won ? 'win' : 'lose'}`;
+  box.className = `flash-box battle-box popup-shell popup-shell-center popup-surface popup-surface-battle ${won ? 'win' : 'lose'}`;
 
   meCard.className = 'battle-card me' + (won ? ' win' : ' lose');
   oppCard.className = 'battle-card opp' + (won ? ' lose' : ' win');
@@ -427,8 +532,10 @@ function createGoatSpecialCard(bracket, index) {
 }
 
 function createGoatPlayerCard(player, side) {
+  const tier = getTier(player.stat);
   return `
-    <button class="goat-player-card ${side}" data-goat-player="${escapeHtml(player.id)}">
+    <button class="goat-player-card ${side} ${tier}" data-goat-player="${escapeHtml(player.id)}">
+      <div class="goat-player-tier">${escapeHtml(TIER_LABELS[tier])}</div>
       <div class="goat-player-rank">${player.stat}</div>
       <div class="goat-player-country">${escapeHtml(player.country || '')}</div>
       ${createWikiFaceMarkup(player, 'goat-player-face')}
@@ -485,7 +592,7 @@ function renderGoatRound() {
   if (!pair) return;
 
   const stageName = getGoatStageName(currentPairs.length);
-  document.getElementById('goat-screen-title').textContent = currentGoatCategory?.shortName || 'GOAT BRACKET';
+  document.getElementById('goat-screen-title').textContent = currentGoatCategory?.shortName || GOAT_UI_LABEL;
   const modeLabel = GOAT_ERA_MODES.find(mode => mode.id === currentGoatEra)?.label || 'GOAT';
   document.getElementById('goat-category-label').textContent = `${currentGoatCategory?.name || 'Категорія'} · ${modeLabel}`;
   document.getElementById('goat-stage-title').textContent = stageName;
@@ -591,7 +698,7 @@ export async function shareGoatResult() {
   try {
     if (navigator.share) {
       await navigator.share({
-        title: 'Football Legends GOAT Bracket',
+        title: `Football Legends ${GOAT_UI_LABEL}`,
         text,
       });
       return;
@@ -659,6 +766,16 @@ export function updateNavIndicator(activeBtn) {
   const width = btnRect.width - 2;
   indicator.style.left = left + 'px';
   indicator.style.width = width + 'px';
+}
+
+export function goToPlay() {
+  document.getElementById('result-overlay').classList.remove('show');
+  document.getElementById('goat-result-overlay').classList.remove('show');
+  document.getElementById('round-flash').classList.remove('show');
+  selectedTeamId = null;
+  pendingRoundAdvance = false;
+  document.getElementById('confirm-bar').classList.remove('show');
+  goTo('play');
 }
 
 export function goToEra() {
@@ -740,6 +857,269 @@ export function setGoatEraMode(eraId) {
   currentGoatEra = eraId;
   renderGoatEraTabs();
   renderGoatCategories();
+}
+
+function getStatsScopeData(scope = currentStatsScope) {
+  return STATS_LEADERBOARDS[scope] || STATS_LEADERBOARDS.players;
+}
+
+function getStatsActiveCategory(scope = currentStatsScope) {
+  const scopeData = getStatsScopeData(scope);
+  const fallback = scopeData.categories[0]?.id;
+  const activeId = currentStatsCategory[scope];
+  const exists = scopeData.categories.some(category => category.id === activeId);
+  return scopeData.categories.find(category => category.id === (exists ? activeId : fallback)) || scopeData.categories[0];
+}
+
+function getStatsEntityMedia(scope, name) {
+  const normalizedName = normalizeEntityName(name);
+  const scopedMedia = STATS_ENTITY_MEDIA[scope]?.[name];
+
+  if (scope === 'players') {
+    const player = statsPlayerLookup.get(normalizedName) || scopedMedia;
+    return {
+      type: 'player',
+      label: player?.avatar || scopedMedia?.avatar || getInitials(name),
+      wikiTitle: player?.wikiTitle || scopedMedia?.wikiTitle || '',
+      accent: player?.accent || scopedMedia?.accent || 'rgba(255,255,255,0.08)',
+    };
+  }
+
+  const team = statsTeamLookup.get(normalizedName);
+  const media = scopedMedia || {};
+  return {
+    type: 'team',
+    label: media.short || team?.emoji || getInitials(name),
+    crest: media.crest || team?.crest || '',
+    accent: media.accent || team?.bg || 'rgba(255,255,255,0.08)',
+  };
+}
+
+function createStatsEntityArt(scope, row) {
+  const media = getStatsEntityMedia(scope, row.name);
+  if (media.type === 'player') {
+    const wikiTitleAttr = media.wikiTitle ? ` data-wiki-title="${escapeHtml(media.wikiTitle)}"` : '';
+    return `
+      <div class="stats-record-art stats-record-art-player" style="--stats-accent:${media.accent}" data-player-name="${escapeHtml(row.name)}"${wikiTitleAttr}>
+        <span>${escapeHtml(media.label)}</span>
+      </div>
+    `;
+  }
+
+  if (media.crest) {
+    return `
+      <div class="stats-record-art stats-record-art-team" style="--stats-accent:${media.accent}">
+        <img src="${media.crest}" alt="${escapeHtml(row.name)} logo" loading="lazy" referrerpolicy="no-referrer" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <span>${escapeHtml(media.label)}</span>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="stats-record-art stats-record-art-team" style="--stats-accent:${media.accent}">
+      <span>${escapeHtml(media.label)}</span>
+    </div>
+  `;
+}
+
+function createStatsCompetitionBadge(category) {
+  const logo = STATS_CATEGORY_LOGOS[category.id] || { src: '' };
+  return `
+    <div class="stats-competition-badge">
+      ${logo.src ? `<img class="stats-competition-logo" src="${logo.src}" alt="${escapeHtml(category.label)}" loading="lazy" onerror="this.style.display='none';">` : ''}
+    </div>
+  `;
+}
+
+function createStatsRow(scope, category, row) {
+  return `
+    <button class="stats-record-row" type="button" data-stats-entity="${escapeHtml(row.name)}" data-stats-scope="${escapeHtml(scope)}">
+      <div class="stats-record-rank-wrap">
+        <div class="stats-record-rank">${row.rank}</div>
+      </div>
+      ${createStatsEntityArt(scope, row)}
+      <div class="stats-record-copy">
+        <div class="stats-record-name">${escapeHtml(row.name)}</div>
+        <div class="stats-record-meta">${escapeHtml(row.meta)}</div>
+      </div>
+      <div class="stats-record-value">${escapeHtml(row.value)}</div>
+    </button>
+  `;
+}
+
+function renderStatsScopeTabs() {
+  const tabs = document.getElementById('stats-scope-tabs');
+  if (!tabs) return;
+
+  const items = [
+    { id: 'players', label: 'Гравці' },
+    { id: 'clubs', label: 'Клуби' },
+    { id: 'national', label: 'Збірні' },
+  ];
+
+  tabs.innerHTML = items
+    .map(item => `<button class="filter-tab${item.id === currentStatsScope ? ' active' : ''}" type="button" data-stats-scope="${item.id}">${item.label}</button>`)
+    .join('');
+}
+
+function renderStatsCategoryTabs() {
+  const tabs = document.getElementById('stats-category-tabs');
+  if (!tabs) return;
+
+  const scopeData = getStatsScopeData();
+  tabs.innerHTML = scopeData.categories
+    .map(category => {
+      return `<button class="filter-tab stats-filter-tab${category.id === getStatsActiveCategory()?.id ? ' active' : ''}" type="button" data-stats-category="${category.id}"><span>${category.label}</span></button>`;
+    })
+    .join('');
+}
+
+function renderStatsContent() {
+  const scopeData = getStatsScopeData();
+  const activeCategory = getStatsActiveCategory();
+  if (!scopeData || !activeCategory) return;
+  const board = document.getElementById('stats-leaderboard');
+
+  if (board) {
+    board.innerHTML = `
+      <div class="stats-leaderboard-card">
+        <div class="stats-leaderboard-head">
+          <div>
+            <div class="stats-leaderboard-label">${escapeHtml(activeCategory.label)}</div>
+            <div class="stats-leaderboard-title">Топ-5</div>
+          </div>
+          <div class="stats-leaderboard-mark">
+            ${createStatsCompetitionBadge(activeCategory)}
+          </div>
+        </div>
+        <div class="stats-record-list stats-record-list-divided">
+          ${activeCategory.rows.map(row => createStatsRow(currentStatsScope, activeCategory, row)).join('')}
+        </div>
+      </div>
+    `;
+    enhancePlayerPhotos(board);
+  }
+}
+
+function getStatsEntitySummary(scope, entityName) {
+  const scopeData = getStatsScopeData(scope);
+  const normalizedName = normalizeEntityName(entityName);
+  return scopeData.categories
+    .map(category => {
+      const row = category.rows.find(item => normalizeEntityName(item.name) === normalizedName);
+      if (!row) return null;
+      return {
+        category,
+        row,
+      };
+    })
+    .filter(Boolean);
+}
+
+function getEntityAppearances(scope, entityName) {
+  const normalizedName = normalizeEntityName(entityName);
+  if (scope === 'players') {
+    return TEAMS
+      .filter(team => team.players.some(player => normalizeEntityName(player.n) === normalizedName))
+      .slice(0, 4);
+  }
+
+  const matchedTeam = statsTeamLookup.get(normalizedName);
+  const matchedName = matchedTeam ? normalizeEntityName(matchedTeam.name) : normalizedName;
+  const matchedDisplayName = matchedTeam ? normalizeEntityName(getTeamDisplayName(matchedTeam)) : normalizedName;
+  return TEAMS
+    .filter(team => normalizeEntityName(team.name) === matchedName || normalizeEntityName(getTeamDisplayName(team)) === matchedDisplayName)
+    .slice(0, 4);
+}
+
+function createProfileStatRow(item) {
+  return `
+    <div class="stats-profile-stat">
+      ${createStatsCompetitionBadge(item.category)}
+      <div class="stats-profile-stat-copy">
+        <div class="stats-profile-stat-name">${escapeHtml(item.category.label)}</div>
+        <div class="stats-profile-stat-meta">${escapeHtml(item.row.meta)}</div>
+      </div>
+      <div class="stats-profile-stat-value">${escapeHtml(item.row.value)}</div>
+    </div>
+  `;
+}
+
+function createAppearanceCard(team) {
+  return `
+    <div class="stats-profile-appearance">
+      ${createTeamBadge(team)}
+      <div class="stats-profile-appearance-copy">
+        <div class="stats-profile-appearance-name">${escapeHtml(getTeamDisplayName(team))}</div>
+        <div class="stats-profile-appearance-meta">${escapeHtml(getTeamSeasonLabel(team))}</div>
+      </div>
+    </div>
+  `;
+}
+
+export function openStatsProfile(entityName, scope = currentStatsScope) {
+  const summary = getStatsEntitySummary(scope, entityName);
+  if (!summary.length) return;
+
+  const overlay = document.getElementById('stats-profile-overlay');
+  const head = document.getElementById('stats-profile-head');
+  const body = document.getElementById('stats-profile-body');
+  const primary = summary[0];
+  const appearances = getEntityAppearances(scope, entityName);
+  const art = createStatsEntityArt(scope, primary.row);
+
+  head.innerHTML = `
+    <div class="stats-profile-media">${art}</div>
+    <div class="stats-profile-copy">
+      <div class="stats-profile-kicker">${scope === 'players' ? 'Профіль гравця' : scope === 'clubs' ? 'Профіль клубу' : 'Профіль збірної'}</div>
+      <div class="stats-profile-title">${escapeHtml(primary.row.name)}</div>
+      <div class="stats-profile-meta">${escapeHtml(primary.row.meta)}</div>
+    </div>
+  `;
+
+  body.innerHTML = `
+    <div class="stats-profile-section">
+      <div class="stats-profile-section-title">Головні рекорди</div>
+      <div class="stats-profile-stats">
+        ${summary.map(createProfileStatRow).join('')}
+      </div>
+    </div>
+    ${appearances.length ? `
+      <div class="stats-profile-section">
+        <div class="stats-profile-section-title">${scope === 'players' ? 'Є в режимі Епохи' : 'Доступно в підбірці команд'}</div>
+        <div class="stats-profile-appearances">
+          ${appearances.map(createAppearanceCard).join('')}
+        </div>
+      </div>
+    ` : ''}
+  `;
+
+  enhancePlayerPhotos(head);
+  overlay.classList.add('show');
+}
+
+export function closeStatsProfile() {
+  document.getElementById('stats-profile-overlay')?.classList.remove('show');
+}
+
+export function renderStatsScreen() {
+  renderStatsScopeTabs();
+  renderStatsCategoryTabs();
+  renderStatsContent();
+  closeStatsProfile();
+}
+
+export function setStatsScope(scope) {
+  if (!STATS_LEADERBOARDS[scope]) return;
+  currentStatsScope = scope;
+  renderStatsScreen();
+}
+
+export function setStatsCategory(categoryId) {
+  const scopeData = getStatsScopeData();
+  if (!scopeData.categories.some(category => category.id === categoryId)) return;
+  currentStatsCategory[currentStatsScope] = categoryId;
+  renderStatsScreen();
 }
 
 // ── Teams ──
@@ -894,7 +1274,11 @@ export function useBooster() {
   document.querySelectorAll('.player-pick.chosen .player-card').forEach(el => {
     el.classList.add('boosted');
     const rating = el.querySelector('.card-rating');
+    const statVals = el.querySelectorAll('.card-stat-val');
     if (rating) rating.textContent = chosenPlayer.stat;
+    if (statVals[0]) statVals[0].textContent = chosenPlayer.atk;
+    if (statVals[1]) statVals[1].textContent = chosenPlayer.def;
+    if (statVals[2]) statVals[2].textContent = chosenPlayer.spd;
   });
   const tg = window.Telegram?.WebApp;
   if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
@@ -942,7 +1326,7 @@ function showResult() {
   document.getElementById('res-trophy').textContent = win ? '🏆' : '😔';
   const headline = document.getElementById('res-headline');
   headline.textContent = win ? 'ПЕРЕМОГА!' : 'ПОРАЗКА';
-  headline.className = 'result-headline ' + (win ? 'win' : 'lose');
+  headline.className = 'result-headline popup-title ' + (win ? 'win' : 'lose');
   document.getElementById('res-subline').textContent =
     (win ? 'Ти виграв' : 'Ти програв') + ' ' + myScore + ':' + oppScore + ' по раундах';
 
@@ -966,9 +1350,28 @@ export function playAgain() {
 }
 
 export function confirmLeave(target = 'era') {
-  if (confirm('Вийти з матчу? Прогрес буде втрачено.')) {
-    pendingRoundAdvance = false;
-    document.getElementById('round-flash').classList.remove('show');
-    goTo(target);
+  pendingLeaveTarget = target;
+  const dialog = document.getElementById('leave-match-dialog');
+  if (typeof dialog.showModal === 'function') {
+    if (dialog.open) return;
+    dialog.showModal();
+    return;
   }
+
+  pendingRoundAdvance = false;
+  document.getElementById('round-flash').classList.remove('show');
+  goTo(target);
+}
+
+export function cancelLeave() {
+  const dialog = document.getElementById('leave-match-dialog');
+  if (dialog?.open) dialog.close('cancel');
+}
+
+export function proceedLeave() {
+  const dialog = document.getElementById('leave-match-dialog');
+  if (dialog?.open) dialog.close('confirm');
+  pendingRoundAdvance = false;
+  document.getElementById('round-flash').classList.remove('show');
+  goTo(pendingLeaveTarget);
 }
