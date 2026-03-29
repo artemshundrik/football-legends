@@ -15,6 +15,7 @@
 
 html, body {
   height: 100%;
+  height: -webkit-fill-available;
   background: var(--bg);
   color: var(--text);
   font-family: 'Manrope', sans-serif;
@@ -24,6 +25,7 @@ html, body {
 
 #app {
   height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -57,7 +59,7 @@ html, body {
   overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
-  padding: 16px 16px 100px;
+  padding: 16px 16px calc(100px + env(safe-area-inset-bottom, 0px));
 }
 .scroll-body::-webkit-scrollbar { display: none; }
 
@@ -104,12 +106,12 @@ html, body {
 .bottom-nav {
   position: fixed;
   bottom: 0; left: 0; right: 0;
-  height: 72px;
+  height: calc(72px + env(safe-area-inset-bottom, 0px));
   background: var(--surface);
   border-top: 0.5px solid var(--border);
   display: flex;
   z-index: 100;
-  padding-bottom: env(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .nav-item {
   flex: 1;
@@ -395,7 +397,7 @@ html, body {
 
 .confirm-bar {
   position: fixed;
-  bottom: 72px; left: 0; right: 0;
+  bottom: calc(72px + env(safe-area-inset-bottom, 0px)); left: 0; right: 0;
   padding: 12px 16px;
   background: rgba(8,12,20,0.9);
   backdrop-filter: blur(10px);
