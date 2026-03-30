@@ -4,18 +4,22 @@ import {
   goToPlay,
   goToEra,
   goToGoatCategories,
+  goToDreamTeams,
   goToHome,
   filterTeams,
   renderTeams,
   startMatch,
   startGoatBracket,
   setGoatEraMode,
-  useBooster,
   resolveRound,
   acknowledgeBattle,
   playAgain,
   playGoatAgain,
   goToGoatCategoriesFromResult,
+  startDreamDraft,
+  selectDreamPlayer,
+  goBackFromDreamDraft,
+  replayDreamDraft,
   shareGoatResult,
   confirmLeave,
   cancelLeave,
@@ -25,6 +29,8 @@ import {
   setStatsCategory,
   openStatsProfile,
   closeStatsProfile,
+  openTeamLineup,
+  closeTeamLineup,
   updateNavActive,
   updateNavIndicator,
 } from './game.js';
@@ -33,18 +39,25 @@ import {
 document.getElementById('btn-hero-play').addEventListener('click', goToPlay);
 document.getElementById('btn-play-era').addEventListener('click', goToEra);
 document.getElementById('btn-play-goat').addEventListener('click', goToGoatCategories);
+document.getElementById('btn-play-dream').addEventListener('click', goToDreamTeams);
 document.getElementById('btn-era-back').addEventListener('click', goToPlay);
+document.getElementById('btn-era-lineup-back').addEventListener('click', goToEra);
 document.getElementById('btn-goat-cats-back').addEventListener('click', goToPlay);
 document.getElementById('btn-goat-back').addEventListener('click', goToGoatCategories);
+document.getElementById('btn-dream-teams-back').addEventListener('click', goToPlay);
+document.getElementById('btn-dream-back').addEventListener('click', goBackFromDreamDraft);
+document.getElementById('btn-dream-result-back').addEventListener('click', goToDreamTeams);
 document.getElementById('confirm-bar-btn').addEventListener('click', startMatch);
+document.getElementById('btn-era-lineup-play').addEventListener('click', startMatch);
 document.getElementById('btn-match-back').addEventListener('click', () => confirmLeave('era'));
-document.getElementById('booster-btn').addEventListener('click', useBooster);
 document.getElementById('fight-btn').addEventListener('click', resolveRound);
 document.getElementById('battle-ok-btn').addEventListener('click', acknowledgeBattle);
 document.getElementById('btn-play-again').addEventListener('click', playAgain);
 document.getElementById('btn-result-home').addEventListener('click', goToHome);
 document.getElementById('btn-goat-again').addEventListener('click', playGoatAgain);
 document.getElementById('btn-goat-categories').addEventListener('click', goToGoatCategoriesFromResult);
+document.getElementById('btn-dream-again').addEventListener('click', replayDreamDraft);
+document.getElementById('btn-dream-other-team').addEventListener('click', goToDreamTeams);
 document.getElementById('leave-match-cancel').addEventListener('click', event => {
   event.preventDefault();
   cancelLeave();
@@ -73,6 +86,16 @@ document.getElementById('goat-era-tabs').addEventListener('click', event => {
   if (!btn) return;
   setGoatEraMode(btn.dataset.goatEra);
 });
+document.getElementById('dream-team-grid').addEventListener('click', event => {
+  const card = event.target.closest('[data-dream-team]');
+  if (!card) return;
+  startDreamDraft(card.dataset.dreamTeam);
+});
+document.getElementById('dream-candidate-grid').addEventListener('click', event => {
+  const card = event.target.closest('[data-dream-player]');
+  if (!card) return;
+  selectDreamPlayer(card.dataset.dreamPlayer);
+});
 document.getElementById('btn-goat-share').addEventListener('click', shareGoatResult);
 document.getElementById('stats-scope-tabs').addEventListener('click', event => {
   const btn = event.target.closest('[data-stats-scope]');
@@ -93,13 +116,20 @@ document.getElementById('stats-profile-close').addEventListener('click', closeSt
 document.getElementById('stats-profile-overlay').addEventListener('click', event => {
   if (event.target === event.currentTarget) closeStatsProfile();
 });
+document.getElementById('team-lineup-close').addEventListener('click', closeTeamLineup);
+document.getElementById('team-lineup-overlay').addEventListener('click', event => {
+  if (event.target === event.currentTarget) closeTeamLineup();
+});
 window.addEventListener('keydown', event => {
-  if (event.key === 'Escape') closeStatsProfile();
+  if (event.key !== 'Escape') return;
+  closeStatsProfile();
+  closeTeamLineup();
 });
 
 document.querySelectorAll('.filter-tab').forEach(btn => {
   btn.addEventListener('click', () => filterTeams(btn.dataset.filter, btn));
 });
+
 
 // ── Global nav ──
 document.querySelectorAll('.nav-item[data-screen]').forEach(btn => {

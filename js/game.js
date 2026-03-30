@@ -6,6 +6,7 @@ import {
   STATS_ENTITY_MEDIA,
   GOAT_CATEGORIES,
   GOAT_SPECIAL_BRACKETS,
+  DREAM_XI_TEAMS,
   PLAYER_WIKI_TITLES,
   getTier,
   TIER_LABELS,
@@ -20,7 +21,6 @@ let selectedTeamId = null;
 let currentRound = 0;
 let myScore = 0;
 let oppScore = 0;
-let boosterCount = 2;
 let chosenPlayer = null;
 let roundResults = [];
 let currentTeam = null;
@@ -37,6 +37,10 @@ let goatHistory = [];
 let goatBracketSize = 0;
 let pendingLeaveTarget = 'era';
 let currentStatsScope = 'players';
+let currentDreamTeamId = null;
+let currentDreamTeam = null;
+let currentDreamStep = 0;
+let currentDreamSelections = {};
 const currentStatsCategory = {
   players: 'ballon-dor',
   clubs: 'ucl-clubs',
@@ -81,6 +85,285 @@ const TEAM_NAME_ALIASES = {
   'аргентина': ['Аргентина'],
   'бразилія': ['Бразилія'],
   'італія': ['Італія'],
+};
+const DREAM_POSITION_LAYOUT = {
+  gk: { x: 50, y: 88 },
+  rb: { x: 82, y: 71 },
+  cb1: { x: 61, y: 74 },
+  cb2: { x: 39, y: 74 },
+  lb: { x: 18, y: 71 },
+  cm1: { x: 50, y: 57 },
+  cm2: { x: 32, y: 49 },
+  cm3: { x: 68, y: 49 },
+  rw: { x: 80, y: 27 },
+  lw: { x: 20, y: 27 },
+  st: { x: 50, y: 16 },
+};
+const DREAM_PLAYER_HONORS = {
+  'Lionel Messi': '8 «Золотих м’ячів»',
+  'Luis Suárez': '2 «Золоті бутси»',
+  'Ronaldinho': '«Золотий м’яч» 2005',
+  'Neymar': 'Олімпійське золото',
+  'Hristo Stoichkov': '«Золотий м’яч» 1994',
+  'Thierry Henry': 'Легенда «Непереможних»',
+  'Víctor Valdés': '3 перемоги в ЛЧ',
+  'Marc-André ter Stegen': 'Воротар ери тріумфів',
+  'Andoni Zubizarreta': 'Голкіпер Dream Team',
+  'Claudio Bravo': 'Ла Ліга + Кубок',
+  'Dani Alves': 'Один із найтитулованіших',
+  'Sergi Roberto': 'Універсал La Masia',
+  'Jules Koundé': 'Сучасний стопер',
+  'Albert Ferrer': 'Переможець Кубка чемпіонів',
+  'Carles Puyol': 'Капітан епохи',
+  'Gerard Piqué': 'Опора треблу',
+  'Ronald Koeman': 'Герой «Вемблі»',
+  'Rafael Márquez': 'Пасуючий центрбек',
+  'Javier Mascherano': 'Захисник великих матчів',
+  'Jordi Alba': 'Євро + Ліга чемпіонів',
+  'Eric Abidal': 'Тріумфальне повернення в ЛЧ',
+  'Sergi Barjuán': 'Чемпіон Іспанії',
+  'Joan Capdevila': 'Чемпіон світу',
+  'Sergio Busquets': 'ЧС + Євро',
+  'Pep Guardiola': 'Капітан 1992',
+  'Yaya Touré': 'Мотор треблу',
+  'Deco': 'Плеймейкер ЛЧ',
+  'Xavi': 'ЧС + 2 Євро',
+  'Andrés Iniesta': 'Гол у фіналі ЧС',
+  'Ivan Rakitić': 'Мозок треблу',
+  'Johan Neeskens': 'Ікона тотального футболу',
+  'Pedri': 'Golden Boy',
+  'Lamine Yamal': 'Юний герой Євро',
+  'Luis Figo': '«Золотий м’яч» 2000',
+  'Pedro': 'Герой секступлу',
+  'Samuel Eto’o': '2 фінали ЛЧ з трофеєм',
+  'Ronaldo': '2 «Золоті м’ячі»',
+  'Patrick Kluivert': 'Наймолодший бомбардир фіналу ЛЧ',
+  'Iker Casillas': '3 перемоги в ЛЧ',
+  'Thibaut Courtois': 'Герой фіналу 2022',
+  'Keylor Navas': '3 перемоги в ЛЧ',
+  'Paco Buyo': 'Легенда Ла Ліги',
+  'Michel Salgado': 'Боєць ери Галактікос',
+  'Chendo': 'Шість титулів Ла Ліги',
+  'Sergio Ramos': 'Капітан 4 титулів ЛЧ',
+  'Fernando Hierro': 'Легенда клубу',
+  'Pepe': '3 перемоги в ЛЧ',
+  'Raphaël Varane': '4 перемоги в ЛЧ',
+  'Marcelo': '5 перемог у ЛЧ',
+  'Roberto Carlos': 'ЧС + Ліга чемпіонів',
+  'Ferland Mendy': 'Переможець ЛЧ 2022',
+  'José Antonio Camacho': 'Багаторічний капітан',
+  'Casemiro': '5 перемог у ЛЧ',
+  'Claude Makélélé': 'Еталон опорника',
+  'Xabi Alonso': 'ЧС + Ліга чемпіонів',
+  'Fernando Redondo': 'Маестро ЛЧ',
+  'Luka Modrić': '«Золотий м’яч» 2018',
+  'Zinedine Zidane': 'Легендарний гол у фіналі ЛЧ',
+  'Toni Kroos': '5 перемог у ЛЧ',
+  'Guti': 'Культовий пасувальник',
+  'Cristiano Ronaldo': '5 «Золотих м’ячів»',
+  'Gareth Bale': 'Спеціаліст по фіналах',
+  'Amancio': 'Легенда флангу',
+  'Vinícius Júnior': 'Гол у фіналі ЛЧ 2022',
+  'Raúl': 'Символ клубу',
+  'Francisco Gento': '6 Кубків чемпіонів',
+  'Alfredo Di Stéfano': '5 Кубків чемпіонів',
+  'Karim Benzema': '«Золотий м’яч» 2022',
+  'Peter Schmeichel': 'Стіна треблу',
+  'Edwin van der Sar': 'Переможець ЛЧ 2008',
+  'David de Gea': 'Найкращий воротар АПЛ',
+  'Fabien Barthez': 'Чемпіон світу',
+  'Gary Neville': '8 титулів АПЛ',
+  'Antonio Valencia': 'Капітан своєї ери',
+  'Aaron Wan-Bissaka': 'Майстер 1-в-1',
+  'Wes Brown': 'Фіналіст і переможець ЛЧ',
+  'Rio Ferdinand': 'Ікона гри з м’ячем',
+  'Nemanja Vidić': '5 титулів АПЛ',
+  'Jaap Stam': 'Центрбек команди треблу',
+  'Steve Bruce': 'Лідер оборони',
+  'Gary Pallister': 'Класичний стопер',
+  'Patrice Evra': 'Лідер покоління',
+  'Denis Irwin': 'Еталон надійності',
+  'Luke Shaw': 'Фіналіст Євро',
+  'Mikaël Silvestre': 'Універсальний захисник',
+  'Roy Keane': 'Капітан треблу',
+  'Michael Carrick': 'Майстер контролю',
+  'Paul Ince': 'Мотор центру поля',
+  'Paul Scholes': 'Геній півзахисту',
+  'Bryan Robson': 'Captain Marvel',
+  'David Beckham': 'Творець треблу',
+  'Bruno Fernandes': 'Машина результативності',
+  'Ryan Giggs': '13 титулів АПЛ',
+  'George Best': '«Золотий м’яч» 1968',
+  'Marcus Rashford': 'Сучасний символ клубу',
+  'Wayne Rooney': 'Найкращий бомбардир клубу',
+  'Eric Cantona': 'Король 90-х',
+  'Ruud van Nistelrooy': 'Хижак штрафного',
+  'Robin van Persie': 'Форвард чемпіонського сезону',
+  'Cláudio Taffarel': 'Чемпіон світу 1994',
+  'Alisson Becker': 'Найкращий воротар FIFA',
+  'Marcos': 'Чемпіон світу 2002',
+  'Dida': 'Спеціаліст великих матчів ЛЧ',
+  'Cafu': 'Дворазовий чемпіон світу',
+  'Carlos Alberto': 'Капітан Бразилії-1970',
+  'Maicon': 'Фулбек ери треблу',
+  'Lucio': 'Лідер оборони 2002',
+  'Thiago Silva': 'Сучасна ікона захисту',
+  'Aldair': 'Чемпіон світу 1994',
+  'Marquinhos': 'Капітан сучасної Бразилії',
+  'Branco': 'Ліва нога 1994',
+  'Junior': 'Легенда класичної Бразилії',
+  'Dunga': 'Капітан чемпіонів світу',
+  'Falcão': 'Мозок півзахисту',
+  'Gilberto Silva': 'Невидимий щит',
+  'Zico': 'Білий Пеле',
+  'Rivaldo': '«Золотий м’яч» 1999',
+  'Kaká': '«Золотий м’яч» 2007',
+  'Sócrates': 'Доктор футболу',
+  'Garrincha': 'Ікона 1962',
+  'Jairzinho': 'Голи в кожному матчі ЧС-1970',
+  'Raphinha': 'Лідер сучасного флангу',
+  'Pelé': '3 чемпіонати світу',
+  'Romário': 'Чемпіон світу 1994',
+  'Adriano': 'Пікова сила «Імператора»',
+};
+const DREAM_PLAYER_YEARS = {
+  'dream-barcelona:Víctor Valdés': '2002–2014',
+  'dream-barcelona:Marc-André ter Stegen': '2014–дотепер',
+  'dream-barcelona:Andoni Zubizarreta': '1986–1994',
+  'dream-barcelona:Claudio Bravo': '2014–2016',
+  'dream-barcelona:Dani Alves': '2008–2016',
+  'dream-barcelona:Sergi Roberto': '2010–2024',
+  'dream-barcelona:Jules Koundé': '2022–дотепер',
+  'dream-barcelona:Albert Ferrer': '1990–1998',
+  'dream-barcelona:Carles Puyol': '1999–2014',
+  'dream-barcelona:Gerard Piqué': '2008–2022',
+  'dream-barcelona:Ronald Koeman': '1989–1995',
+  'dream-barcelona:Rafael Márquez': '2003–2010',
+  'dream-barcelona:Javier Mascherano': '2010–2018',
+  'dream-barcelona:Jordi Alba': '2012–2023',
+  'dream-barcelona:Eric Abidal': '2007–2013',
+  'dream-barcelona:Sergi Barjuán': '1993–2002',
+  'dream-barcelona:Joan Capdevila': '1999–2007',
+  'dream-barcelona:Sergio Busquets': '2008–2023',
+  'dream-barcelona:Pep Guardiola': '1990–2001',
+  'dream-barcelona:Yaya Touré': '2007–2010',
+  'dream-barcelona:Deco': '2004–2008',
+  'dream-barcelona:Xavi': '1998–2015',
+  'dream-barcelona:Andrés Iniesta': '2002–2018',
+  'dream-barcelona:Ivan Rakitić': '2014–2020',
+  'dream-barcelona:Johan Neeskens': '1974–1979',
+  'dream-barcelona:Pedri': '2020–дотепер',
+  'dream-barcelona:Lionel Messi': '2004–2021',
+  'dream-barcelona:Lamine Yamal': '2023–дотепер',
+  'dream-barcelona:Luis Figo': '1995–2000',
+  'dream-barcelona:Pedro': '2008–2015',
+  'dream-barcelona:Ronaldinho': '2003–2008',
+  'dream-barcelona:Neymar': '2013–2017',
+  'dream-barcelona:Hristo Stoichkov': '1990–1995',
+  'dream-barcelona:Thierry Henry': '2007–2010',
+  'dream-barcelona:Luis Suárez': '2014–2020',
+  'dream-barcelona:Samuel Eto’o': '2004–2009',
+  'dream-barcelona:Ronaldo': '1996–1997',
+  'dream-barcelona:Patrick Kluivert': '1998–2004',
+  'dream-real:Iker Casillas': '1999–2015',
+  'dream-real:Thibaut Courtois': '2018–дотепер',
+  'dream-real:Keylor Navas': '2014–2019',
+  'dream-real:Paco Buyo': '1986–1997',
+  'dream-real:Dani Carvajal': '2013–дотепер',
+  'dream-real:Michel Salgado': '1999–2009',
+  'dream-real:Chendo': '1982–1998',
+  'dream-real:Sergio Ramos': '2005–2021',
+  'dream-real:Fernando Hierro': '1989–2003',
+  'dream-real:Pepe': '2007–2017',
+  'dream-real:Raphaël Varane': '2011–2021',
+  'dream-real:Marcelo': '2007–2022',
+  'dream-real:Roberto Carlos': '1996–2007',
+  'dream-real:Ferland Mendy': '2019–дотепер',
+  'dream-real:José Antonio Camacho': '1973–1989',
+  'dream-real:Casemiro': '2013–2022',
+  'dream-real:Claude Makélélé': '2000–2003',
+  'dream-real:Xabi Alonso': '2009–2014',
+  'dream-real:Fernando Redondo': '1994–2000',
+  'dream-real:Luka Modrić': '2012–дотепер',
+  'dream-real:Zinedine Zidane': '2001–2006',
+  'dream-real:Toni Kroos': '2014–2024',
+  'dream-real:Guti': '1995–2010',
+  'dream-real:Cristiano Ronaldo': '2009–2018',
+  'dream-real:Gareth Bale': '2013–2022',
+  'dream-real:Amancio': '1962–1976',
+  'dream-real:Vinícius Júnior': '2018–дотепер',
+  'dream-real:Raúl': '1994–2010',
+  'dream-real:Francisco Gento': '1953–1971',
+  'dream-real:Alfredo Di Stéfano': '1953–1964',
+  'dream-real:Karim Benzema': '2009–2023',
+  'dream-united:Peter Schmeichel': '1991–1999',
+  'dream-united:Edwin van der Sar': '2005–2011',
+  'dream-united:David de Gea': '2011–2023',
+  'dream-united:Fabien Barthez': '2000–2004',
+  'dream-united:Gary Neville': '1992–2011',
+  'dream-united:Antonio Valencia': '2009–2019',
+  'dream-united:Aaron Wan-Bissaka': '2019–2024',
+  'dream-united:Wes Brown': '1996–2011',
+  'dream-united:Rio Ferdinand': '2002–2014',
+  'dream-united:Nemanja Vidić': '2006–2014',
+  'dream-united:Jaap Stam': '1998–2001',
+  'dream-united:Steve Bruce': '1987–1996',
+  'dream-united:Gary Pallister': '1989–1998',
+  'dream-united:Patrice Evra': '2006–2014',
+  'dream-united:Denis Irwin': '1990–2002',
+  'dream-united:Luke Shaw': '2014–дотепер',
+  'dream-united:Mikaël Silvestre': '1999–2008',
+  'dream-united:Roy Keane': '1993–2005',
+  'dream-united:Michael Carrick': '2006–2018',
+  'dream-united:Paul Ince': '1989–1995',
+  'dream-united:Casemiro': '2022–дотепер',
+  'dream-united:Paul Scholes': '1993–2013',
+  'dream-united:Bryan Robson': '1981–1994',
+  'dream-united:David Beckham': '1992–2003',
+  'dream-united:Bruno Fernandes': '2020–дотепер',
+  'dream-united:Ryan Giggs': '1990–2014',
+  'dream-united:Cristiano Ronaldo': '2003–2009',
+  'dream-united:George Best': '1963–1974',
+  'dream-united:Marcus Rashford': '2015–дотепер',
+  'dream-united:Wayne Rooney': '2004–2017',
+  'dream-united:Eric Cantona': '1992–1997',
+  'dream-united:Ruud van Nistelrooy': '2001–2006',
+  'dream-united:Robin van Persie': '2012–2015',
+  'dream-brazil:Cláudio Taffarel': '1988–1998',
+  'dream-brazil:Alisson Becker': '2015–дотепер',
+  'dream-brazil:Marcos': '1999–2005',
+  'dream-brazil:Dida': '1995–2006',
+  'dream-brazil:Cafu': '1990–2006',
+  'dream-brazil:Carlos Alberto': '1964–1977',
+  'dream-brazil:Dani Alves': '2006–2022',
+  'dream-brazil:Maicon': '2003–2014',
+  'dream-brazil:Lucio': '2000–2011',
+  'dream-brazil:Thiago Silva': '2008–2022',
+  'dream-brazil:Aldair': '1989–2000',
+  'dream-brazil:Marquinhos': '2013–дотепер',
+  'dream-brazil:Juan': '2001–2012',
+  'dream-brazil:Roberto Carlos': '1992–2006',
+  'dream-brazil:Marcelo': '2006–2018',
+  'dream-brazil:Branco': '1985–1995',
+  'dream-brazil:Junior': '1979–1992',
+  'dream-brazil:Dunga': '1987–1998',
+  'dream-brazil:Casemiro': '2011–дотепер',
+  'dream-brazil:Falcão': '1976–1986',
+  'dream-brazil:Gilberto Silva': '2001–2010',
+  'dream-brazil:Zico': '1976–1989',
+  'dream-brazil:Rivaldo': '1993–2003',
+  'dream-brazil:Kaká': '2002–2016',
+  'dream-brazil:Sócrates': '1979–1986',
+  'dream-brazil:Ronaldinho': '1999–2013',
+  'dream-brazil:Garrincha': '1955–1966',
+  'dream-brazil:Jairzinho': '1964–1982',
+  'dream-brazil:Raphinha': '2021–дотепер',
+  'dream-brazil:Neymar': '2010–дотепер',
+  'dream-brazil:Vinícius Júnior': '2019–дотепер',
+  'dream-brazil:Pelé': '1957–1971',
+  'dream-brazil:Ronaldo': '1994–2011',
+  'dream-brazil:Romário': '1987–2005',
+  'dream-brazil:Adriano': '2000–2010',
 };
 
 function escapeHtml(text) {
@@ -314,6 +597,149 @@ function createTeamBadge(team) {
   `;
 }
 
+function createTeamStarBadge(team) {
+  const starPlayer = team.players.find(player => player.n === team.star) || { n: team.star, avatar: '⭐' };
+  return `
+    <div class="team-row-star">
+      ${createFaceMarkup(team, starPlayer, 'team-row-star-face')}
+      <div class="team-row-star-name">${escapeHtml(team.star)}</div>
+    </div>
+  `;
+}
+
+function getTeamLineupCoords(players) {
+  const spreadLine = (linePlayers, y, left = 18, right = 82) => {
+    if (!linePlayers.length) return [];
+    if (linePlayers.length === 1) return [{ player: linePlayers[0], coords: { x: 50, y } }];
+    const step = (right - left) / (linePlayers.length - 1);
+    return linePlayers.map((player, index) => ({
+      player,
+      coords: { x: left + step * index, y },
+    }));
+  };
+
+  const gk = players.filter(player => player.pos === 'ВРТ');
+  const defenders = players.filter(player => ['ЛБ', 'ЦЗ', 'ПБ'].includes(player.pos));
+  const midfielders = players.filter(player => player.pos === 'ЦП');
+  const creators = players.filter(player => player.pos === 'ПАП');
+  const wingers = players.filter(player => ['ЛП', 'ПП'].includes(player.pos));
+  const strikers = players.filter(player => player.pos === 'НАП');
+
+  const placements = new Map();
+  [
+    ...spreadLine(gk, 86, 50, 50),
+    ...spreadLine(defenders, 68, defenders.length >= 5 ? 12 : 18, defenders.length >= 5 ? 88 : 82),
+    ...spreadLine(midfielders, 48, 24, 76),
+    ...spreadLine(creators, 31, 38, 62),
+    ...spreadLine(wingers, 22, 22, 78),
+    ...spreadLine(strikers, 14, 38, 62),
+  ].forEach(({ player, coords }) => placements.set(player, coords));
+
+  return players.map(player => placements.get(player) || { x: 50, y: 50 });
+}
+
+function createTeamLineupMarker(team, player, coords) {
+  const isStar = player.n === team.star;
+  return `
+    <div class="team-lineup-node${isStar ? ' is-star' : ''}" style="left:${coords.x}%; top:${coords.y}%;">
+      <div class="team-lineup-face-wrap">
+        ${createFaceMarkup(team, player, 'team-lineup-face')}
+        ${isStar ? '<div class="team-lineup-star-badge">★</div>' : ''}
+      </div>
+      <div class="team-lineup-player-name">${escapeHtml(player.n)}</div>
+      <div class="team-lineup-player-pos">${escapeHtml(player.pos)}</div>
+    </div>
+  `;
+}
+
+function getTeamStartingXI(team) {
+  return team.lineup || team.players;
+}
+
+export function openTeamLineup(teamId) {
+  const team = TEAMS.find(item => item.id === teamId);
+  const overlay = document.getElementById('team-lineup-overlay');
+  const head = document.getElementById('team-lineup-head');
+  const pitch = document.getElementById('team-lineup-pitch');
+  if (!team || !overlay || !head || !pitch) return;
+
+  head.innerHTML = `
+    <div class="team-lineup-kicker">Склад</div>
+    <div class="team-lineup-title">${escapeHtml(getTeamDisplayName(team))}</div>
+    <div class="team-lineup-meta">${escapeHtml(getTeamSeasonLabel(team))} · ядро команди</div>
+  `;
+
+  const lineup = getTeamStartingXI(team);
+  const coords = getTeamLineupCoords(lineup);
+  pitch.innerHTML = `
+    <div class="team-lineup-pitch-canvas">
+      <div class="pitch-penalty pitch-penalty-top"></div>
+      <div class="pitch-penalty pitch-penalty-bottom"></div>
+      <div class="pitch-six-yard pitch-six-yard-top"></div>
+      <div class="pitch-six-yard pitch-six-yard-bottom"></div>
+      <div class="pitch-center-circle"></div>
+      <div class="pitch-center-spot"></div>
+      ${lineup.map((player, index) => createTeamLineupMarker(team, player, coords[index])).join('')}
+    </div>
+  `;
+  enhancePlayerPhotos(pitch);
+  overlay.classList.add('show');
+}
+
+export function closeTeamLineup() {
+  document.getElementById('team-lineup-overlay')?.classList.remove('show');
+}
+
+function createEraLineupMarker(team, player, coords) {
+  const isStar = player.n === team.star;
+  return `
+    <div class="era-lineup-node${isStar ? ' is-star' : ''}" style="left:${coords.x}%; top:${coords.y}%;">
+      <div class="era-lineup-face-wrap">
+        ${createFaceMarkup(team, player, 'era-lineup-face')}
+        ${isStar ? '<div class="era-lineup-star-badge">★</div>' : ''}
+      </div>
+      <div class="era-lineup-player-name">${escapeHtml(player.n)}</div>
+      <div class="era-lineup-player-pos">${escapeHtml(player.pos)}</div>
+    </div>
+  `;
+}
+
+function renderEraLineupScreen(team) {
+  const hero = document.getElementById('era-lineup-hero');
+  const pitch = document.getElementById('era-lineup-pitch');
+  const lineup = getTeamStartingXI(team);
+  const coords = getTeamLineupCoords(lineup);
+  if (!hero || !pitch) return;
+
+  document.getElementById('era-lineup-screen-title').textContent = getTeamDisplayName(team);
+  document.getElementById('era-lineup-screen-subtitle').textContent = `${getTeamSeasonLabel(team)} · стартовий склад`;
+  document.getElementById('btn-era-lineup-play').textContent = `ГРАТИ ЗА ${getTeamDisplayName(team).toUpperCase()}`;
+
+  hero.innerHTML = `
+    <div class="era-lineup-hero-top">
+      ${createTeamBadge(team)}
+      <div>
+        <div class="era-lineup-kicker">Твоя команда</div>
+        <div class="era-lineup-title">${escapeHtml(getTeamDisplayName(team))}</div>
+        <div class="era-lineup-meta">${escapeHtml(getTeamSeasonLabel(team))} · рейтинг ${team.rating} · зірка ${escapeHtml(team.star)}</div>
+      </div>
+    </div>
+  `;
+
+  pitch.innerHTML = `
+    <div class="era-lineup-pitch-canvas">
+      <div class="pitch-penalty pitch-penalty-top"></div>
+      <div class="pitch-penalty pitch-penalty-bottom"></div>
+      <div class="pitch-six-yard pitch-six-yard-top"></div>
+      <div class="pitch-six-yard pitch-six-yard-bottom"></div>
+      <div class="pitch-center-circle"></div>
+      <div class="pitch-center-spot"></div>
+      ${lineup.map((player, index) => createEraLineupMarker(team, player, coords[index])).join('')}
+    </div>
+  `;
+  enhancePlayerPhotos(pitch);
+}
+
 function createPlayerCard(team, player, index) {
   const tier = getTier(player.stat);
 
@@ -399,6 +825,10 @@ function getRoundMetric(roundKey) {
   if (roundKey === 'set') return 'SET';
   if (roundKey === 'tactics') return 'IQ';
   return 'PEN';
+}
+
+function clampRoundStat(value) {
+  return Math.max(60, Math.min(99, value));
 }
 
 function getRoundValue(player, roundKey) {
@@ -675,15 +1105,18 @@ function showGoatResult(winner) {
   document.getElementById('goat-res-subline').textContent = `${winner.n} виграв сітку в категорії «${currentGoatCategory.name}».`;
   document.getElementById('goat-res-trophy').textContent = winner.avatar || '👑';
   document.getElementById('goat-result-card').innerHTML = `
-    <div class="goat-result-winner">
-      ${createWikiFaceMarkup(winner, 'goat-result-face')}
+    <div class="goat-result-winner goat-result-winner-celebration">
+      <div class="goat-result-spark goat-result-spark-a"></div>
+      <div class="goat-result-spark goat-result-spark-b"></div>
+      <div class="goat-result-spark goat-result-spark-c"></div>
+      <div class="goat-result-photo-ring">
+        ${createWikiFaceMarkup(winner, 'goat-result-face')}
+      </div>
       <div class="goat-result-name">${escapeHtml(winner.n)}</div>
       <div class="goat-result-meta">${escapeHtml(winner.country || '')} · ${escapeHtml(winner.tag || '')}</div>
+      <div class="goat-result-caption">Чемпіон сітки · святкує перемогу</div>
     </div>
   `;
-  document.getElementById('goat-result-path').innerHTML = goatHistory
-    .map(item => `<div class="goat-result-step"><span>${escapeHtml(item.stage)}</span><strong>${escapeHtml(item.winner.n)}</strong> vs ${escapeHtml(item.loser.n)}</div>`)
-    .join('');
   enhancePlayerPhotos(overlay);
   overlay.classList.add('show');
 }
@@ -726,7 +1159,7 @@ export function goTo(screenId) {
 
   // Show/hide global nav
   const nav = document.getElementById('bottom-nav');
-  if (screenId === 'match' || screenId === 'era' || screenId === 'goat-cats' || screenId === 'goat') {
+  if (screenId === 'match' || screenId === 'era' || screenId === 'era-lineup' || screenId === 'goat-cats' || screenId === 'goat' || screenId === 'dream-teams' || screenId === 'dream' || screenId === 'dream-result') {
     nav.classList.add('hidden');
   } else {
     nav.classList.remove('hidden');
@@ -773,6 +1206,10 @@ export function goToPlay() {
   document.getElementById('goat-result-overlay').classList.remove('show');
   document.getElementById('round-flash').classList.remove('show');
   selectedTeamId = null;
+  currentDreamTeamId = null;
+  currentDreamTeam = null;
+  currentDreamStep = 0;
+  currentDreamSelections = {};
   pendingRoundAdvance = false;
   document.getElementById('confirm-bar').classList.remove('show');
   goTo('play');
@@ -790,6 +1227,11 @@ export function goToGoatCategories() {
   renderGoatCategories();
   renderGoatEraTabs();
   goTo('goat-cats');
+}
+
+export function goToDreamResult() {
+  goTo('dream-result');
+  renderDreamResult();
 }
 
 export function goToHome() {
@@ -1122,6 +1564,173 @@ export function setStatsCategory(categoryId) {
   renderStatsScreen();
 }
 
+function getDreamTeam() {
+  return DREAM_XI_TEAMS.find(team => team.id === currentDreamTeamId) || currentDreamTeam;
+}
+
+function getDreamPosition() {
+  return getDreamTeam()?.positions[currentDreamStep] || null;
+}
+
+function getDreamAverageRating() {
+  const selected = Object.values(currentDreamSelections);
+  if (!selected.length) return 0;
+  return Math.round(selected.reduce((sum, player) => sum + (player.stat || 0), 0) / selected.length);
+}
+
+function createDreamPlayerArt(player, className = 'dream-player-face') {
+  return createWikiFaceMarkup({ n: player.n, wikiTitle: player.wikiTitle, avatar: player.avatar || '⚽' }, className);
+}
+
+function createDreamTeamCard(team, index) {
+  return `
+    <button class="dream-team-card anim-in" style="animation-delay:${index * 0.05}s" type="button" data-dream-team="${escapeHtml(team.id)}">
+      <div class="dream-team-card-crest" style="--dream-team-theme:${team.theme}">
+        <img src="${team.crest}" alt="${escapeHtml(team.name)} logo" loading="lazy" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <span>${escapeHtml(getInitials(team.shortName || team.name))}</span>
+      </div>
+      <div class="dream-team-card-name">${escapeHtml(team.shortName || team.name)}</div>
+      <div class="dream-team-card-meta">${escapeHtml(team.formation)}</div>
+      <div class="dream-team-card-desc">${escapeHtml(team.subtitle)}</div>
+    </button>
+  `;
+}
+
+function createDreamSlotMarker(position, selectedPlayer) {
+  const coords = DREAM_POSITION_LAYOUT[position.id] || { x: 50, y: 50 };
+  return `
+    <div class="dream-slot${selectedPlayer ? ' filled' : ''}" style="left:${coords.x}%; top:${coords.y}%;">
+      ${selectedPlayer ? `
+        <div class="dream-slot-photo" data-player-name="${escapeHtml(selectedPlayer.n)}" data-wiki-title="${escapeHtml(selectedPlayer.wikiTitle || '')}">
+          <span>${escapeHtml(selectedPlayer.avatar || '⚽')}</span>
+        </div>
+        <div class="dream-slot-name">${escapeHtml(selectedPlayer.n)}</div>
+      ` : `
+        <div class="dream-slot-empty">${escapeHtml(position.short)}</div>
+      `}
+    </div>
+  `;
+}
+
+function createDreamCandidateCard(position, player, index) {
+  const honor = DREAM_PLAYER_HONORS[player.n] || player.tag;
+  const years = DREAM_PLAYER_YEARS[`${currentDreamTeamId}:${player.n}`] || '';
+  return `
+    <button class="dream-candidate-card anim-in" style="animation-delay:${index * 0.05}s" type="button" data-dream-player="${escapeHtml(player.n)}">
+      <div class="dream-candidate-top">
+        <div>
+          <div class="dream-candidate-rating">${player.stat}</div>
+          <div class="dream-candidate-role">${escapeHtml(position.short)}</div>
+        </div>
+      </div>
+      ${createDreamPlayerArt(player)}
+      <div class="dream-candidate-name">${escapeHtml(player.n)}</div>
+      <div class="dream-candidate-copy">
+        <div class="dream-candidate-honor">${escapeHtml(honor)}</div>
+        ${years ? `<div class="dream-candidate-meta">${escapeHtml(years)}</div>` : ''}
+      </div>
+    </button>
+  `;
+}
+
+function renderDreamCandidates() {
+  const team = getDreamTeam();
+  const position = getDreamPosition();
+  const grid = document.getElementById('dream-candidate-grid');
+  if (!team || !position || !grid) return;
+
+  document.getElementById('dream-screen-title').textContent = `DREAM XI · ${team.shortName}`;
+  document.getElementById('dream-screen-subtitle').textContent = 'Драфт по позиціях';
+  document.getElementById('dream-progress-badge').textContent = `${currentDreamStep + 1}/${team.positions.length}`;
+  document.getElementById('dream-summary-label').textContent = `${team.shortName} · ${team.formation}`;
+  document.getElementById('dream-position-title').textContent = position.label;
+  document.getElementById('dream-summary-step').textContent = `Крок ${currentDreamStep + 1} з ${team.positions.length}`;
+  document.getElementById('dream-summary-desc').textContent = `Обери гравця на позицію «${position.label.toLowerCase()}».`;
+
+  const selectedNames = new Set(
+    Object.entries(currentDreamSelections)
+      .filter(([slotId]) => slotId !== position.id)
+      .map(([, player]) => player.n)
+  );
+  const availableCandidates = position.candidates.filter(player => !selectedNames.has(player.n));
+
+  grid.innerHTML = availableCandidates.map((player, index) => createDreamCandidateCard(position, player, index)).join('');
+  enhancePlayerPhotos(grid);
+}
+
+function renderDreamResult() {
+  const team = getDreamTeam();
+  const pitch = document.getElementById('dream-pitch');
+  const hero = document.getElementById('dream-result-hero');
+  if (!team || !pitch || !hero) return;
+
+  hero.innerHTML = `
+    <div class="dream-result-kicker">Фінальний склад</div>
+    <div class="dream-result-title">${escapeHtml(team.shortName)} Dream XI</div>
+    <div class="dream-result-meta">${escapeHtml(team.formation)} · середній рейтинг ${getDreamAverageRating()}</div>
+  `;
+
+  pitch.innerHTML = `
+    <div class="dream-pitch-canvas">
+      ${team.positions.map(position => createDreamSlotMarker(position, currentDreamSelections[position.id])).join('')}
+    </div>
+  `;
+  enhancePlayerPhotos(pitch);
+}
+
+export function goToDreamTeams() {
+  const grid = document.getElementById('dream-team-grid');
+  grid.innerHTML = DREAM_XI_TEAMS.map((team, index) => createDreamTeamCard(team, index)).join('');
+  goTo('dream-teams');
+}
+
+export function startDreamDraft(teamId) {
+  const team = DREAM_XI_TEAMS.find(item => item.id === teamId);
+  if (!team) return;
+  currentDreamTeamId = teamId;
+  currentDreamTeam = team;
+  currentDreamStep = 0;
+  currentDreamSelections = {};
+  goTo('dream');
+  renderDreamCandidates();
+}
+
+export function selectDreamPlayer(playerName) {
+  const team = getDreamTeam();
+  const position = getDreamPosition();
+  if (!team || !position) return;
+
+  const candidate = position.candidates.find(player => player.n === playerName);
+  if (!candidate) return;
+  currentDreamSelections[position.id] = { ...candidate };
+  currentDreamStep += 1;
+
+  if (currentDreamStep >= team.positions.length) {
+    goTo('dream-result');
+    renderDreamResult();
+    return;
+  }
+
+  renderDreamCandidates();
+}
+
+export function goBackFromDreamDraft() {
+  if (currentDreamStep > 0) {
+    currentDreamStep -= 1;
+    const team = getDreamTeam();
+    const previousPosition = team?.positions[currentDreamStep];
+    if (previousPosition) delete currentDreamSelections[previousPosition.id];
+    renderDreamCandidates();
+    return;
+  }
+  goToDreamTeams();
+}
+
+export function replayDreamDraft() {
+  if (!currentDreamTeamId) return;
+  startDreamDraft(currentDreamTeamId);
+}
+
 // ── Teams ──
 export function filterTeams(filter, btn) {
   document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -1136,22 +1745,31 @@ export function renderTeams(teams) {
   const list = document.getElementById('teams-list');
   list.innerHTML = '';
   teams.forEach((team, i) => {
+    const abilityTitle = team.abilityTitle || team.ability?.split(':')[0] || '';
     const div = document.createElement('div');
     div.className = 'team-row anim-in' + (team.id === selectedTeamId ? ' selected' : '');
     div.style.animationDelay = (i * 0.06) + 's';
     div.innerHTML = `
       ${createTeamBadge(team)}
-      <div class="team-row-info">
-        <div class="team-row-name">${getTeamDisplayName(team)}</div>
-        <div class="team-row-year">${getTeamSeasonLabel(team)} · Зірка: ${team.star}</div>
-        <div class="team-row-ability">★ ${team.ability}</div>
+      <div class="team-row-body">
+        <div class="team-row-top">
+          <div class="team-row-name">${getTeamDisplayName(team)}</div>
+          <div class="team-row-year">${getTeamSeasonLabel(team)}</div>
+        </div>
+        <div class="team-row-bottom">
+          ${createTeamStarBadge(team)}
+          <div class="team-row-ability-tag">★ ${escapeHtml(abilityTitle)}</div>
+        </div>
       </div>
       <div class="team-row-rating">${team.rating}</div>
-      <div class="check-mark">✓</div>
     `;
-    div.addEventListener('click', () => selectTeam(team.id, div));
+    div.addEventListener('click', event => {
+      if (event.target.closest('[data-team-preview]')) return;
+      selectTeam(team.id, div);
+    });
     list.appendChild(div);
   });
+  enhancePlayerPhotos(list);
 }
 
 export function selectTeam(id, el) {
@@ -1159,8 +1777,9 @@ export function selectTeam(id, el) {
   el.classList.add('selected');
   selectedTeamId = id;
   const team = TEAMS.find(t => t.id === id);
-  document.getElementById('confirm-bar-btn').textContent = `Грати за ${getTeamDisplayName(team)}`;
-  document.getElementById('confirm-bar').classList.add('show');
+  if (!team) return;
+  renderEraLineupScreen(team);
+  goTo('era-lineup');
   const tg = window.Telegram?.WebApp;
   if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
 }
@@ -1177,7 +1796,6 @@ export function startMatch() {
   currentRound = 0;
   myScore = 0;
   oppScore = 0;
-  boosterCount = 2;
   chosenPlayer = null;
   roundResults = [];
   pendingRoundAdvance = false;
@@ -1194,8 +1812,6 @@ export function startMatch() {
   `;
   document.getElementById('sb-my-score').textContent = '0';
   document.getElementById('sb-opp-score').textContent = '0';
-  document.getElementById('booster-count').textContent = boosterCount;
-  document.getElementById('booster-btn').disabled = false;
 
   buildRoundsTrack();
   goTo('match');
@@ -1261,38 +1877,16 @@ export function pickPlayer(el, p) {
   if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
 }
 
-export function useBooster() {
-  if (!chosenPlayer || boosterCount <= 0) return;
-  boosterCount--;
-  chosenPlayer.stat = Math.min(99, chosenPlayer.stat + 12);
-  chosenPlayer.atk = Math.min(99, chosenPlayer.atk + 6);
-  chosenPlayer.def = Math.min(99, chosenPlayer.def + 6);
-  chosenPlayer.spd = Math.min(99, chosenPlayer.spd + 6);
-  document.getElementById('booster-count').textContent = boosterCount;
-  if (boosterCount === 0) document.getElementById('booster-btn').disabled = true;
-
-  document.querySelectorAll('.player-pick.chosen .player-card').forEach(el => {
-    el.classList.add('boosted');
-    const rating = el.querySelector('.card-rating');
-    const statVals = el.querySelectorAll('.card-stat-val');
-    if (rating) rating.textContent = chosenPlayer.stat;
-    if (statVals[0]) statVals[0].textContent = chosenPlayer.atk;
-    if (statVals[1]) statVals[1].textContent = chosenPlayer.def;
-    if (statVals[2]) statVals[2].textContent = chosenPlayer.spd;
-  });
-  const tg = window.Telegram?.WebApp;
-  if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-}
-
 export function resolveRound() {
   if (!chosenPlayer) return;
 
   const round = ROUNDS[currentRound];
-  const myVal = getRoundValue(chosenPlayer, round.key);
+  const myBase = getRoundValue(chosenPlayer, round.key);
   const oppPlayer = getOpponentForRound(oppTeam, round.key);
   const oppBase = getRoundValue(oppPlayer, round.key);
-  const oppVal = oppBase + Math.floor(Math.random() * 10) - 3;
-  const won = myVal >= oppVal;
+  const myVal = clampRoundStat(myBase + Math.floor(Math.random() * 5) - 2);
+  const oppVal = clampRoundStat(oppBase + Math.floor(Math.random() * 5) - 2);
+  const won = myVal === oppVal ? myBase >= oppBase : myVal > oppVal;
 
   roundResults.push(won);
   if (won) myScore++; else oppScore++;

@@ -40,7 +40,7 @@
         <div class="hero-glow-row">
           <div class="hero-chip">12 матчів</div>
           <div class="hero-chip">67% вінрейт</div>
-          <div class="hero-chip">2 режими онлайн</div>
+          <div class="hero-chip">3 режими онлайн</div>
         </div>
         <button class="hero-play-btn btn btn-primary btn-xl" id="btn-hero-play">ДО РЕЖИМІВ</button>
       </div>
@@ -132,7 +132,7 @@
   <div class="screen" id="screen-play">
     <div class="app-header">
       <div class="header-title">ГРАТИ</div>
-      <div class="header-badge">2 режими</div>
+      <div class="header-badge">3 режими</div>
     </div>
     <div class="scroll-body">
       <div class="section-head anim-in">Обери режим</div>
@@ -148,6 +148,12 @@
           <div class="mode-name">GOAT-Сітка</div>
           <div class="mode-desc">Обирай кращого в дуелях 1 на 1 до самого фіналу</div>
           <div class="mode-new">HOT</div>
+        </div>
+        <div class="mode-card gold" id="btn-play-dream">
+          <div class="mode-icon">🧩</div>
+          <div class="mode-name">Dream XI</div>
+          <div class="mode-desc">Збирай найкращий склад клубу або збірної по позиціях</div>
+          <div class="mode-new">NEW</div>
         </div>
       </div>
 
@@ -199,6 +205,73 @@
     </div>
   </div>
 
+  <!-- ════════ DREAM XI TEAMS ════════ -->
+  <div class="screen" id="screen-dream-teams">
+    <div class="app-header app-header-detail">
+      <button class="header-back" id="btn-dream-teams-back" type="button">←</button>
+      <div class="header-main">
+        <div class="header-title">DREAM XI</div>
+        <div class="header-subtitle">Вибір команди</div>
+      </div>
+      <div class="header-slot"></div>
+    </div>
+    <div class="scroll-body">
+      <div class="era-intro anim-in">
+        <div class="era-icon">🧩</div>
+        <div>
+          <div class="era-intro-title">Збери ідеальний склад</div>
+          <div class="era-intro-desc">Обери клуб або збірну, проходь по позиціях і в кінці отримай свій фінальний XI на полі.</div>
+        </div>
+      </div>
+      <div class="dream-team-grid" id="dream-team-grid"></div>
+    </div>
+  </div>
+
+  <!-- ════════ DREAM XI DRAFT ════════ -->
+  <div class="screen" id="screen-dream">
+    <div class="app-header app-header-detail">
+      <button class="header-back" id="btn-dream-back" type="button">←</button>
+      <div class="header-main">
+        <div class="header-title" id="dream-screen-title">DREAM XI</div>
+        <div class="header-subtitle" id="dream-screen-subtitle">Драфт по позиціях</div>
+      </div>
+      <div class="header-badge" id="dream-progress-badge">1/11</div>
+    </div>
+    <div class="scroll-body dream-draft-body">
+      <div class="dream-summary anim-in">
+        <div class="dream-summary-top">
+          <div>
+            <div class="dream-summary-label" id="dream-summary-label">Barcelona · 4-3-3</div>
+            <div class="dream-summary-title" id="dream-position-title">Воротар</div>
+          </div>
+          <div class="dream-summary-step" id="dream-summary-step">Крок 1 з 11</div>
+        </div>
+        <div class="dream-summary-desc" id="dream-summary-desc">Обери головного воротаря в історії команди.</div>
+      </div>
+      <div class="dream-candidate-grid anim-in" id="dream-candidate-grid"></div>
+    </div>
+  </div>
+
+  <!-- ════════ DREAM XI RESULT ════════ -->
+  <div class="screen" id="screen-dream-result">
+    <div class="app-header app-header-detail">
+      <button class="header-back" id="btn-dream-result-back" type="button">←</button>
+      <div class="header-main">
+        <div class="header-title">DREAM XI</div>
+        <div class="header-subtitle">Фінальний склад</div>
+      </div>
+      <div class="header-slot"></div>
+    </div>
+    <div class="scroll-body dream-result-body">
+      <div class="dream-result-hero anim-in" id="dream-result-hero"></div>
+      <div class="dream-pitch anim-in" id="dream-pitch"></div>
+      <div class="dream-result-actions anim-in">
+        <button class="btn btn-primary btn-xl" id="btn-dream-again">ПЕРЕЗІБРАТИ</button>
+        <button class="btn btn-glass btn-xl" id="btn-dream-other-team">ІНША КОМАНДА</button>
+      </div>
+    </div>
+  </div>
+
   <!-- ════════ ERA / TEAM SELECT ════════ -->
   <div class="screen" id="screen-era">
     <div class="app-header app-header-detail">
@@ -234,6 +307,24 @@
 
     <div class="confirm-bar" id="confirm-bar">
       <button class="confirm-bar-btn btn btn-primary btn-xl" id="confirm-bar-btn">ПОЧАТИ МАТЧ</button>
+    </div>
+  </div>
+
+  <div class="screen" id="screen-era-lineup">
+    <div class="app-header app-header-detail">
+      <button class="header-back" id="btn-era-lineup-back" type="button">←</button>
+      <div class="header-main">
+        <div class="header-title" id="era-lineup-screen-title">СКЛАД КОМАНДИ</div>
+        <div class="header-subtitle" id="era-lineup-screen-subtitle">Підтвердження вибору</div>
+      </div>
+      <div class="header-slot"></div>
+    </div>
+    <div class="scroll-body era-lineup-body">
+      <div class="era-lineup-hero anim-in" id="era-lineup-hero"></div>
+      <div class="era-lineup-pitch anim-in" id="era-lineup-pitch"></div>
+      <div class="era-lineup-actions anim-in">
+        <button class="btn btn-primary btn-xl" id="btn-era-lineup-play">ГРАТИ ЗА КОМАНДУ</button>
+      </div>
     </div>
   </div>
 
@@ -278,7 +369,6 @@
     </div>
     <div class="match-action-bar">
       <div class="match-actions">
-        <button class="booster-btn btn btn-glass" id="booster-btn">⚡ <span id="booster-count">2</span></button>
         <button class="fight-btn btn btn-primary btn-xl" id="fight-btn" disabled>БИТИСЯ!</button>
       </div>
     </div>
@@ -422,7 +512,6 @@
         <div class="result-headline win popup-title" id="goat-res-headline">ТВІЙ GOAT</div>
         <div class="result-subline popup-copy" id="goat-res-subline">Messi виграв усю сітку</div>
         <div class="goat-result-card" id="goat-result-card"></div>
-        <div class="goat-result-path" id="goat-result-path"></div>
       </div>
       <div class="popup-footer popup-footer-stack">
         <button class="result-play-again btn btn-primary btn-xl" id="btn-goat-again">ЩЕ СІТКА</button>
@@ -437,6 +526,14 @@
       <button class="stats-profile-close" id="stats-profile-close" type="button">✕</button>
       <div class="stats-profile-head" id="stats-profile-head"></div>
       <div class="stats-profile-body" id="stats-profile-body"></div>
+    </div>
+  </div>
+
+  <div class="overlay overlay-center" id="team-lineup-overlay">
+    <div class="team-lineup-card popup-shell popup-shell-center popup-surface popup-surface-dialog" id="team-lineup-card">
+      <button class="team-lineup-close" id="team-lineup-close" type="button">✕</button>
+      <div class="team-lineup-head" id="team-lineup-head"></div>
+      <div class="team-lineup-pitch" id="team-lineup-pitch"></div>
     </div>
   </div>
 
