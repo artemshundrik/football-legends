@@ -64,7 +64,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --header-height: 56px;
   --bottom-nav-row-height: 64px;
-  --bottom-nav-offset: calc(var(--bottom-nav-row-height) + var(--safe-bottom) + 18px);
+  --bottom-nav-offset: calc(var(--bottom-nav-row-height) + var(--safe-bottom) + 8px);
 
   --tier-legend-bg:
     radial-gradient(circle at top, rgba(255,236,166,0.28), transparent 28%),
@@ -144,9 +144,16 @@ html, body {
   padding:
     calc(var(--header-height) + var(--safe-top) + var(--space-4))
     var(--space-4)
-    calc(var(--bottom-nav-offset) + 24px);
+    calc(var(--bottom-nav-offset) + 12px);
 }
 .scroll-body::-webkit-scrollbar { display: none; }
+
+#screen-home .scroll-body,
+#screen-play .scroll-body,
+#screen-rating .scroll-body,
+#screen-profile .scroll-body {
+  padding-bottom: calc(var(--safe-bottom) + 20px);
+}
 
 /* ── Header ── */
 .app-header {
@@ -273,48 +280,40 @@ html, body {
 /* ── Bottom Nav — Liquid Glass ── */
 .bottom-nav {
   position: fixed;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  width: 100%;
-  max-width: none;
-  min-height: calc(var(--bottom-nav-row-height) + var(--safe-bottom) + 10px);
+  left: 50%;
+  right: auto;
+  bottom: calc(10px + var(--safe-bottom));
+  transform: translateX(-50%);
+  width: calc(100% - 20px);
+  max-width: 420px;
+  height: var(--bottom-nav-row-height);
+  min-height: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   z-index: 1000;
-  gap: 4px;
-  padding: 8px 12px calc(8px + var(--safe-bottom));
-  background:
-    linear-gradient(180deg, rgba(6,6,6,0) 0%, rgba(6,6,6,0.68) 24%, rgba(9,9,9,0.92) 100%);
-  border-top: 1px solid rgba(255,255,255,0.06);
-  box-shadow: 0 -16px 36px rgba(0,0,0,0.22);
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
-  transition: opacity 0.25s ease, transform 0.28s ease;
-}
-.bottom-nav::before {
-  content: "";
-  position: absolute;
-  inset: 6px 12px calc(6px + var(--safe-bottom));
-  border-radius: 28px;
-  background: rgba(17,17,17,0.62);
-  border: 1px solid rgba(255,255,255,0.09);
-  box-shadow: inset 0 1px 0 rgba(255,255,255,0.07);
-  pointer-events: none;
+  padding: 0 4px;
+  gap: 0;
+  background: rgba(18,18,18,0.54);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 32px;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.08);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .bottom-nav.hidden {
   opacity: 0;
   pointer-events: none;
-  transform: translateY(100%);
+  transform: translateX(-50%) translateY(24px);
 }
 
 /* Sliding glass indicator */
 .nav-indicator {
   position: absolute;
-  top: 11px;
-  bottom: calc(11px + var(--safe-bottom));
-  height: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 54px;
   border-radius: 27px;
   background: rgba(200,240,53,0.1);
   border: 0.5px solid rgba(200,240,53,0.2);
@@ -324,7 +323,6 @@ html, body {
   pointer-events: none;
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
-  z-index: 0;
 }
 
 .nav-item {
@@ -344,11 +342,9 @@ html, body {
   letter-spacing: 0.3px;
   transition: color 0.2s ease, transform 0.15s ease;
   position: relative;
-  min-height: var(--bottom-nav-row-height);
   padding: 8px 4px;
   border-radius: 22px;
   -webkit-tap-highlight-color: transparent;
-  z-index: 1;
 }
 .nav-item:active { transform: scale(0.88); }
 .nav-item.active { color: var(--accent); }
