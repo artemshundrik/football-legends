@@ -307,14 +307,6 @@ html, body {
   z-index: 1000;
   padding: 0 8px 0;
   pointer-events: none;
-  background: linear-gradient(
-    to top,
-    rgba(11,11,11,0.72) 0%,
-    rgba(11,11,11,0.52) calc(var(--safe-bottom)),
-    transparent calc(var(--safe-bottom) + 1px)
-  );
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
 }
 .bottom-nav-shell {
   position: relative;
