@@ -1199,9 +1199,10 @@ export function updateNavActive(screenId) {
 
 export function updateNavIndicator(activeBtn) {
   const nav = document.getElementById('bottom-nav');
+  const shell = document.getElementById('bottom-nav-shell');
   const indicator = document.getElementById('nav-indicator');
   if (!nav || !indicator || !activeBtn) return;
-  const navRect = nav.getBoundingClientRect();
+  const navRect = (shell || nav).getBoundingClientRect();
   const btnRect = activeBtn.getBoundingClientRect();
   const left = btnRect.left - navRect.left + 1;
   const width = btnRect.width - 2;
