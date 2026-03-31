@@ -5,6 +5,7 @@ import {
   goToEra,
   goToGoatCategories,
   goToDreamTeams,
+  goToQuizHub,
   goToHome,
   filterTeams,
   renderTeams,
@@ -20,6 +21,10 @@ import {
   selectDreamPlayer,
   goBackFromDreamDraft,
   replayDreamDraft,
+  startQuizPack,
+  selectQuizOption,
+  submitQuizAnswer,
+  replayQuizPack,
   shareGoatResult,
   confirmLeave,
   cancelLeave,
@@ -37,9 +42,18 @@ import {
 
 // ── Wire up screens ──
 document.getElementById('btn-hero-play').addEventListener('click', goToPlay);
+document.getElementById('btn-home-era').addEventListener('click', goToEra);
+document.getElementById('btn-home-goat').addEventListener('click', goToGoatCategories);
+document.getElementById('btn-home-dream').addEventListener('click', goToDreamTeams);
+document.getElementById('btn-home-quiz').addEventListener('click', goToQuizHub);
+document.getElementById('btn-home-quiz-cta').addEventListener('click', goToQuizHub);
 document.getElementById('btn-play-era').addEventListener('click', goToEra);
 document.getElementById('btn-play-goat').addEventListener('click', goToGoatCategories);
 document.getElementById('btn-play-dream').addEventListener('click', goToDreamTeams);
+document.getElementById('btn-play-quiz').addEventListener('click', goToQuizHub);
+document.getElementById('btn-quiz-hub-back').addEventListener('click', goToPlay);
+document.getElementById('btn-quiz-back').addEventListener('click', goToQuizHub);
+document.getElementById('btn-quiz-result-back').addEventListener('click', goToQuizHub);
 document.getElementById('btn-era-back').addEventListener('click', goToPlay);
 document.getElementById('btn-era-lineup-back').addEventListener('click', goToEra);
 document.getElementById('btn-goat-cats-back').addEventListener('click', goToPlay);
@@ -58,6 +72,9 @@ document.getElementById('btn-goat-again').addEventListener('click', playGoatAgai
 document.getElementById('btn-goat-categories').addEventListener('click', goToGoatCategoriesFromResult);
 document.getElementById('btn-dream-again').addEventListener('click', replayDreamDraft);
 document.getElementById('btn-dream-other-team').addEventListener('click', goToDreamTeams);
+document.getElementById('btn-quiz-submit').addEventListener('click', submitQuizAnswer);
+document.getElementById('btn-quiz-again').addEventListener('click', replayQuizPack);
+document.getElementById('btn-quiz-other-pack').addEventListener('click', goToQuizHub);
 document.getElementById('leave-match-cancel').addEventListener('click', event => {
   event.preventDefault();
   cancelLeave();
@@ -95,6 +112,16 @@ document.getElementById('dream-candidate-grid').addEventListener('click', event 
   const card = event.target.closest('[data-dream-player]');
   if (!card) return;
   selectDreamPlayer(card.dataset.dreamPlayer);
+});
+document.getElementById('quiz-pack-grid').addEventListener('click', event => {
+  const card = event.target.closest('[data-quiz-pack]');
+  if (!card) return;
+  startQuizPack(card.dataset.quizPack);
+});
+document.getElementById('quiz-option-list').addEventListener('click', event => {
+  const option = event.target.closest('[data-quiz-option]');
+  if (!option) return;
+  selectQuizOption(option.dataset.quizOption);
 });
 document.getElementById('btn-goat-share').addEventListener('click', shareGoatResult);
 document.getElementById('stats-scope-tabs').addEventListener('click', event => {

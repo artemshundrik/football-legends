@@ -7,6 +7,7 @@ import {
   GOAT_CATEGORIES,
   GOAT_SPECIAL_BRACKETS,
   DREAM_XI_TEAMS,
+  QUIZ_PACKS,
   PLAYER_WIKI_TITLES,
   getTier,
   TIER_LABELS,
@@ -41,6 +42,13 @@ let currentDreamTeamId = null;
 let currentDreamTeam = null;
 let currentDreamStep = 0;
 let currentDreamSelections = {};
+let currentQuizPackId = null;
+let currentQuizPack = null;
+let currentQuizIndex = 0;
+let currentQuizScore = 0;
+let currentQuizSelection = null;
+let currentQuizLocked = false;
+let currentQuizAnswers = [];
 const currentStatsCategory = {
   players: 'ballon-dor',
   clubs: 'ucl-clubs',
@@ -1159,7 +1167,7 @@ export function goTo(screenId) {
 
   // Show/hide global nav
   const nav = document.getElementById('bottom-nav');
-  if (screenId === 'match' || screenId === 'era' || screenId === 'era-lineup' || screenId === 'goat-cats' || screenId === 'goat' || screenId === 'dream-teams' || screenId === 'dream' || screenId === 'dream-result') {
+  if (screenId === 'match' || screenId === 'era' || screenId === 'era-lineup' || screenId === 'goat-cats' || screenId === 'goat' || screenId === 'dream-teams' || screenId === 'dream' || screenId === 'dream-result' || screenId === 'quiz-hub' || screenId === 'quiz-play' || screenId === 'quiz-result') {
     nav.classList.add('hidden');
   } else {
     nav.classList.remove('hidden');
@@ -1210,6 +1218,8 @@ export function goToPlay() {
   currentDreamTeam = null;
   currentDreamStep = 0;
   currentDreamSelections = {};
+  currentQuizSelection = null;
+  currentQuizLocked = false;
   pendingRoundAdvance = false;
   document.getElementById('confirm-bar').classList.remove('show');
   goTo('play');
@@ -1232,6 +1242,11 @@ export function goToGoatCategories() {
 export function goToDreamResult() {
   goTo('dream-result');
   renderDreamResult();
+}
+
+export function goToQuizHub() {
+  renderQuizHub();
+  goTo('quiz-hub');
 }
 
 export function goToHome() {
@@ -1729,6 +1744,160 @@ export function goBackFromDreamDraft() {
 export function replayDreamDraft() {
   if (!currentDreamTeamId) return;
   startDreamDraft(currentDreamTeamId);
+}
+
+function getQuizPack() {
+  return QUIZ_PACKS.find(pack => pack.id === currentQuizPackId) || null;
+}
+
+function renderQuizHub() {
+  const grid = document.getElementById('quiz-pack-grid');
+  if (!grid) return;
+  grid.innerHTML = QUIZ_PACKS.map((pack, index) => `
+    <button class="quiz-pack-card quiz-pack-card-${pack.accent}" type="button" data-quiz-pack="${pack.id}" style="animation-delay:${index * 0.06}s">
+      <div class="quiz-pack-card-top">
+        <div class="quiz-pack-icon">${pack.icon}</div>
+        <div class="quiz-pack-size">${pack.questions.length} питань</div>
+      </div>
+      <div class="quiz-pack-name">${escapeHtml(pack.title)}</div>
+      <div class="quiz-pack-desc">${escapeHtml(pack.desc)}</div>
+    </button>
+  `).join('');
+}
+
+function renderQuizQuestion() {
+  if (!currentQuizPack) return;
+  const question = currentQuizPack.questions[currentQuizIndex];
+  if (!question) return;
+
+  document.getElementById('quiz-screen-title').textContent = currentQuizPack.title;
+  document.getElementById('quiz-screen-subtitle').textContent = 'Питання';
+  document.getElementById('quiz-progress-badge').textContent = `${currentQuizIndex + 1}/${currentQuizPack.questions.length}`;
+  document.getElementById('quiz-question-kicker').textContent = question.kicker;
+  document.getElementById('quiz-pack-title').textContent = currentQuizPack.title;
+  document.getElementById('quiz-score-chip').textContent = `${currentQuizScore} / ${currentQuizPack.questions.length}`;
+  document.getElementById('quiz-question-text').textContent = question.prompt;
+
+  const list = document.getElementById('quiz-option-list');
+  list.innerHTML = question.options.map(option => {
+    const isSelected = currentQuizSelection === option;
+    const isCorrect = currentQuizLocked && option === question.answer;
+    const isWrong = currentQuizLocked && currentQuizSelection === option && option !== question.answer;
+    return `
+      <button
+        class="quiz-option${isSelected ? ' selected' : ''}${isCorrect ? ' correct' : ''}${isWrong ? ' wrong' : ''}"
+        type="button"
+        data-quiz-option="${escapeHtml(option)}"
+        ${currentQuizLocked ? 'disabled' : ''}
+      >
+        <span>${escapeHtml(option)}</span>
+      </button>
+    `;
+  }).join('');
+
+  const feedback = document.getElementById('quiz-feedback');
+  if (!currentQuizLocked) {
+    feedback.className = 'quiz-feedback';
+    feedback.innerHTML = '';
+  } else {
+    const isCorrect = currentQuizSelection === question.answer;
+    feedback.className = `quiz-feedback show ${isCorrect ? 'correct' : 'wrong'}`;
+    feedback.innerHTML = `
+      <div class="quiz-feedback-title">${isCorrect ? 'Правильно' : 'Мимо'}</div>
+      <div class="quiz-feedback-copy">${escapeHtml(question.explanation)}</div>
+    `;
+  }
+
+  const submitBtn = document.getElementById('btn-quiz-submit');
+  submitBtn.disabled = !currentQuizLocked && !currentQuizSelection;
+  submitBtn.textContent = currentQuizLocked
+    ? (currentQuizIndex === currentQuizPack.questions.length - 1 ? 'ДО РЕЗУЛЬТАТУ' : 'ДАЛІ')
+    : 'ВІДПОВІСТИ';
+}
+
+function renderQuizResult() {
+  if (!currentQuizPack) return;
+  const hero = document.getElementById('quiz-result-hero');
+  const list = document.getElementById('quiz-result-list');
+  const total = currentQuizPack.questions.length;
+  const percent = Math.round((currentQuizScore / total) * 100);
+  const label = currentQuizScore === total ? 'Ідеальний сет' : currentQuizScore >= Math.ceil(total * 0.6) ? 'Сильний прохід' : 'Є куди рости';
+
+  hero.innerHTML = `
+    <div class="quiz-result-kicker">${escapeHtml(currentQuizPack.title)}</div>
+    <div class="quiz-result-score">${currentQuizScore}/${total}</div>
+    <div class="quiz-result-title">${label}</div>
+    <div class="quiz-result-meta">${percent}% правильних відповідей у цьому сеті.</div>
+  `;
+
+  list.innerHTML = currentQuizAnswers.map((item, index) => `
+    <div class="quiz-result-item ${item.correct ? 'correct' : 'wrong'}">
+      <div class="quiz-result-item-top">
+        <div class="quiz-result-item-index">#${index + 1}</div>
+        <div class="quiz-result-item-state">${item.correct ? '✓' : '✕'}</div>
+      </div>
+      <div class="quiz-result-item-question">${escapeHtml(item.prompt)}</div>
+      <div class="quiz-result-item-answer">Правильна: ${escapeHtml(item.answer)}</div>
+    </div>
+  `).join('');
+}
+
+export function startQuizPack(packId) {
+  const pack = QUIZ_PACKS.find(item => item.id === packId);
+  if (!pack) return;
+  currentQuizPackId = packId;
+  currentQuizPack = pack;
+  currentQuizIndex = 0;
+  currentQuizScore = 0;
+  currentQuizSelection = null;
+  currentQuizLocked = false;
+  currentQuizAnswers = [];
+  goTo('quiz-play');
+  renderQuizQuestion();
+}
+
+export function selectQuizOption(option) {
+  if (currentQuizLocked) return;
+  currentQuizSelection = option;
+  renderQuizQuestion();
+}
+
+export function submitQuizAnswer() {
+  if (!currentQuizPack) return;
+  const question = currentQuizPack.questions[currentQuizIndex];
+  if (!question) return;
+
+  if (!currentQuizLocked) {
+    if (!currentQuizSelection) return;
+    const correct = currentQuizSelection === question.answer;
+    if (correct) currentQuizScore += 1;
+    currentQuizAnswers.push({
+      prompt: question.prompt,
+      answer: question.answer,
+      selected: currentQuizSelection,
+      correct,
+    });
+    currentQuizLocked = true;
+    renderQuizQuestion();
+    return;
+  }
+
+  currentQuizIndex += 1;
+  currentQuizSelection = null;
+  currentQuizLocked = false;
+
+  if (currentQuizIndex >= currentQuizPack.questions.length) {
+    goTo('quiz-result');
+    renderQuizResult();
+    return;
+  }
+
+  renderQuizQuestion();
+}
+
+export function replayQuizPack() {
+  if (!currentQuizPackId) return;
+  startQuizPack(currentQuizPackId);
 }
 
 // ── Teams ──

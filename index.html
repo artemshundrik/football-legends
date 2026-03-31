@@ -23,106 +23,85 @@
         <div class="hero-orbit hero-orbit-a"></div>
         <div class="hero-orbit hero-orbit-b"></div>
         <div class="hero-topline">
-          <div class="hero-kicker">Головна арена</div>
-          <div class="hero-live">LIVE META</div>
+          <div class="hero-kicker">Football Legends Hub</div>
+          <div class="hero-live">4 live режими</div>
         </div>
         <div class="hero-stage">
           <div class="hero-stage-copy">
-            <div class="hero-title">Футбол<br>Легенд</div>
-            <div class="hero-desc">Тут не треба обирати режим одразу. Головна тепер показує твій ритм гри, останні матчі й швидкий вхід у наступну сесію.</div>
-          </div>
-          <div class="hero-score-card">
-            <div class="hero-score-label">Форма</div>
-            <div class="hero-score-value">8W</div>
-            <div class="hero-score-meta">останні 12 матчів</div>
+            <div class="hero-title">Легенди,<br>сітки і XI</div>
+            <div class="hero-desc">Тут живе ядро гри: матчі епох, GOAT-дуелі та конструктор Dream XI. Головна тепер веде прямо в режими, які вже реально працюють.</div>
           </div>
         </div>
         <div class="hero-glow-row">
-          <div class="hero-chip">12 матчів</div>
-          <div class="hero-chip">67% вінрейт</div>
-          <div class="hero-chip">3 режими онлайн</div>
+          <div class="hero-chip">Епохи</div>
+          <div class="hero-chip">GOAT-Сітка</div>
+          <div class="hero-chip">Dream XI</div>
+          <div class="hero-chip">Квізи</div>
         </div>
         <button class="hero-play-btn btn btn-primary btn-xl" id="btn-hero-play">ДО РЕЖИМІВ</button>
       </div>
 
-      <div class="section-head anim-in">Твій темп</div>
-      <div class="home-overview-grid anim-in">
-        <div class="home-panel spotlight">
-          <div class="home-panel-head">
-            <div>
-              <div class="home-panel-label">Поточний фокус</div>
-              <div class="home-panel-title">Епохи</div>
-            </div>
-            <div class="home-panel-pill">5 раундів</div>
+      <div class="section-head anim-in">Працює зараз</div>
+      <div class="home-live-grid anim-in">
+        <button class="home-live-card" id="btn-home-era" type="button">
+          <div class="home-live-card-top">
+            <div class="home-live-icon">🏟️</div>
+            <div class="home-live-pill">Match Mode</div>
           </div>
-          <div class="home-panel-copy">Найчастіше ти граєш класичні матчі між легендарними клубами та збірними. Це зараз твій головний сценарій.</div>
-          <div class="home-panel-metrics">
-            <div><strong>8</strong><span>перемог</span></div>
-            <div><strong>4</strong><span>поразки</span></div>
-            <div><strong>+6</strong><span>різниця</span></div>
+          <div class="home-live-name">Епохи</div>
+          <div class="home-live-desc">Легендарні клуби та збірні у матчі на 5 раундів з унікальними складами.</div>
+        </button>
+        <button class="home-live-card" id="btn-home-goat" type="button">
+          <div class="home-live-card-top">
+            <div class="home-live-icon">👑</div>
+            <div class="home-live-pill">Bracket Mode</div>
           </div>
-        </div>
-        <div class="home-panel compact">
-          <div class="home-panel-label">Сьогодні в грі</div>
-          <div class="home-mini-stack">
-            <div class="home-mini-item">
-              <span>Найкращий матч</span>
-              <strong>Barça '11 3:2 Milan '03</strong>
-            </div>
-            <div class="home-mini-item">
-              <span>Останній GOAT</span>
-              <strong>Messi</strong>
-            </div>
-            <div class="home-mini-item">
-              <span>Наступний крок</span>
-              <strong>Запустити нову сітку</strong>
-            </div>
+          <div class="home-live-name">GOAT-Сітка</div>
+          <div class="home-live-desc">Категорії, десятиліття і Best XI у дуелях 1 на 1 до фінального вибору.</div>
+        </button>
+        <button class="home-live-card" id="btn-home-dream" type="button">
+          <div class="home-live-card-top">
+            <div class="home-live-icon">🧩</div>
+            <div class="home-live-pill">Draft Mode</div>
           </div>
-        </div>
+          <div class="home-live-name">Dream XI</div>
+          <div class="home-live-desc">Збирай ідеальний склад клубу або збірної по позиціях і дивись фінальний XI на полі.</div>
+        </button>
+        <button class="home-live-card" id="btn-home-quiz" type="button">
+          <div class="home-live-card-top">
+          <div class="home-live-icon">🧠</div>
+            <div class="home-live-pill">Quiz Mode</div>
+          </div>
+          <div class="home-live-name">Football Quiz</div>
+          <div class="home-live-desc">Три готові категорії: хто це, футбольний IQ і кар’єрний шлях у коротких сетах по 5 питань.</div>
+        </button>
       </div>
 
-      <div class="section-head anim-in">Сезонний пульс</div>
-      <div class="stats-strip anim-in">
-        <div class="stat-card accent"><div class="stat-val">12</div><div class="stat-lbl">Матчів</div></div>
-        <div class="stat-card accent"><div class="stat-val">8</div><div class="stat-lbl">Перемог</div></div>
-        <div class="stat-card accent"><div class="stat-val">67%</div><div class="stat-lbl">Вінрейт</div></div>
-      </div>
-
-      <div class="home-banner anim-in">
-        <div class="home-banner-copy">
-          <div class="home-panel-label">Скоро в оновленні</div>
-          <div class="home-banner-title">Турніри, колекція та глибший профіль</div>
-          <div class="home-banner-desc">Головна тепер про тебе: прогрес, історія і швидкий перехід у гру. Усі режими живуть окремо в розділі Грати.</div>
-        </div>
-        <div class="home-banner-badge">NEXT</div>
-      </div>
-
-      <div class="section-head anim-in">Останні матчі</div>
-      <div class="anim-in">
-        <div class="match-item">
-          <div class="match-result-dot w"></div>
-          <div class="match-info">
-            <div class="match-teams-txt">Barça '11 vs Milan '03</div>
-            <div class="match-meta">Режим Епохи · 2 год тому</div>
+      <div class="section-head anim-in">Новий режим</div>
+      <div class="quiz-lab anim-in">
+        <div class="quiz-lab-head">
+          <div>
+            <div class="quiz-lab-kicker">Quiz Mode</div>
+            <div class="quiz-lab-title">Футбольні квізи</div>
           </div>
-          <div class="match-score-txt">3:2</div>
+          <div class="quiz-lab-badge">Live</div>
         </div>
-        <div class="match-item">
-          <div class="match-result-dot l"></div>
-          <div class="match-info">
-            <div class="match-teams-txt">Man Utd '99 vs Real '02</div>
-            <div class="match-meta">Режим Епохи · вчора</div>
+        <div class="quiz-lab-desc">Запустили перший реліз квізів як окремий режим із трьома категоріями. Кожен сет складається з 5 швидких питань і веде до фінального результату.</div>
+        <div class="quiz-lab-list">
+          <div class="quiz-lab-item">
+            <strong>Хто це?</strong>
+            <span>Фото, кар’єрний шлях, номер, досягнення.</span>
           </div>
-          <div class="match-score-txt">1:3</div>
-        </div>
-        <div class="match-item">
-          <div class="match-result-dot w"></div>
-          <div class="match-info">
-            <div class="match-teams-txt">Brazil '70 vs Inter '10</div>
-            <div class="match-meta">Режим Епохи · 2 дні тому</div>
+          <div class="quiz-lab-item">
+            <strong>Кар’єрний шлях</strong>
+            <span>Клубні маршрути, пропущені переходи і футбольна біографія легенд.</span>
           </div>
-          <div class="match-score-txt">3:1</div>
+          <div class="quiz-lab-item">
+            <strong>Футбольний IQ</strong>
+            <span>Фінали, трофеї, бомбардири й великі історичні факти.</span>
+          </div>
         </div>
+        <button class="btn btn-primary btn-xl quiz-lab-btn" id="btn-home-quiz-cta">ГРАТИ В КВІЗИ</button>
       </div>
 
     </div>
@@ -132,7 +111,7 @@
   <div class="screen" id="screen-play">
     <div class="app-header">
       <div class="header-title">ГРАТИ</div>
-      <div class="header-badge">3 режими</div>
+      <div class="header-badge">4 режими</div>
     </div>
     <div class="scroll-body">
       <div class="section-head anim-in">Обери режим</div>
@@ -154,6 +133,12 @@
           <div class="mode-name">Dream XI</div>
           <div class="mode-desc">Збирай найкращий склад клубу або збірної по позиціях</div>
           <div class="mode-new">NEW</div>
+        </div>
+        <div class="mode-card red" id="btn-play-quiz">
+          <div class="mode-icon">🧠</div>
+          <div class="mode-name">Football Quiz</div>
+          <div class="mode-desc">Чотири категорії на знання легенд, епох, кар’єр і футбольної історії</div>
+          <div class="mode-new">LIVE</div>
         </div>
       </div>
 
@@ -183,24 +168,70 @@
           <div class="mode-name">Кар’єра</div>
           <div class="mode-desc">Сезонний прогрес, цілі, серії перемог і історія твоїх проходжень.</div>
         </div>
-        <div class="mode-card preview">
-          <div class="mode-preview-kicker">Quiz Preview</div>
-          <div class="mode-icon">🧠</div>
-          <div class="mode-name">Хто це?</div>
-          <div class="mode-desc">Вгадай легенду по фото, клубному шляху, номеру або досягненнях.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ QUIZ HUB ════════ -->
+  <div class="screen" id="screen-quiz-hub">
+    <div class="app-header app-header-detail">
+      <button class="header-back" id="btn-quiz-hub-back" type="button">←</button>
+      <div class="header-main">
+        <div class="header-title">FOOTBALL QUIZ</div>
+        <div class="header-subtitle">Вибір категорії</div>
+      </div>
+      <div class="header-slot"></div>
+    </div>
+    <div class="scroll-body">
+      <div class="quiz-pack-grid anim-in" id="quiz-pack-grid"></div>
+    </div>
+  </div>
+
+  <!-- ════════ QUIZ PLAY ════════ -->
+  <div class="screen" id="screen-quiz-play">
+    <div class="app-header app-header-detail">
+      <button class="header-back" id="btn-quiz-back" type="button">←</button>
+      <div class="header-main">
+        <div class="header-title" id="quiz-screen-title">FOOTBALL QUIZ</div>
+        <div class="header-subtitle" id="quiz-screen-subtitle">Питання</div>
+      </div>
+      <div class="header-badge" id="quiz-progress-badge">1/5</div>
+    </div>
+    <div class="scroll-body">
+      <div class="quiz-round-card anim-in">
+        <div class="quiz-round-top">
+          <div>
+            <div class="quiz-round-kicker" id="quiz-question-kicker">Категорія</div>
+            <div class="quiz-round-title" id="quiz-pack-title">Хто це?</div>
+          </div>
+          <div class="quiz-round-score" id="quiz-score-chip">0 / 5</div>
         </div>
-        <div class="mode-card preview">
-          <div class="mode-preview-kicker">Quiz Preview</div>
-          <div class="mode-icon">🛡️</div>
-          <div class="mode-name">Клуб чи збірна</div>
-          <div class="mode-desc">Швидкі раунди на логотипи, форми, роки й турнірні асоціації.</div>
-        </div>
-        <div class="mode-card preview">
-          <div class="mode-preview-kicker">Quiz Preview</div>
-          <div class="mode-icon">🎯</div>
-          <div class="mode-name">Футбольний IQ</div>
-          <div class="mode-desc">Фінали, бомбардири, володарі трофеїв і історичні футбольні факти.</div>
-        </div>
+        <div class="quiz-question" id="quiz-question-text"></div>
+        <div class="quiz-option-list" id="quiz-option-list"></div>
+        <div class="quiz-feedback" id="quiz-feedback"></div>
+      </div>
+      <div class="quiz-action-row anim-in">
+        <button class="btn btn-primary btn-xl" id="btn-quiz-submit" disabled>ВІДПОВІСТИ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════ QUIZ RESULT ════════ -->
+  <div class="screen" id="screen-quiz-result">
+    <div class="app-header app-header-detail">
+      <button class="header-back" id="btn-quiz-result-back" type="button">←</button>
+      <div class="header-main">
+        <div class="header-title">FOOTBALL QUIZ</div>
+        <div class="header-subtitle">Результат</div>
+      </div>
+      <div class="header-slot"></div>
+    </div>
+    <div class="scroll-body">
+      <div class="quiz-result-hero anim-in" id="quiz-result-hero"></div>
+      <div class="quiz-result-list anim-in" id="quiz-result-list"></div>
+      <div class="quiz-result-actions anim-in">
+        <button class="btn btn-primary btn-xl" id="btn-quiz-again">ЩЕ РАЗ</button>
+        <button class="btn btn-glass btn-xl" id="btn-quiz-other-pack">ІНША КАТЕГОРІЯ</button>
       </div>
     </div>
   </div>

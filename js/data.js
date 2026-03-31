@@ -1763,6 +1763,141 @@ export const DREAM_XI_TEAMS = [
   },
 ];
 
+export const QUIZ_PACKS = [
+  {
+    id: 'who-is-this',
+    title: 'Хто це?',
+    icon: '🧠',
+    accent: 'lime',
+    desc: 'Впізнавай легенд по кар’єрі, трофеях, номерах і футбольних маркерах.',
+    questions: [
+      {
+        kicker: 'Кар’єрний шлях',
+        prompt: 'Хто пройшов шлях Sporting -> Manchester United -> Real Madrid -> Juventus -> Al Nassr?',
+        options: ['Lionel Messi', 'Cristiano Ronaldo', 'Luis Figo', 'Zinedine Zidane'],
+        answer: 'Cristiano Ronaldo',
+        explanation: 'Це класичний маршрут кар’єри Кріштіану Роналду.',
+      },
+      {
+        kicker: 'Номер і роль',
+        prompt: 'Яка легенда найтісніше асоціюється з номером 10 у Barcelona епохи 2010-х?',
+        options: ['Ronaldinho', 'Lionel Messi', 'Andrés Iniesta', 'Neymar'],
+        answer: 'Lionel Messi',
+        explanation: 'Саме Мессі був головною “десяткою” Barcelona у пікову епоху 2010-х.',
+      },
+      {
+        kicker: 'Ballon d’Or',
+        prompt: 'Хто виграв Ballon d’Or у 2018 році?',
+        options: ['Cristiano Ronaldo', 'Luka Modrić', 'Antoine Griezmann', 'Kylian Mbappé'],
+        answer: 'Luka Modrić',
+        explanation: 'У 2018 році “Золотий м’яч” взяв Лука Модрич.',
+      },
+      {
+        kicker: 'Легенда збірної',
+        prompt: 'Хто з цих гравців є автором голу у фіналі ЧС-2010 за Іспанію?',
+        options: ['David Villa', 'Xavi', 'Andrés Iniesta', 'Fernando Torres'],
+        answer: 'Andrés Iniesta',
+        explanation: 'Іньєста забив переможний гол Нідерландам у фіналі ЧС-2010.',
+      },
+      {
+        kicker: 'GOAT дуель',
+        prompt: 'Хто з цих форвардів має прізвисько “The Phenomenon”?',
+        options: ['Romário', 'Ronaldo', 'Samuel Eto’o', 'Thierry Henry'],
+        answer: 'Ronaldo',
+        explanation: '“Феномен” у футбольному контексті майже завжди означає бразильця Роналдо.',
+      },
+    ],
+  },
+  {
+    id: 'football-iq',
+    title: 'Футбольний IQ',
+    icon: '🎯',
+    accent: 'gold',
+    desc: 'Фінали, трофеї, рекорди та великі факти з історії футболу.',
+    questions: [
+      {
+        kicker: 'Champions League',
+        prompt: 'Хто виграв Лігу чемпіонів у сезоні 2010/11?',
+        options: ['Inter', 'Chelsea', 'Barcelona', 'Real Madrid'],
+        answer: 'Barcelona',
+        explanation: 'Barcelona 2010/11 виграла фінал ЛЧ у Wembley.',
+      },
+      {
+        kicker: 'World Cup',
+        prompt: 'Яка збірна виграла чемпіонат світу 1998 року?',
+        options: ['Brazil', 'Germany', 'France', 'Italy'],
+        answer: 'France',
+        explanation: 'Франція взяла домашній ЧС-1998.',
+      },
+      {
+        kicker: 'Treble season',
+        prompt: 'Який клуб у вашій базі асоціюється з треблом сезону 2009/10?',
+        options: ['Porto', 'Inter', 'Liverpool', 'Arsenal'],
+        answer: 'Inter',
+        explanation: 'Inter 2009/10 це сезон треблу і команди Моурінью.',
+      },
+      {
+        kicker: 'Ballon d’Or',
+        prompt: 'Хто з цих гравців має 8 Ballon d’Or?',
+        options: ['Cristiano Ronaldo', 'Lionel Messi', 'Michel Platini', 'Marco van Basten'],
+        answer: 'Lionel Messi',
+        explanation: 'На цей момент саме Мессі має 8 “Золотих м’ячів”.',
+      },
+      {
+        kicker: 'Legendary final',
+        prompt: 'Який клуб зробив камбек з 3:0 до 3:3 у фіналі ЛЧ 2005 і переміг по пенальті?',
+        options: ['Milan', 'Liverpool', 'Chelsea', 'Manchester United'],
+        answer: 'Liverpool',
+        explanation: 'Йдеться про “Стамбульське диво” Liverpool проти Milan.',
+      },
+    ],
+  },
+  {
+    id: 'career-path',
+    title: 'Кар’єрний шлях',
+    icon: '🧳',
+    accent: 'lime',
+    desc: 'Клубні маршрути, переходи і біографії легенд без випадкових питань.',
+    questions: [
+      {
+        kicker: 'Маршрут легенди',
+        prompt: 'Хто пройшов шлях Ajax -> Juventus -> Inter -> Barcelona -> Milan?',
+        options: ['Edgar Davids', 'Patrick Kluivert', 'Zlatan Ibrahimović', 'Ronaldo'],
+        answer: 'Zlatan Ibrahimović',
+        explanation: 'Саме Златан мав цей великий маршрут між топклубами Європи.',
+      },
+      {
+        kicker: 'Пропущений клуб',
+        prompt: 'Sporting -> Manchester United -> Real Madrid -> ? -> Al Nassr. Який клуб пропущено?',
+        options: ['Juventus', 'Milan', 'PSG', 'Inter'],
+        answer: 'Juventus',
+        explanation: 'Після Real Madrid Кріштіану перейшов саме в Juventus.',
+      },
+      {
+        kicker: 'Один клуб',
+        prompt: 'Хто з цих гравців найбільше асоціюється з кар’єрою одного клубу в Barcelona?',
+        options: ['Luis Figo', 'Xavi', 'Ronaldo', 'Thierry Henry'],
+        answer: 'Xavi',
+        explanation: 'Xavi є одним із головних символів клубної ідентичності Barcelona.',
+      },
+      {
+        kicker: 'Повернення додому',
+        prompt: 'Який клуб був останнім європейським клубом Андрія Шевченка перед поверненням у Динамо?',
+        options: ['Chelsea', 'Milan', 'Juventus', 'Inter'],
+        answer: 'Chelsea',
+        explanation: 'Перед поверненням у Динамо Шевченко грав за Chelsea.',
+      },
+      {
+        kicker: 'Кар’єра №9',
+        prompt: 'У якому клубі Luis Suárez грав безпосередньо перед переходом у Barcelona?',
+        options: ['Ajax', 'Liverpool', 'Atlético', 'Groningen'],
+        answer: 'Liverpool',
+        explanation: 'До Barcelona Суарес перейшов саме з Liverpool.',
+      },
+    ],
+  },
+];
+
 export const STATS_LEADERBOARDS = {
   players: {
     hero: {
