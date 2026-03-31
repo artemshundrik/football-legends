@@ -152,7 +152,7 @@ html, body {
 #screen-play .scroll-body,
 #screen-rating .scroll-body,
 #screen-profile .scroll-body {
-  padding-bottom: calc(var(--bottom-nav-row-height) + 6px);
+  padding-bottom: 12px;
 }
 
 /* ── Header ── */
@@ -288,8 +288,19 @@ html, body {
   align-items: flex-end;
   justify-content: center;
   z-index: 1000;
-  padding: 0 8px max(6px, var(--safe-bottom));
+  padding: 0 8px 0;
   pointer-events: none;
+  overflow: hidden;
+}
+.bottom-nav::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgba(6,6,6,0) 0%, rgba(6,6,6,0.12) 18%, rgba(10,10,10,0.68) 60%, rgba(12,12,12,0.92) 100%);
+  pointer-events: none;
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
 }
 .bottom-nav-shell {
   position: relative;
@@ -308,6 +319,7 @@ html, body {
   -webkit-backdrop-filter: blur(24px) saturate(180%);
   transition: opacity 0.25s ease, transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   pointer-events: auto;
+  margin-bottom: max(6px, var(--safe-bottom));
 }
 .bottom-nav.hidden {
   opacity: 0;
