@@ -93,13 +93,13 @@
 html, body {
   height: 100%;
   height: -webkit-fill-available;
-  background:
-    radial-gradient(circle at top right, rgba(200,240,53,0.12), transparent 26%),
-    linear-gradient(180deg, #0b0b0b 0%, #121212 100%);
+  background-color: #0b0b0b;
   color: var(--text);
   font-family: var(--font-body);
   font-size: 14px;
   overflow: hidden;
+  overscroll-behavior: none;
+  color-scheme: dark;
 }
 
 #app {
@@ -109,7 +109,8 @@ html, body {
   flex-direction: column;
   overflow: hidden;
   position: relative;
-  background:
+  background-color: #0b0b0b;
+  background-image:
     radial-gradient(circle at top right, rgba(200,240,53,0.12), transparent 26%),
     linear-gradient(180deg, #0b0b0b 0%, #121212 100%);
 }
@@ -124,7 +125,10 @@ html, body {
   inset: 0;
   display: flex;
   flex-direction: column;
-  background: inherit;
+  background-color: #0b0b0b;
+  background-image:
+    radial-gradient(circle at top right, rgba(200,240,53,0.12), transparent 26%),
+    linear-gradient(180deg, #0b0b0b 0%, #121212 100%);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.25s ease, transform 0.25s ease;
