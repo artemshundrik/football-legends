@@ -4,7 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Легенди Футболу</title>
-  <meta name="theme-color" content="#000000">
+  <meta name="theme-color" media="(prefers-color-scheme: light)" content="#121212">
+  <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#121212">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Football Legends">
@@ -489,23 +490,32 @@
   <div class="screen" id="screen-profile">
     <div class="app-header">
       <div class="header-title">ПРОФІЛЬ</div>
-      <div class="header-badge">⚽ BETA</div>
+      <div class="header-badge">Твій прогрес</div>
     </div>
     <div class="scroll-body">
-      <div class="profile-hero anim-in">
-        <div class="profile-avatar">⚽</div>
-        <div class="profile-name">Гравець</div>
-        <div class="profile-sub">Легенда Футболу</div>
-      </div>
-      <div class="stats-strip anim-in">
-        <div class="stat-card"><div class="stat-val">12</div><div class="stat-lbl">Матчів</div></div>
-        <div class="stat-card"><div class="stat-val">8</div><div class="stat-lbl">Перемог</div></div>
-        <div class="stat-card"><div class="stat-val">67%</div><div class="stat-lbl">Вінрейт</div></div>
-      </div>
-      <div class="coming-soon anim-in">
-        <div class="coming-soon-icon">🚀</div>
-        <div class="coming-soon-title">Профіль у розробці</div>
-        <div class="coming-soon-desc">Досягнення, улюблені команди та повна статистика з'являться в наступному оновленні.</div>
+      <div class="profile-shell">
+        <section class="profile-hero profile-panel anim-in" id="profile-hero-card"></section>
+        <section class="profile-kpi-grid anim-in" id="profile-kpi-grid"></section>
+        <section class="profile-panel profile-achievements anim-in">
+          <div class="profile-section-head">
+            <div>
+              <div class="profile-section-kicker">Achievements</div>
+              <div class="profile-section-title">Бейджі та ачивки</div>
+            </div>
+          </div>
+          <div class="profile-achievement-grid" id="profile-achievement-grid"></div>
+        </section>
+        <section class="profile-panel profile-focus anim-in" id="profile-focus-card"></section>
+        <section class="profile-mode-grid anim-in" id="profile-mode-grid"></section>
+        <section class="profile-panel profile-activity anim-in">
+          <div class="profile-section-head">
+            <div>
+              <div class="profile-section-kicker">Recent Activity</div>
+              <div class="profile-section-title">Останні проходження</div>
+            </div>
+          </div>
+          <div class="profile-activity-list" id="profile-activity-list"></div>
+        </section>
       </div>
     </div>
   </div>
@@ -591,6 +601,14 @@
       </div>
     </form>
   </dialog>
+
+  <div class="achievement-toast" id="achievement-toast" aria-live="polite">
+    <div class="achievement-toast-icon" id="achievement-toast-icon">🏆</div>
+    <div class="achievement-toast-copy">
+      <div class="achievement-toast-kicker">Новий бейдж</div>
+      <div class="achievement-toast-title" id="achievement-toast-title">Achievement Unlocked</div>
+    </div>
+  </div>
 
   <!-- ════════ GLOBAL BOTTOM NAV ════════ -->
   <nav class="bottom-nav" id="bottom-nav">

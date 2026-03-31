@@ -30,6 +30,7 @@ import {
   cancelLeave,
   proceedLeave,
   renderStatsScreen,
+  renderProfileScreen,
   setStatsScope,
   setStatsCategory,
   openStatsProfile,
@@ -39,6 +40,18 @@ import {
   updateNavActive,
   updateNavIndicator,
 } from './game.js';
+
+function applyDisplayModeClass() {
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  document.documentElement.classList.toggle('app-standalone', isStandalone);
+  document.documentElement.classList.toggle('app-browser', !isStandalone);
+  document.body.classList.toggle('app-standalone', isStandalone);
+  document.body.classList.toggle('app-browser', !isStandalone);
+}
+
+applyDisplayModeClass();
+window.matchMedia('(display-mode: standalone)').addEventListener?.('change', applyDisplayModeClass);
+window.addEventListener('pageshow', applyDisplayModeClass);
 
 // ── Wire up screens ──
 document.getElementById('btn-hero-play').addEventListener('click', goToPlay);
@@ -191,3 +204,4 @@ window.addEventListener('resize', () => {
 // ── Init ──
 renderTeams(TEAMS);
 renderStatsScreen();
+renderProfileScreen();
