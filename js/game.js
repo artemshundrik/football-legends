@@ -49,6 +49,7 @@ let currentQuizScore = 0;
 let currentQuizSelection = null;
 let currentQuizLocked = false;
 let currentQuizAnswers = [];
+let screenExitTimer = null;
 const currentStatsCategory = {
   players: 'ballon-dor',
   clubs: 'ucl-clubs',
@@ -1160,9 +1161,18 @@ export function goTo(screenId) {
   const next = document.getElementById('screen-' + screenId);
   if (!next || current === next) return;
 
+  if (screenExitTimer) {
+    clearTimeout(screenExitTimer);
+    screenExitTimer = null;
+  }
+
   current.classList.add('exit');
-  setTimeout(() => current.classList.remove('active', 'exit'), 250);
   next.classList.add('active');
+  next.classList.remove('exit');
+  screenExitTimer = setTimeout(() => {
+    current.classList.remove('active', 'exit');
+    screenExitTimer = null;
+  }, 250);
   currentScreen = screenId;
 
   // Show/hide global nav
