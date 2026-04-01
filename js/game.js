@@ -99,7 +99,7 @@ export async function shareGoatResult() {
 
 // ── Navigation ──
 export function goTo(screenId) {
-  const current = document.querySelector('.screen.active');
+  const current = document.getElementById('screen-' + currentScreen) || document.querySelector('.screen.active');
   const next = document.getElementById('screen-' + screenId);
   if (!next || current === next) return;
 

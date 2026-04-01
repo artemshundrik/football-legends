@@ -1,0 +1,26 @@
+/* ── Animate-in ── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+@keyframes achievementToastIn { from { opacity: 0; transform: translateY(20px) scale(0.98); } to { opacity: 1; transform: translateY(0) scale(1); } }
+@keyframes achievementToastOut { from { opacity: 1; transform: translateY(0) scale(1); } to { opacity: 0; transform: translateY(16px) scale(0.98); } }
+.anim-in { animation: fadeUp 0.35s ease both; }
+.anim-in:nth-child(1) { animation-delay: 0.0s; }
+.anim-in:nth-child(2) { animation-delay: 0.06s; }
+.anim-in:nth-child(3) { animation-delay: 0.12s; }
+.anim-in:nth-child(4) { animation-delay: 0.18s; }
+.anim-in:nth-child(5) { animation-delay: 0.24s; }
+.anim-in:nth-child(6) { animation-delay: 0.30s; }
+
+/* ── Final stats divider override ── */
+.stats-record-list-divided {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+.stats-record-list-divided .stats-record-row {
+  border-left: 0 !important;
+  border-right: 0 !important;
+  border-bottom: 0 !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}

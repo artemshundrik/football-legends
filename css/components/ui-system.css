@@ -1,0 +1,235 @@
+:root {
+  --ui-control-height: 44px;
+  --ui-control-radius: 16px;
+  --ui-pill-height: 32px;
+  --ui-pill-radius: 999px;
+  --ui-surface-radius: 20px;
+  --ui-surface-radius-lg: 24px;
+  --ui-label-size: 10px;
+  --ui-label-weight: 700;
+  --ui-label-tracking: 0.08em;
+  --ui-title-tracking: -0.035em;
+}
+
+.btn {
+  min-height: var(--ui-control-height);
+  padding: 0 18px;
+  border-radius: var(--radius-button);
+  font-family: var(--font-display);
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.btn-glass,
+.filter-tab,
+.header-badge,
+.home-panel-pill,
+.profile-pill,
+.goat-vs-chip {
+  min-height: var(--ui-pill-height);
+  border-radius: var(--ui-pill-radius);
+}
+
+:is(.filter-tab, .header-badge, .home-panel-pill, .profile-pill, .goat-vs-chip) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-tab,
+.header-badge,
+.home-panel-pill,
+.profile-pill,
+.goat-vs-chip,
+.popup-kicker,
+.profile-section-kicker,
+.profile-achievement-tier,
+.profile-achievement-state {
+  font-size: var(--ui-label-size);
+  font-weight: var(--ui-label-weight);
+  letter-spacing: var(--ui-label-tracking);
+}
+
+.filter-tab,
+.header-badge,
+.home-panel-pill,
+.goat-vs-chip,
+.popup-kicker,
+.profile-section-kicker,
+.profile-achievement-tier,
+.profile-achievement-state {
+  text-transform: uppercase;
+}
+
+.header-badge,
+.home-panel-pill,
+.profile-pill,
+.goat-vs-chip,
+.filter-tab.active {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+
+:is(
+  .mode-card,
+  .stat-card,
+  .match-item,
+  .era-intro,
+  .team-row,
+  .goat-cat-card,
+  .goat-summary,
+  .goat-matchup,
+  .goat-history,
+  .match-scoreboard,
+  .round-phase,
+  .stats-leaderboard-card,
+  .stats-profile-stat,
+  .stats-profile-appearance,
+  .profile-kpi-card,
+  .profile-mode-card,
+  .profile-achievement-card,
+  .profile-activity-item,
+  .dream-team-card,
+  .dream-candidate-card,
+  .quiz-pack-card,
+  .quiz-round-card,
+  .quiz-result-hero,
+  .quiz-result-item
+) {
+  border-radius: var(--ui-surface-radius);
+}
+
+:is(
+  .profile-panel,
+  .home-panel,
+  .team-lineup-card,
+  .stats-profile-card,
+  .goat-result-card,
+  .result-sheet,
+  .app-dialog-card
+) {
+  border-radius: var(--ui-surface-radius-lg);
+}
+
+:is(
+  .home-panel-title,
+  .hero-title,
+  .profile-name,
+  .profile-section-title,
+  .goat-summary-title,
+  .stats-leaderboard-title,
+  .stats-profile-title,
+  .dream-result-title,
+  .dream-summary-title,
+  .result-headline,
+  .quiz-result-title,
+  .quiz-round-title
+) {
+  letter-spacing: var(--ui-title-tracking);
+}
+
+:is(
+  .hero-kicker,
+  .hero-live,
+  .home-panel-label,
+  .stats-leaderboard-label,
+  .goat-summary-label,
+  .dream-summary-label,
+  .dream-result-kicker,
+  .profile-kicker,
+  .profile-kpi-label,
+  .profile-mode-label,
+  .profile-section-kicker,
+  .profile-activity-meta,
+  .profile-level-chip,
+  .achievement-toast-kicker,
+  .dream-team-card-meta,
+  .goat-cat-meta
+) {
+  font-size: var(--ui-label-size);
+  letter-spacing: var(--ui-label-tracking);
+  text-transform: uppercase;
+}
+
+:is(
+  .team-lineup-kicker,
+  .era-lineup-kicker,
+  .phase-label,
+  .stats-profile-kicker,
+  .stats-profile-section-title,
+  .battle-detail-copy,
+  .battle-stat-label,
+  .goat-history-stage
+) {
+  font-size: var(--ui-label-size);
+  font-weight: var(--ui-label-weight);
+  letter-spacing: var(--ui-label-tracking);
+  text-transform: uppercase;
+}
+
+:is(
+  .team-row-ability-tag,
+  .team-row-preview-btn,
+  .goat-player-tier,
+  .rd-pill
+) {
+  min-height: var(--ui-pill-height);
+  border-radius: var(--ui-pill-radius);
+  font-size: var(--ui-label-size);
+  font-weight: var(--ui-label-weight);
+  letter-spacing: var(--ui-label-tracking);
+  text-transform: uppercase;
+}
+
+:is(
+  .card-photo-wrap,
+  .goat-player-face,
+  .goat-result-face,
+  .dream-player-face,
+  .battle-face,
+  .team-lineup-face,
+  .era-lineup-face,
+  .dream-slot-photo,
+  .stats-record-art-player,
+  .team-row-star-face
+) {
+  overflow: hidden;
+  background: rgba(255,255,255,0.05);
+  border: 2px solid rgba(255,255,255,0.14);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:is(
+  .card-photo-wrap,
+  .goat-player-face,
+  .goat-result-face,
+  .dream-player-face,
+  .battle-face,
+  .team-lineup-face,
+  .era-lineup-face,
+  .dream-slot-photo,
+  .stats-record-art-player,
+  .team-row-star-face
+) img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+:is(
+  .card-name,
+  .goat-player-name,
+  .dream-candidate-name,
+  .battle-name,
+  .team-lineup-player-name,
+  .era-lineup-player-name
+) {
+  font-weight: 800;
+  line-height: 1.1;
+  text-wrap: balance;
+}

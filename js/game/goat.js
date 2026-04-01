@@ -1,4 +1,4 @@
-import { GOAT_CATEGORIES, GOAT_SPECIAL_BRACKETS, getTier, TIER_LABELS } from '../data.js';
+import { GOAT_CATEGORIES, GOAT_SPECIAL_BRACKETS, buildGoatBracketPlayers } from '../data.js';
 import { escapeHtml } from './utils.js';
 import { enhancePlayerPhotos, createWikiFaceMarkup } from './media.js';
 import { recordGoatProfile } from './profile.js';
@@ -16,6 +16,17 @@ const GOAT_ERA_MODES = [
 const GOAT_UI_LABEL = 'GOAT-СІТКА';
 
 export function createGoatController(state, { goTo }) {
+  function formatGoatEra(era) {
+    const map = {
+      '1980s': '80-ті',
+      '1990s': '90-ті',
+      '2000s': '2000-ні',
+      '2010s': '2010-ні',
+      '2020s': '2020-ні',
+    };
+    return map[era] || era || '';
+  }
+
   function getGoatStageName(pairCount) {
     if (pairCount === 8) return '1/8 фіналу';
     if (pairCount === 4) return 'Чвертьфінал';
@@ -57,19 +68,24 @@ export function createGoatController(state, { goTo }) {
   }
 
   function createGoatPlayerCard(player, side) {
-    const tier = getTier(player.stat);
+    const fact = [formatGoatEra(player.era), player.pos].filter(Boolean).join(' · ');
     return `
-      <button class="goat-player-card ${side} ${tier}" data-goat-player="${escapeHtml(player.id)}">
-        <div class="goat-player-tier">${escapeHtml(TIER_LABELS[tier])}</div>
-        <div class="goat-player-rank">${player.stat}</div>
-        <div class="goat-player-country">${escapeHtml(player.country || '')}</div>
-        ${createWikiFaceMarkup(player, 'goat-player-face')}
+      <button class="goat-player-card ${side}" data-goat-player="${escapeHtml(player.id)}">
+        <div class="goat-player-head">
+          <div class="goat-player-country">${escapeHtml(player.country || '⚽')}</div>
+          <div class="goat-player-avatar-badge">${escapeHtml(player.avatar || '★')}</div>
+        </div>
+        <div class="goat-player-art">
+          ${createWikiFaceMarkup(player, 'goat-player-backdrop')}
+          ${createWikiFaceMarkup(player, 'goat-player-face')}
+        </div>
         <div class="goat-player-name">${escapeHtml(player.n)}</div>
         <div class="goat-player-tag">${escapeHtml(player.tag)}</div>
+        <div class="goat-player-fact">${escapeHtml(fact)}</div>
         <div class="goat-player-stats">
-          <span>ATK ${player.atk}</span>
-          <span>DEF ${player.def}</span>
-          <span>SPD ${player.spd}</span>
+          <div class="goat-player-stat"><span class="goat-player-stat-val">${player.atk}</span><span class="goat-player-stat-lbl">ATK</span></div>
+          <div class="goat-player-stat"><span class="goat-player-stat-val">${player.def}</span><span class="goat-player-stat-lbl">DEF</span></div>
+          <div class="goat-player-stat"><span class="goat-player-stat-val">${player.spd}</span><span class="goat-player-stat-lbl">SPD</span></div>
         </div>
       </button>
     `;
@@ -92,10 +108,13 @@ export function createGoatController(state, { goTo }) {
 
   function renderGoatHistory() {
     const list = document.getElementById('goat-history-list');
+    const historySection = list.closest('.goat-history');
     if (!state.goatHistory.length) {
+      historySection?.classList.add('is-empty');
       list.innerHTML = '<div class="goat-history-empty">Перший вибір ще попереду. Сітка чекає на твій вердикт.</div>';
       return;
     }
+    historySection?.classList.remove('is-empty');
     list.innerHTML = state.goatHistory
       .map(item => `<div class="goat-history-item"><span class="goat-history-stage">${escapeHtml(item.stage)}</span><span class="goat-history-result">${escapeHtml(item.winner.n)} переміг ${escapeHtml(item.loser.n)}</span></div>`)
       .join('');
@@ -207,8 +226,9 @@ export function createGoatController(state, { goTo }) {
       ? GOAT_CATEGORIES.find(item => item.id === categoryId)
       : GOAT_SPECIAL_BRACKETS.find(item => item.id === state.currentGoatEra);
     if (!category) return;
+    const bracketPlayers = buildGoatBracketPlayers(category, 16);
     state.currentGoatCategoryId = categoryId;
-    state.currentGoatCategory = { ...category, players: category.players.map(player => ({ ...player })) };
+    state.currentGoatCategory = { ...category, players: bracketPlayers };
     state.goatRounds = [seedGoatPairs(state.currentGoatCategory.players)];
     state.goatRoundIndex = 0;
     state.goatPairIndex = 0;

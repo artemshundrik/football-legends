@@ -1,0 +1,306 @@
+/* ── Dream XI ── */
+.dream-team-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.dream-team-card {
+  width: 100%;
+  min-height: 208px;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #141414;
+  padding: 18px 14px 16px;
+  color: #f3f3f1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+.dream-team-card:active {
+  transform: scale(0.98);
+}
+.dream-team-card-crest {
+  width: 76px;
+  height: 76px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, var(--dream-team-theme, rgba(255,255,255,0.08)), rgba(20,20,20,0.96));
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+.dream-team-card-crest img {
+  width: 74%;
+  height: 74%;
+  object-fit: contain;
+}
+.dream-team-card-crest span {
+  display: none;
+  font-size: 24px;
+  font-weight: 800;
+  color: #f3f3f1;
+}
+.dream-team-card-name {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 800;
+  line-height: 1.02;
+  color: #f3f3f1;
+}
+.dream-team-card-meta {
+  color: var(--accent);
+  font-weight: var(--ui-label-weight);
+}
+.dream-team-card-desc {
+  font-size: 12px;
+  line-height: 1.45;
+  color: rgba(243,243,241,0.72);
+}
+.dream-summary {
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #141414;
+  padding: 16px;
+  margin-bottom: 2px;
+}
+.dream-draft-body,
+.dream-result-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-sizing: border-box;
+  min-height: 0;
+  padding:
+    calc(var(--header-height) + var(--ui-safe-top) + var(--space-4))
+    var(--space-4)
+    16px;
+}
+.dream-draft-body,
+.dream-result-body {
+  overflow: hidden;
+}
+.dream-summary-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.dream-summary-label,
+.dream-result-kicker {
+  font-weight: var(--ui-label-weight);
+  color: rgba(243,243,241,0.48);
+}
+.dream-summary-title,
+.dream-result-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.dream-summary-step,
+.dream-result-meta {
+  font-size: 11px;
+  color: var(--accent);
+  font-weight: 700;
+  text-align: left;
+  flex: 0 0 auto;
+}
+.dream-summary-desc {
+  font-size: 12px;
+  line-height: 1.55;
+  color: rgba(243,243,241,0.7);
+}
+.dream-pitch {
+  margin-bottom: 0;
+  flex: 1 1 auto;
+  display: flex;
+  min-height: 0;
+}
+.dream-pitch-canvas {
+  position: relative;
+  min-height: 0;
+  height: 100%;
+  flex: 1 1 auto;
+  border-radius: 24px;
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+  background:
+    radial-gradient(circle at center, rgba(255,255,255,0.04), transparent 55%),
+    linear-gradient(180deg, rgba(10,42,18,0.98), rgba(8,28,14,1));
+}
+.dream-pitch-canvas::before {
+  content: '';
+  position: absolute;
+  inset: 16px;
+  border: 1px solid rgba(255,255,255,0.16);
+  border-radius: 18px;
+}
+.dream-pitch-canvas::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 16px;
+  right: 16px;
+  height: 1px;
+  background: rgba(255,255,255,0.14);
+}
+.dream-slot {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 82px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  z-index: 1;
+}
+.dream-slot-empty {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 1px dashed rgba(255,255,255,0.22);
+  background: rgba(0,0,0,0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(243,243,241,0.72);
+}
+.dream-slot-photo {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dream-slot-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+.dream-slot-photo span {
+  font-size: 24px;
+}
+.dream-slot-name {
+  font-size: 9px;
+  line-height: 1.2;
+  font-weight: 700;
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.38);
+}
+.dream-candidate-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  flex: 1 1 auto;
+  min-height: 0;
+  grid-auto-rows: minmax(0, 1fr);
+  align-content: stretch;
+}
+.dream-candidate-card {
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #141414;
+  padding: clamp(8px, 1.2vh, 14px) clamp(8px, 1.1vh, 12px);
+  min-height: 0;
+  height: 100%;
+  text-align: center;
+  color: #f3f3f1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: clamp(5px, 0.8vh, 10px);
+}
+.dream-candidate-card:active {
+  transform: scale(0.98);
+}
+.dream-candidate-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: clamp(4px, 0.7vh, 10px);
+}
+.dream-candidate-rating {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 3.2vh, 24px);
+  line-height: 0.9;
+  font-weight: 700;
+  color: rgba(243,243,241,0.82);
+}
+.dream-candidate-role {
+  font-size: clamp(8px, 1.1vh, 10px);
+  color: rgba(243,243,241,0.6);
+  font-weight: 700;
+}
+.dream-player-face {
+  width: clamp(70px, 10.5vh, 122px);
+  height: clamp(70px, 10.5vh, 122px);
+  border-radius: 50%;
+  margin: 0 auto;
+}
+.dream-player-face span {
+  font-size: clamp(22px, 3.6vh, 32px);
+}
+.dream-candidate-name {
+  font-size: clamp(12px, 1.8vh, 16px);
+  color: #f3f3f1;
+  margin-bottom: 0;
+  min-height: 2.15em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.dream-candidate-copy {
+  margin-top: clamp(2px, 0.5vh, 8px);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.dream-candidate-honor {
+  font-size: clamp(8px, 1.1vh, 10px);
+  line-height: 1.28;
+  color: rgba(243,243,241,0.82);
+  font-weight: 600;
+  min-height: 2.45em;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+.dream-candidate-meta {
+  font-size: clamp(8px, 1vh, 10px);
+  line-height: 1.2;
+  color: rgba(243,243,241,0.48);
+  min-height: 1.2em;
+}
+.dream-result-hero {
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: #141414;
+  padding: 16px;
+  margin-bottom: 0;
+}
+.dream-result-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+  padding-bottom: 8px;
+}

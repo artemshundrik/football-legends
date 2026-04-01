@@ -74,6 +74,46 @@ export function getTeamSeasonLabel(team) {
   return team.seasonLabel || team.year;
 }
 
+function shuffleList(list) {
+  const copy = [...list];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+export function buildGoatBracketPlayers(category, targetSize = 16) {
+  const basePlayers = category.players || [];
+  const hasRotationPools = Array.isArray(category.corePlayers) || Array.isArray(category.rotationPlayers);
+
+  if (!hasRotationPools) return basePlayers.map(player => ({ ...player }));
+
+  const corePlayers = (category.corePlayers || []).map(player => ({ ...player }));
+  const selected = [...corePlayers];
+  const selectedIds = new Set(selected.map(player => player.id));
+  const rotationPool = shuffleList(category.rotationPlayers || []);
+
+  for (const player of rotationPool) {
+    if (selected.length >= targetSize) break;
+    if (selectedIds.has(player.id)) continue;
+    selected.push({ ...player });
+    selectedIds.add(player.id);
+  }
+
+  if (selected.length < targetSize) {
+    const fallbackPool = shuffleList(basePlayers);
+    for (const player of fallbackPool) {
+      if (selected.length >= targetSize) break;
+      if (selectedIds.has(player.id)) continue;
+      selected.push({ ...player });
+      selectedIds.add(player.id);
+    }
+  }
+
+  return selected;
+}
+
 export const GOAT_CATEGORIES = [
   {
     id: 'forwards',
@@ -81,24 +121,33 @@ export const GOAT_CATEGORIES = [
     shortName: 'Нападники',
     icon: '🎯',
     desc: 'Форварди, які вирішували фінали, епохи й Ballon d’Or гонки.',
-    players: [
-      { id: 'r9', n: 'Ronaldo', wikiTitle: 'Ronaldo_(Brazilian_footballer)', country: '🇧🇷', tag: 'Phenom', era: '2000s', pos: 'НАП', stat: 98, atk: 98, def: 36, spd: 96, avatar: '⚡' },
-      { id: 'henry', n: 'Henry', wikiTitle: 'Thierry_Henry', country: '🇫🇷', tag: 'Arsenal King', era: '2000s', pos: 'НАП', stat: 95, atk: 95, def: 40, spd: 96, avatar: '👑' },
-      { id: 'sheva', n: 'Shevchenko', wikiTitle: 'Andriy_Shevchenko', country: '🇺🇦', tag: 'Ice Cold', era: '2000s', pos: 'НАП', stat: 93, atk: 94, def: 36, spd: 90, avatar: '🇺🇦' },
-      { id: 'etoo', n: "Eto'o", wikiTitle: 'Samuel_Eto\'o', country: '🇨🇲', tag: 'Big Game', era: '2000s', pos: 'НАП', stat: 93, atk: 94, def: 36, spd: 93, avatar: '🦁' },
-      { id: 'drogba', n: 'Drogba', wikiTitle: 'Didier_Drogba', country: '🇨🇮', tag: 'Final Boss', era: '2000s', pos: 'НАП', stat: 92, atk: 93, def: 42, spd: 80, avatar: '💪' },
-      { id: 'ibra', n: 'Ibrahimović', wikiTitle: 'Zlatan_Ibrahimović', country: '🇸🇪', tag: 'Showman', era: '2000s', pos: 'НАП', stat: 92, atk: 94, def: 38, spd: 82, avatar: '🦁' },
-      { id: 'messi', n: 'Messi', wikiTitle: 'Lionel_Messi', country: '🇦🇷', tag: 'GOAT', era: '2010s', pos: 'НАП', stat: 98, atk: 97, def: 46, spd: 91, avatar: '🐐' },
-      { id: 'cr7', n: 'Cristiano', wikiTitle: 'Cristiano_Ronaldo', country: '🇵🇹', tag: 'Machine', era: '2010s', pos: 'НАП', stat: 97, atk: 97, def: 42, spd: 94, avatar: '🚀' },
-      { id: 'suarez', n: 'Suarez', wikiTitle: 'Luis_Suárez', country: '🇺🇾', tag: 'Predator', era: '2010s', pos: 'НАП', stat: 94, atk: 95, def: 40, spd: 84, avatar: '🦷' },
-      { id: 'benzema', n: 'Benzema', wikiTitle: 'Karim_Benzema', country: '🇫🇷', tag: 'Clutch', era: '2010s', pos: 'НАП', stat: 94, atk: 95, def: 40, spd: 83, avatar: '🔥' },
-      { id: 'lewa', n: 'Lewandowski', wikiTitle: 'Robert_Lewandowski', country: '🇵🇱', tag: 'Finisher', era: '2010s', pos: 'НАП', stat: 95, atk: 96, def: 38, spd: 84, avatar: '🎯' },
-      { id: 'aguero', n: 'Agüero', wikiTitle: 'Sergio_Agüero', country: '🇦🇷', tag: '93:20', era: '2010s', pos: 'НАП', stat: 91, atk: 92, def: 36, spd: 89, avatar: '⏱️' },
-      { id: 'haaland', n: 'Haaland', wikiTitle: 'Erling_Haaland', country: '🇳🇴', tag: 'Terminator', era: '2020s', pos: 'НАП', stat: 95, atk: 97, def: 36, spd: 91, avatar: '🤖' },
-      { id: 'mbappe', n: 'Mbappé', wikiTitle: 'Kylian_Mbappé', country: '🇫🇷', tag: 'Rocket', era: '2020s', pos: 'НАП', stat: 95, atk: 95, def: 38, spd: 99, avatar: '💨' },
-      { id: 'kane', n: 'Kane', wikiTitle: 'Harry_Kane', country: '🏴', tag: 'Complete 9', era: '2020s', pos: 'НАП', stat: 93, atk: 95, def: 42, spd: 78, avatar: '🎯' },
-      { id: 'osimhen', n: 'Osimhen', wikiTitle: 'Victor_Osimhen', country: '🇳🇬', tag: 'Vertical', era: '2020s', pos: 'НАП', stat: 90, atk: 91, def: 36, spd: 92, avatar: '🕸️' },
+    corePlayers: [
+      { id: 'fw-pele', n: 'Pelé', wikiTitle: 'Pelé', country: '🇧🇷', tag: 'King', era: '1980s', pos: 'НАП', stat: 99, atk: 99, def: 42, spd: 93, avatar: '👑' },
+      { id: 'fw-maradona', n: 'Maradona', wikiTitle: 'Diego_Maradona', country: '🇦🇷', tag: 'God Mode', era: '1980s', pos: 'НАП', stat: 99, atk: 97, def: 50, spd: 94, avatar: '✨' },
+      { id: 'fw-r9', n: 'Ronaldo', wikiTitle: 'Ronaldo_(Brazilian_footballer)', country: '🇧🇷', tag: 'Phenom', era: '2000s', pos: 'НАП', stat: 98, atk: 98, def: 36, spd: 96, avatar: '⚡' },
+      { id: 'fw-messi', n: 'Messi', wikiTitle: 'Lionel_Messi', country: '🇦🇷', tag: 'GOAT', era: '2010s', pos: 'НАП', stat: 98, atk: 97, def: 46, spd: 91, avatar: '🐐' },
+      { id: 'fw-cr7', n: 'Cristiano', wikiTitle: 'Cristiano_Ronaldo', country: '🇵🇹', tag: 'Machine', era: '2010s', pos: 'НАП', stat: 97, atk: 97, def: 42, spd: 94, avatar: '🚀' },
+      { id: 'fw-henry', n: 'Henry', wikiTitle: 'Thierry_Henry', country: '🇫🇷', tag: 'Arsenal King', era: '2000s', pos: 'НАП', stat: 95, atk: 95, def: 40, spd: 96, avatar: '👑' },
+      { id: 'fw-romario', n: 'Romário', wikiTitle: 'Romário', country: '🇧🇷', tag: 'Box Killer', era: '1990s', pos: 'НАП', stat: 96, atk: 96, def: 34, spd: 88, avatar: '🎯' },
+      { id: 'fw-van-basten', n: 'Van Basten', wikiTitle: 'Marco_van_Basten', country: '🇳🇱', tag: 'Pure Finish', era: '1980s', pos: 'НАП', stat: 96, atk: 97, def: 34, spd: 86, avatar: '🏹' },
     ],
+    rotationPlayers: [
+      { id: 'fw-lewa', n: 'Lewandowski', wikiTitle: 'Robert_Lewandowski', country: '🇵🇱', tag: 'Finisher', era: '2010s', pos: 'НАП', stat: 95, atk: 96, def: 38, spd: 84, avatar: '🎯' },
+      { id: 'fw-suarez', n: 'Suarez', wikiTitle: 'Luis_Suárez', country: '🇺🇾', tag: 'Predator', era: '2010s', pos: 'НАП', stat: 94, atk: 95, def: 40, spd: 84, avatar: '🦷' },
+      { id: 'fw-mbappe', n: 'Mbappé', wikiTitle: 'Kylian_Mbappé', country: '🇫🇷', tag: 'Rocket', era: '2020s', pos: 'НАП', stat: 95, atk: 95, def: 38, spd: 99, avatar: '💨' },
+      { id: 'fw-benzema', n: 'Benzema', wikiTitle: 'Karim_Benzema', country: '🇫🇷', tag: 'Clutch', era: '2010s', pos: 'НАП', stat: 94, atk: 95, def: 40, spd: 83, avatar: '🔥' },
+      { id: 'fw-etoo', n: "Eto'o", wikiTitle: 'Samuel_Eto\'o', country: '🇨🇲', tag: 'Big Game', era: '2000s', pos: 'НАП', stat: 93, atk: 94, def: 36, spd: 93, avatar: '🦁' },
+      { id: 'fw-sheva', n: 'Shevchenko', wikiTitle: 'Andriy_Shevchenko', country: '🇺🇦', tag: 'Ice Cold', era: '2000s', pos: 'НАП', stat: 93, atk: 94, def: 36, spd: 90, avatar: '🇺🇦' },
+      { id: 'fw-batistuta', n: 'Batistuta', wikiTitle: 'Gabriel_Batistuta', country: '🇦🇷', tag: 'Thunder', era: '1990s', pos: 'НАП', stat: 94, atk: 95, def: 34, spd: 84, avatar: '⚡' },
+      { id: 'fw-raul', n: 'Raúl', wikiTitle: 'Raúl_(footballer)', country: '🇪🇸', tag: 'Instinct', era: '1990s', pos: 'НАП', stat: 92, atk: 92, def: 36, spd: 84, avatar: '🕯️' },
+      { id: 'fw-ibra', n: 'Ibrahimović', wikiTitle: 'Zlatan_Ibrahimović', country: '🇸🇪', tag: 'Showman', era: '2000s', pos: 'НАП', stat: 92, atk: 94, def: 38, spd: 82, avatar: '🦁' },
+      { id: 'fw-drogba', n: 'Drogba', wikiTitle: 'Didier_Drogba', country: '🇨🇮', tag: 'Final Boss', era: '2000s', pos: 'НАП', stat: 92, atk: 93, def: 42, spd: 80, avatar: '💪' },
+      { id: 'fw-aguero', n: 'Agüero', wikiTitle: 'Sergio_Agüero', country: '🇦🇷', tag: '93:20', era: '2010s', pos: 'НАП', stat: 91, atk: 92, def: 36, spd: 89, avatar: '⏱️' },
+      { id: 'fw-kane', n: 'Kane', wikiTitle: 'Harry_Kane', country: '🏴', tag: 'Complete 9', era: '2020s', pos: 'НАП', stat: 93, atk: 95, def: 42, spd: 78, avatar: '🎯' },
+      { id: 'fw-villa', n: 'Villa', wikiTitle: 'David_Villa', country: '🇪🇸', tag: 'Clinical Left', era: '2010s', pos: 'НАП', stat: 92, atk: 93, def: 36, spd: 86, avatar: '🎯' },
+      { id: 'fw-haaland', n: 'Haaland', wikiTitle: 'Erling_Haaland', country: '🇳🇴', tag: 'Terminator', era: '2020s', pos: 'НАП', stat: 95, atk: 97, def: 36, spd: 91, avatar: '🤖' },
+    ],
+    players: [],
   },
   {
     id: 'midfielders',
@@ -106,24 +155,33 @@ export const GOAT_CATEGORIES = [
     shortName: 'Півзахисники',
     icon: '🧠',
     desc: 'Архітектори гри, які ламали пресинг і вирішували темп матчу.',
-    players: [
-      { id: 'zidane', n: 'Zidane', wikiTitle: 'Zinedine_Zidane', country: '🇫🇷', tag: 'Aura', era: '2000s', pos: 'ЦП', stat: 97, atk: 92, def: 66, spd: 78, avatar: '🔮' },
-      { id: 'pirlo', n: 'Pirlo', wikiTitle: 'Andrea_Pirlo', country: '🇮🇹', tag: 'Regista', era: '2000s', pos: 'ЦП', stat: 93, atk: 86, def: 72, spd: 70, avatar: '🎻' },
-      { id: 'kaka', n: 'Kaká', wikiTitle: 'Kaká', country: '🇧🇷', tag: 'Ballon d’Or', era: '2000s', pos: 'ЦП', stat: 93, atk: 91, def: 60, spd: 91, avatar: '🌟' },
-      { id: 'lampard', n: 'Lampard', wikiTitle: 'Frank_Lampard', country: '🏴', tag: 'Goal Mid', era: '2000s', pos: 'ЦП', stat: 91, atk: 89, def: 74, spd: 78, avatar: '💡' },
-      { id: 'gerrard', n: 'Gerrard', wikiTitle: 'Steven_Gerrard', country: '🏴', tag: 'Leader', era: '2000s', pos: 'ЦП', stat: 92, atk: 88, def: 78, spd: 84, avatar: '🫡' },
-      { id: 'scholes', n: 'Scholes', wikiTitle: 'Paul_Scholes', country: '🏴', tag: 'Laser Pass', era: '2000s', pos: 'ЦП', stat: 90, atk: 86, def: 72, spd: 74, avatar: '🎯' },
-      { id: 'xavi', n: 'Xavi', wikiTitle: 'Xavi', country: '🇪🇸', tag: 'Metronome', era: '2010s', pos: 'ЦП', stat: 95, atk: 86, def: 78, spd: 74, avatar: '🎼' },
-      { id: 'iniesta', n: 'Iniesta', wikiTitle: 'Andrés_Iniesta', country: '🇪🇸', tag: 'Silk', era: '2010s', pos: 'ЦП', stat: 95, atk: 88, def: 72, spd: 82, avatar: '✨' },
-      { id: 'modric', n: 'Modrić', wikiTitle: 'Luka_Modrić', country: '🇭🇷', tag: 'Maestro', era: '2010s', pos: 'ЦП', stat: 94, atk: 88, def: 78, spd: 84, avatar: '🪄' },
-      { id: 'kroos', n: 'Kroos', wikiTitle: 'Toni_Kroos', country: '🇩🇪', tag: 'Control', era: '2010s', pos: 'ЦП', stat: 92, atk: 86, def: 76, spd: 76, avatar: '🎯' },
-      { id: 'kdb', n: 'De Bruyne', wikiTitle: 'Kevin_De_Bruyne', country: '🇧🇪', tag: 'Playmaker', era: '2010s', pos: 'ЦП', stat: 94, atk: 92, def: 72, spd: 84, avatar: '🧠' },
-      { id: 'busquets', n: 'Busquets', wikiTitle: 'Sergio_Busquets', country: '🇪🇸', tag: 'Balance', era: '2010s', pos: 'ЦП', stat: 90, atk: 78, def: 90, spd: 68, avatar: '⚙️' },
-      { id: 'rodri', n: 'Rodri', wikiTitle: 'Rodri', country: '🇪🇸', tag: 'Anchor', era: '2020s', pos: 'ЦП', stat: 93, atk: 84, def: 92, spd: 76, avatar: '🧱' },
-      { id: 'bellingham', n: 'Bellingham', wikiTitle: 'Jude_Bellingham', country: '🏴', tag: 'Box to Box', era: '2020s', pos: 'ЦП', stat: 91, atk: 88, def: 82, spd: 84, avatar: '🌠' },
-      { id: 'pedri', n: 'Pedri', wikiTitle: 'Pedri', country: '🇪🇸', tag: 'Calm', era: '2020s', pos: 'ЦП', stat: 89, atk: 84, def: 76, spd: 82, avatar: '🪶' },
-      { id: 'bruno', n: 'Bruno', wikiTitle: 'Bruno_Fernandes', country: '🇵🇹', tag: 'Risk Pass', era: '2020s', pos: 'ЦП', stat: 89, atk: 88, def: 72, spd: 78, avatar: '🎲' },
+    corePlayers: [
+      { id: 'mid-zidane', n: 'Zidane', wikiTitle: 'Zinedine_Zidane', country: '🇫🇷', tag: 'Aura', era: '2000s', pos: 'ЦП', stat: 97, atk: 92, def: 66, spd: 78, avatar: '🔮' },
+      { id: 'mid-xavi', n: 'Xavi', wikiTitle: 'Xavi', country: '🇪🇸', tag: 'Metronome', era: '2010s', pos: 'ЦП', stat: 95, atk: 86, def: 78, spd: 74, avatar: '🎼' },
+      { id: 'mid-iniesta', n: 'Iniesta', wikiTitle: 'Andrés_Iniesta', country: '🇪🇸', tag: 'Silk', era: '2010s', pos: 'ЦП', stat: 95, atk: 88, def: 72, spd: 82, avatar: '✨' },
+      { id: 'mid-modric', n: 'Modrić', wikiTitle: 'Luka_Modrić', country: '🇭🇷', tag: 'Maestro', era: '2010s', pos: 'ЦП', stat: 94, atk: 88, def: 78, spd: 84, avatar: '🪄' },
+      { id: 'mid-matthaus', n: 'Matthäus', wikiTitle: 'Lothar_Matthäus', country: '🇩🇪', tag: 'Engine', era: '1980s', pos: 'ЦП', stat: 95, atk: 90, def: 84, spd: 84, avatar: '⚙️' },
+      { id: 'mid-platini', n: 'Platini', wikiTitle: 'Michel_Platini', country: '🇫🇷', tag: 'Vision', era: '1980s', pos: 'ЦП', stat: 95, atk: 92, def: 70, spd: 76, avatar: '🎩' },
+      { id: 'mid-zico', n: 'Zico', wikiTitle: 'Zico', country: '🇧🇷', tag: 'Free Kick', era: '1980s', pos: 'ЦП', stat: 94, atk: 93, def: 62, spd: 82, avatar: '🎯' },
+      { id: 'mid-gullit', n: 'Gullit', wikiTitle: 'Ruud_Gullit', country: '🇳🇱', tag: 'Power-Tech', era: '1980s', pos: 'ЦП', stat: 94, atk: 90, def: 78, spd: 86, avatar: '🌪️' },
     ],
+    rotationPlayers: [
+      { id: 'mid-pirlo', n: 'Pirlo', wikiTitle: 'Andrea_Pirlo', country: '🇮🇹', tag: 'Regista', era: '2000s', pos: 'ЦП', stat: 93, atk: 86, def: 72, spd: 70, avatar: '🎻' },
+      { id: 'mid-kaka', n: 'Kaká', wikiTitle: 'Kaká', country: '🇧🇷', tag: 'Ballon d’Or', era: '2000s', pos: 'ЦП', stat: 93, atk: 91, def: 60, spd: 91, avatar: '🌟' },
+      { id: 'mid-kroos', n: 'Kroos', wikiTitle: 'Toni_Kroos', country: '🇩🇪', tag: 'Control', era: '2010s', pos: 'ЦП', stat: 92, atk: 86, def: 76, spd: 76, avatar: '🎯' },
+      { id: 'mid-kdb', n: 'De Bruyne', wikiTitle: 'Kevin_De_Bruyne', country: '🇧🇪', tag: 'Playmaker', era: '2010s', pos: 'ЦП', stat: 94, atk: 92, def: 72, spd: 84, avatar: '🧠' },
+      { id: 'mid-busquets', n: 'Busquets', wikiTitle: 'Sergio_Busquets', country: '🇪🇸', tag: 'Balance', era: '2010s', pos: 'ЦП', stat: 90, atk: 78, def: 90, spd: 68, avatar: '⚙️' },
+      { id: 'mid-gerrard', n: 'Gerrard', wikiTitle: 'Steven_Gerrard', country: '🏴', tag: 'Leader', era: '2000s', pos: 'ЦП', stat: 92, atk: 88, def: 78, spd: 84, avatar: '🫡' },
+      { id: 'mid-lampard', n: 'Lampard', wikiTitle: 'Frank_Lampard', country: '🏴', tag: 'Goal Mid', era: '2000s', pos: 'ЦП', stat: 91, atk: 89, def: 74, spd: 78, avatar: '💡' },
+      { id: 'mid-scholes', n: 'Scholes', wikiTitle: 'Paul_Scholes', country: '🏴', tag: 'Laser Pass', era: '2000s', pos: 'ЦП', stat: 90, atk: 86, def: 72, spd: 74, avatar: '🎯' },
+      { id: 'mid-rijkaard', n: 'Rijkaard', wikiTitle: 'Frank_Rijkaard', country: '🇳🇱', tag: 'Balance', era: '1980s', pos: 'ЦП', stat: 92, atk: 84, def: 88, spd: 78, avatar: '🧱' },
+      { id: 'mid-fabregas', n: 'Fàbregas', wikiTitle: 'Cesc_Fàbregas', country: '🇪🇸', tag: 'Final Ball', era: '2010s', pos: 'ЦП', stat: 90, atk: 86, def: 70, spd: 74, avatar: '🪄' },
+      { id: 'mid-seedorf', n: 'Seedorf', wikiTitle: 'Clarence_Seedorf', country: '🇳🇱', tag: 'All-Terrain', era: '1990s', pos: 'ЦП', stat: 91, atk: 84, def: 78, spd: 82, avatar: '🌪️' },
+      { id: 'mid-nedved', n: 'Nedvěd', wikiTitle: 'Pavel_Nedvěd', country: '🇨🇿', tag: 'Drive', era: '2000s', pos: 'ЦП', stat: 91, atk: 88, def: 72, spd: 84, avatar: '🔥' },
+      { id: 'mid-rodri', n: 'Rodri', wikiTitle: 'Rodri', country: '🇪🇸', tag: 'Anchor', era: '2020s', pos: 'ЦП', stat: 93, atk: 84, def: 92, spd: 76, avatar: '🧱' },
+      { id: 'mid-bellingham', n: 'Bellingham', wikiTitle: 'Jude_Bellingham', country: '🏴', tag: 'Box to Box', era: '2020s', pos: 'ЦП', stat: 91, atk: 88, def: 82, spd: 84, avatar: '🌠' },
+    ],
+    players: [],
   },
   {
     id: 'defenders',
@@ -131,24 +189,32 @@ export const GOAT_CATEGORIES = [
     shortName: 'Захисники',
     icon: '🛡️',
     desc: 'Стіни, лідери й фулбеки, які змінювали саму роль захисника.',
-    players: [
-      { id: 'maldini', n: 'Maldini', wikiTitle: 'Paolo_Maldini', country: '🇮🇹', tag: 'Elegance', era: '2000s', pos: 'ЦЗ', stat: 97, atk: 66, def: 97, spd: 84, avatar: '🛡️' },
-      { id: 'cannavaro', n: 'Cannavaro', wikiTitle: 'Fabio_Cannavaro', country: '🇮🇹', tag: 'Wall', era: '2000s', pos: 'ЦЗ', stat: 94, atk: 60, def: 95, spd: 82, avatar: '🧱' },
-      { id: 'roberto-carlos', n: 'Roberto Carlos', wikiTitle: 'Roberto_Carlos', country: '🇧🇷', tag: 'Rocket Left', era: '2000s', pos: 'ЛБ', stat: 92, atk: 78, def: 89, spd: 93, avatar: '🚀' },
-      { id: 'puyol', n: 'Puyol', wikiTitle: 'Carles_Puyol', country: '🇪🇸', tag: 'Captain', era: '2000s', pos: 'ЦЗ', stat: 92, atk: 62, def: 94, spd: 82, avatar: '💢' },
-      { id: 'terry', n: 'Terry', wikiTitle: 'John_Terry_(footballer)', country: '🏴', tag: 'No Nonsense', era: '2000s', pos: 'ЦЗ', stat: 90, atk: 56, def: 92, spd: 72, avatar: '🧱' },
-      { id: 'vidic', n: 'Vidić', wikiTitle: 'Nemanja_Vidić', country: '🇷🇸', tag: 'Destroyer', era: '2000s', pos: 'ЦЗ', stat: 90, atk: 54, def: 92, spd: 74, avatar: '💥' },
-      { id: 'ramos', n: 'Ramos', wikiTitle: 'Sergio_Ramos', country: '🇪🇸', tag: 'Warrior', era: '2010s', pos: 'ЦЗ', stat: 94, atk: 74, def: 94, spd: 82, avatar: '⚔️' },
-      { id: 'lahm', n: 'Lahm', wikiTitle: 'Philipp_Lahm', country: '🇩🇪', tag: 'Perfect Fullback', era: '2010s', pos: 'ПБ', stat: 92, atk: 70, def: 92, spd: 86, avatar: '📐' },
-      { id: 'van-dijk', n: 'Van Dijk', wikiTitle: 'Virgil_van_Dijk', country: '🇳🇱', tag: 'Colossus', era: '2010s', pos: 'ЦЗ', stat: 93, atk: 64, def: 94, spd: 84, avatar: '🏰' },
-      { id: 'thiago-silva', n: 'Thiago Silva', wikiTitle: 'Thiago_Silva', country: '🇧🇷', tag: 'Professor', era: '2010s', pos: 'ЦЗ', stat: 91, atk: 60, def: 93, spd: 78, avatar: '📚' },
-      { id: 'chiellini', n: 'Chiellini', wikiTitle: 'Giorgio_Chiellini', country: '🇮🇹', tag: 'Gladiator', era: '2010s', pos: 'ЦЗ', stat: 91, atk: 58, def: 93, spd: 74, avatar: '🏛️' },
-      { id: 'dani-alves', n: 'Dani Alves', wikiTitle: 'Dani_Alves', country: '🇧🇷', tag: 'Attacking FB', era: '2010s', pos: 'ПБ', stat: 89, atk: 82, def: 84, spd: 86, avatar: '🎶' },
-      { id: 'hakimi', n: 'Hakimi', wikiTitle: 'Achraf_Hakimi', country: '🇲🇦', tag: 'Jet', era: '2020s', pos: 'ПБ', stat: 89, atk: 84, def: 82, spd: 96, avatar: '🛫' },
-      { id: 'ruben-dias', n: 'Rúben Dias', wikiTitle: 'Rúben_Dias', country: '🇵🇹', tag: 'Commander', era: '2020s', pos: 'ЦЗ', stat: 90, atk: 60, def: 92, spd: 78, avatar: '📢' },
-      { id: 'saliba', n: 'Saliba', wikiTitle: 'William_Saliba', country: '🇫🇷', tag: 'Ice', era: '2020s', pos: 'ЦЗ', stat: 88, atk: 58, def: 90, spd: 82, avatar: '❄️' },
-      { id: 'bastoni', n: 'Bastoni', wikiTitle: 'Alessandro_Bastoni', country: '🇮🇹', tag: 'Progressor', era: '2020s', pos: 'ЦЗ', stat: 87, atk: 66, def: 89, spd: 78, avatar: '🧭' },
+    corePlayers: [
+      { id: 'def-maldini', n: 'Maldini', wikiTitle: 'Paolo_Maldini', country: '🇮🇹', tag: 'Elegance', era: '2000s', pos: 'ЦЗ', stat: 97, atk: 66, def: 97, spd: 84, avatar: '🛡️' },
+      { id: 'def-beckenbauer', n: 'Beckenbauer', wikiTitle: 'Franz_Beckenbauer', country: '🇩🇪', tag: 'Libero', era: '1980s', pos: 'ЦЗ', stat: 97, atk: 74, def: 96, spd: 84, avatar: '👑' },
+      { id: 'def-baresi', n: 'Baresi', wikiTitle: 'Franco_Baresi', country: '🇮🇹', tag: 'Wall', era: '1980s', pos: 'ЦЗ', stat: 95, atk: 60, def: 96, spd: 80, avatar: '🧱' },
+      { id: 'def-roberto-carlos', n: 'Roberto Carlos', wikiTitle: 'Roberto_Carlos', country: '🇧🇷', tag: 'Rocket Left', era: '1990s', pos: 'ЛБ', stat: 92, atk: 78, def: 89, spd: 93, avatar: '🚀' },
+      { id: 'def-cafu', n: 'Cafu', wikiTitle: 'Cafu', country: '🇧🇷', tag: 'Endless Run', era: '1990s', pos: 'ПБ', stat: 92, atk: 76, def: 90, spd: 90, avatar: '🏃' },
+      { id: 'def-ramos', n: 'Ramos', wikiTitle: 'Sergio_Ramos', country: '🇪🇸', tag: 'Warrior', era: '2010s', pos: 'ЦЗ', stat: 94, atk: 74, def: 94, spd: 82, avatar: '⚔️' },
+      { id: 'def-lahm', n: 'Lahm', wikiTitle: 'Philipp_Lahm', country: '🇩🇪', tag: 'Perfect Fullback', era: '2010s', pos: 'ПБ', stat: 92, atk: 70, def: 92, spd: 86, avatar: '📐' },
+      { id: 'def-nesta', n: 'Nesta', wikiTitle: 'Alessandro_Nesta', country: '🇮🇹', tag: 'Pure Read', era: '2000s', pos: 'ЦЗ', stat: 94, atk: 58, def: 95, spd: 80, avatar: '🧠' },
     ],
+    rotationPlayers: [
+      { id: 'def-cannavaro', n: 'Cannavaro', wikiTitle: 'Fabio_Cannavaro', country: '🇮🇹', tag: 'Wall', era: '2000s', pos: 'ЦЗ', stat: 94, atk: 60, def: 95, spd: 82, avatar: '🧱' },
+      { id: 'def-puyol', n: 'Puyol', wikiTitle: 'Carles_Puyol', country: '🇪🇸', tag: 'Captain', era: '2000s', pos: 'ЦЗ', stat: 92, atk: 62, def: 94, spd: 82, avatar: '💢' },
+      { id: 'def-van-dijk', n: 'Van Dijk', wikiTitle: 'Virgil_van_Dijk', country: '🇳🇱', tag: 'Colossus', era: '2010s', pos: 'ЦЗ', stat: 93, atk: 64, def: 94, spd: 84, avatar: '🏰' },
+      { id: 'def-thiago-silva', n: 'Thiago Silva', wikiTitle: 'Thiago_Silva', country: '🇧🇷', tag: 'Professor', era: '2010s', pos: 'ЦЗ', stat: 91, atk: 60, def: 93, spd: 78, avatar: '📚' },
+      { id: 'def-chiellini', n: 'Chiellini', wikiTitle: 'Giorgio_Chiellini', country: '🇮🇹', tag: 'Gladiator', era: '2010s', pos: 'ЦЗ', stat: 91, atk: 58, def: 93, spd: 74, avatar: '🏛️' },
+      { id: 'def-vidic', n: 'Vidić', wikiTitle: 'Nemanja_Vidić', country: '🇷🇸', tag: 'Destroyer', era: '2000s', pos: 'ЦЗ', stat: 90, atk: 54, def: 92, spd: 74, avatar: '💥' },
+      { id: 'def-terry', n: 'Terry', wikiTitle: 'John_Terry_(footballer)', country: '🏴', tag: 'No Nonsense', era: '2000s', pos: 'ЦЗ', stat: 90, atk: 56, def: 92, spd: 72, avatar: '🧱' },
+      { id: 'def-carlos-alberto', n: 'Carlos Alberto', wikiTitle: 'Carlos_Alberto_Torres', country: '🇧🇷', tag: 'Captain RB', era: '1980s', pos: 'ПБ', stat: 92, atk: 74, def: 90, spd: 84, avatar: '🎖️' },
+      { id: 'def-thuram', n: 'Thuram', wikiTitle: 'Lilian_Thuram', country: '🇫🇷', tag: 'Lockdown', era: '1990s', pos: 'ЦЗ', stat: 91, atk: 62, def: 92, spd: 84, avatar: '🔒' },
+      { id: 'def-zanetti', n: 'Zanetti', wikiTitle: 'Javier_Zanetti', country: '🇦🇷', tag: 'Engine RB', era: '2000s', pos: 'ПБ', stat: 91, atk: 74, def: 90, spd: 86, avatar: '⚙️' },
+      { id: 'def-dani-alves', n: 'Dani Alves', wikiTitle: 'Dani_Alves', country: '🇧🇷', tag: 'Attacking FB', era: '2010s', pos: 'ПБ', stat: 89, atk: 82, def: 84, spd: 86, avatar: '🎶' },
+      { id: 'def-ruben-dias', n: 'Rúben Dias', wikiTitle: 'Rúben_Dias', country: '🇵🇹', tag: 'Commander', era: '2020s', pos: 'ЦЗ', stat: 90, atk: 60, def: 92, spd: 78, avatar: '📢' },
+      { id: 'def-kompany', n: 'Kompany', wikiTitle: 'Vincent_Kompany', country: '🇧🇪', tag: 'Command', era: '2010s', pos: 'ЦЗ', stat: 90, atk: 62, def: 91, spd: 78, avatar: '🗿' },
+    ],
+    players: [],
   },
   {
     id: 'goalkeepers',
@@ -156,24 +222,30 @@ export const GOAT_CATEGORIES = [
     shortName: 'Воротарі',
     icon: '🧤',
     desc: 'Реакція, позиціонка, плеймейкінг ногами і великі сейви.',
-    players: [
-      { id: 'buffon', n: 'Buffon', wikiTitle: 'Gianluigi_Buffon', country: '🇮🇹', tag: 'Legend', era: '2000s', pos: 'ВРТ', stat: 97, atk: 56, def: 97, spd: 55, avatar: '🏆' },
-      { id: 'casillas', n: 'Casillas', wikiTitle: 'Iker_Casillas', country: '🇪🇸', tag: 'Saint', era: '2000s', pos: 'ВРТ', stat: 95, atk: 54, def: 96, spd: 56, avatar: '⛪' },
-      { id: 'cech', n: 'Čech', wikiTitle: 'Petr_Čech', country: '🇨🇿', tag: 'Helmet', era: '2000s', pos: 'ВРТ', stat: 93, atk: 52, def: 94, spd: 54, avatar: '⛑️' },
-      { id: 'kahn', n: 'Kahn', wikiTitle: 'Oliver_Kahn', country: '🇩🇪', tag: 'Titan', era: '2000s', pos: 'ВРТ', stat: 94, atk: 54, def: 95, spd: 54, avatar: '🦍' },
-      { id: 'van-der-sar', n: 'Van der Sar', wikiTitle: 'Edwin_van_der_Sar', country: '🇳🇱', tag: 'Calm', era: '2000s', pos: 'ВРТ', stat: 92, atk: 52, def: 93, spd: 54, avatar: '🧊' },
-      { id: 'dida', n: 'Dida', wikiTitle: 'Dida_(footballer,_born_1973)', country: '🇧🇷', tag: 'Reflex', era: '2000s', pos: 'ВРТ', stat: 90, atk: 50, def: 91, spd: 52, avatar: '🧤' },
-      { id: 'neuer', n: 'Neuer', wikiTitle: 'Manuel_Neuer', country: '🇩🇪', tag: 'Sweeper', era: '2010s', pos: 'ВРТ', stat: 96, atk: 62, def: 96, spd: 65, avatar: '🦅' },
-      { id: 'courtois', n: 'Courtois', wikiTitle: 'Thibaut_Courtois', country: '🇧🇪', tag: 'Giant', era: '2010s', pos: 'ВРТ', stat: 94, atk: 52, def: 95, spd: 54, avatar: '🧱' },
-      { id: 'oblak', n: 'Oblak', wikiTitle: 'Jan_Oblak', country: '🇸🇮', tag: 'Machine', era: '2010s', pos: 'ВРТ', stat: 92, atk: 50, def: 94, spd: 54, avatar: '🤖' },
-      { id: 'navas', n: 'Navas', wikiTitle: 'Keylor_Navas', country: '🇨🇷', tag: 'Big Nights', era: '2010s', pos: 'ВРТ', stat: 91, atk: 52, def: 92, spd: 58, avatar: '🌙' },
-      { id: 'ter-stegen', n: 'Ter Stegen', wikiTitle: 'Marc-André_ter_Stegen', country: '🇩🇪', tag: 'Distribution', era: '2010s', pos: 'ВРТ', stat: 91, atk: 62, def: 92, spd: 60, avatar: '🎯' },
-      { id: 'lloris', n: 'Lloris', wikiTitle: 'Hugo_Lloris', country: '🇫🇷', tag: 'Captain', era: '2010s', pos: 'ВРТ', stat: 89, atk: 50, def: 90, spd: 58, avatar: '🫡' },
-      { id: 'donnarumma', n: 'Donnarumma', wikiTitle: 'Gianluigi_Donnarumma', country: '🇮🇹', tag: 'Reach', era: '2020s', pos: 'ВРТ', stat: 92, atk: 52, def: 93, spd: 58, avatar: '🕸️' },
-      { id: 'alisson', n: 'Alisson', wikiTitle: 'Alisson', country: '🇧🇷', tag: '1v1 King', era: '2020s', pos: 'ВРТ', stat: 92, atk: 56, def: 93, spd: 60, avatar: '🧱' },
-      { id: 'ederson', n: 'Ederson', wikiTitle: 'Ederson_(footballer,_born_1993)', country: '🇧🇷', tag: 'Launcher', era: '2020s', pos: 'ВРТ', stat: 90, atk: 66, def: 91, spd: 62, avatar: '🎯' },
-      { id: 'maignan', n: 'Maignan', wikiTitle: 'Mike_Maignan', country: '🇫🇷', tag: 'Spring', era: '2020s', pos: 'ВРТ', stat: 89, atk: 52, def: 91, spd: 58, avatar: '🧤' },
+    corePlayers: [
+      { id: 'gk-buffon', n: 'Buffon', wikiTitle: 'Gianluigi_Buffon', country: '🇮🇹', tag: 'Legend', era: '2000s', pos: 'ВРТ', stat: 97, atk: 56, def: 97, spd: 55, avatar: '🏆' },
+      { id: 'gk-neuer', n: 'Neuer', wikiTitle: 'Manuel_Neuer', country: '🇩🇪', tag: 'Sweeper', era: '2010s', pos: 'ВРТ', stat: 96, atk: 62, def: 96, spd: 65, avatar: '🦅' },
+      { id: 'gk-casillas', n: 'Casillas', wikiTitle: 'Iker_Casillas', country: '🇪🇸', tag: 'Saint', era: '2000s', pos: 'ВРТ', stat: 95, atk: 54, def: 96, spd: 56, avatar: '⛪' },
+      { id: 'gk-yashin', n: 'Yashin', wikiTitle: 'Lev_Yashin', country: '🇷🇺', tag: 'Black Spider', era: '1980s', pos: 'ВРТ', stat: 98, atk: 50, def: 98, spd: 56, avatar: '🕷️' },
+      { id: 'gk-zoff', n: 'Zoff', wikiTitle: 'Dino_Zoff', country: '🇮🇹', tag: 'Calm Giant', era: '1980s', pos: 'ВРТ', stat: 95, atk: 48, def: 96, spd: 52, avatar: '🧤' },
+      { id: 'gk-kahn', n: 'Kahn', wikiTitle: 'Oliver_Kahn', country: '🇩🇪', tag: 'Titan', era: '2000s', pos: 'ВРТ', stat: 94, atk: 54, def: 95, spd: 54, avatar: '🦍' },
+      { id: 'gk-van-der-sar', n: 'Van der Sar', wikiTitle: 'Edwin_van_der_Sar', country: '🇳🇱', tag: 'Calm', era: '2000s', pos: 'ВРТ', stat: 92, atk: 52, def: 93, spd: 54, avatar: '🧊' },
+      { id: 'gk-schmeichel', n: 'Schmeichel', wikiTitle: 'Peter_Schmeichel', country: '🇩🇰', tag: 'Presence', era: '1990s', pos: 'ВРТ', stat: 95, atk: 56, def: 95, spd: 56, avatar: '🦁' },
     ],
+    rotationPlayers: [
+      { id: 'gk-cech', n: 'Čech', wikiTitle: 'Petr_Čech', country: '🇨🇿', tag: 'Helmet', era: '2000s', pos: 'ВРТ', stat: 93, atk: 52, def: 94, spd: 54, avatar: '⛑️' },
+      { id: 'gk-courtois', n: 'Courtois', wikiTitle: 'Thibaut_Courtois', country: '🇧🇪', tag: 'Giant', era: '2010s', pos: 'ВРТ', stat: 94, atk: 52, def: 95, spd: 54, avatar: '🧱' },
+      { id: 'gk-oblak', n: 'Oblak', wikiTitle: 'Jan_Oblak', country: '🇸🇮', tag: 'Machine', era: '2010s', pos: 'ВРТ', stat: 92, atk: 50, def: 94, spd: 54, avatar: '🤖' },
+      { id: 'gk-navas', n: 'Navas', wikiTitle: 'Keylor_Navas', country: '🇨🇷', tag: 'Big Nights', era: '2010s', pos: 'ВРТ', stat: 91, atk: 52, def: 92, spd: 58, avatar: '🌙' },
+      { id: 'gk-dida', n: 'Dida', wikiTitle: 'Dida_(footballer,_born_1973)', country: '🇧🇷', tag: 'Reflex', era: '2000s', pos: 'ВРТ', stat: 90, atk: 50, def: 91, spd: 52, avatar: '🧤' },
+      { id: 'gk-ter-stegen', n: 'Ter Stegen', wikiTitle: 'Marc-André_ter_Stegen', country: '🇩🇪', tag: 'Distribution', era: '2010s', pos: 'ВРТ', stat: 91, atk: 62, def: 92, spd: 60, avatar: '🎯' },
+      { id: 'gk-alisson', n: 'Alisson', wikiTitle: 'Alisson', country: '🇧🇷', tag: '1v1 King', era: '2020s', pos: 'ВРТ', stat: 92, atk: 56, def: 93, spd: 60, avatar: '🧱' },
+      { id: 'gk-seaman', n: 'Seaman', wikiTitle: 'David_Seaman', country: '🏴', tag: 'Big Frame', era: '1990s', pos: 'ВРТ', stat: 90, atk: 48, def: 92, spd: 52, avatar: '🧔' },
+      { id: 'gk-taffarel', n: 'Taffarel', wikiTitle: 'Taffarel', country: '🇧🇷', tag: 'World Cup', era: '1990s', pos: 'ВРТ', stat: 91, atk: 48, def: 92, spd: 52, avatar: '🌍' },
+      { id: 'gk-maier', n: 'Maier', wikiTitle: 'Sepp_Maier', country: '🇩🇪', tag: 'Cat', era: '1980s', pos: 'ВРТ', stat: 93, atk: 48, def: 94, spd: 52, avatar: '🐈' },
+      { id: 'gk-barthez', n: 'Barthez', wikiTitle: 'Fabien_Barthez', country: '🇫🇷', tag: 'Big Stage', era: '2000s', pos: 'ВРТ', stat: 90, atk: 50, def: 91, spd: 54, avatar: '🧠' },
+    ],
+    players: [],
   },
   {
     id: 'dribblers',
@@ -181,24 +253,31 @@ export const GOAT_CATEGORIES = [
     shortName: 'Дриблери',
     icon: '✨',
     desc: 'Чисте шоу з м’ячем. Хто твій король магії і 1v1 хаосу?',
-    players: [
-      { id: 'ronaldinho', n: 'Ronaldinho', wikiTitle: 'Ronaldinho', country: '🇧🇷', tag: 'Magic', era: '2000s', pos: 'ЛП', stat: 97, atk: 95, def: 42, spd: 92, avatar: '✨' },
-      { id: 'kaka-d', n: 'Kaká', wikiTitle: 'Kaká', country: '🇧🇷', tag: 'Stride', era: '2000s', pos: 'ЦП', stat: 93, atk: 91, def: 58, spd: 92, avatar: '🌟' },
-      { id: 'cr7-d', n: 'Cristiano', wikiTitle: 'Cristiano_Ronaldo', country: '🇵🇹', tag: 'Explosive', era: '2000s', pos: 'ПАП', stat: 96, atk: 96, def: 40, spd: 95, avatar: '🚀' },
-      { id: 'figo', n: 'Figo', wikiTitle: 'Luís_Figo', country: '🇵🇹', tag: 'Feints', era: '2000s', pos: 'ПАП', stat: 91, atk: 89, def: 48, spd: 88, avatar: '🎩' },
-      { id: 'quaresma', n: 'Quaresma', wikiTitle: 'Ricardo_Quaresma', country: '🇵🇹', tag: 'Trivela', era: '2000s', pos: 'ПАП', stat: 88, atk: 86, def: 36, spd: 89, avatar: '🪄' },
-      { id: 'ribery', n: 'Ribéry', wikiTitle: 'Franck_Ribéry', country: '🇫🇷', tag: 'Twist', era: '2000s', pos: 'ЛП', stat: 90, atk: 88, def: 40, spd: 89, avatar: '🌀' },
-      { id: 'messi-d', n: 'Messi', wikiTitle: 'Lionel_Messi', country: '🇦🇷', tag: 'Close Control', era: '2010s', pos: 'НАП', stat: 98, atk: 97, def: 46, spd: 91, avatar: '🐐' },
-      { id: 'neymar', n: 'Neymar', wikiTitle: 'Neymar', country: '🇧🇷', tag: 'Streetball', era: '2010s', pos: 'ЛП', stat: 94, atk: 93, def: 40, spd: 92, avatar: '🎭' },
-      { id: 'hazard', n: 'Hazard', wikiTitle: 'Eden_Hazard', country: '🇧🇪', tag: 'Low Center', era: '2010s', pos: 'ЛП', stat: 92, atk: 91, def: 40, spd: 91, avatar: '🌀' },
-      { id: 'salah', n: 'Salah', wikiTitle: 'Mohamed_Salah', country: '🇪🇬', tag: 'Cut Inside', era: '2010s', pos: 'ПАП', stat: 93, atk: 93, def: 38, spd: 94, avatar: '👑' },
-      { id: 'di-maria', n: 'Di María', wikiTitle: 'Ángel_Di_María', country: '🇦🇷', tag: 'Slalom', era: '2010s', pos: 'ПАП', stat: 90, atk: 88, def: 40, spd: 90, avatar: '🪽' },
-      { id: 'bale', n: 'Bale', wikiTitle: 'Gareth_Bale', country: '🏴', tag: 'Power Run', era: '2010s', pos: 'ПАП', stat: 91, atk: 91, def: 38, spd: 95, avatar: '🏃' },
-      { id: 'vinicius', n: 'Vinícius', wikiTitle: 'Vinícius_Júnior', country: '🇧🇷', tag: 'Chaos', era: '2020s', pos: 'ЛП', stat: 91, atk: 90, def: 38, spd: 96, avatar: '💨' },
-      { id: 'mbappe-d', n: 'Mbappé', wikiTitle: 'Kylian_Mbappé', country: '🇫🇷', tag: 'Turbo', era: '2020s', pos: 'НАП', stat: 95, atk: 95, def: 38, spd: 99, avatar: '🚄' },
-      { id: 'musiala', n: 'Musiala', wikiTitle: 'Jamal_Musiala', country: '🇩🇪', tag: 'Glide', era: '2020s', pos: 'ЦП', stat: 90, atk: 88, def: 42, spd: 89, avatar: '🫧' },
-      { id: 'yamal', n: 'Yamal', wikiTitle: 'Lamine_Yamal', country: '🇪🇸', tag: 'Prodigy', era: '2020s', pos: 'ПАП', stat: 89, atk: 88, def: 38, spd: 91, avatar: '🌠' },
+    corePlayers: [
+      { id: 'dr-maradona', n: 'Maradona', wikiTitle: 'Diego_Maradona', country: '🇦🇷', tag: 'God Mode', era: '1980s', pos: 'НАП', stat: 99, atk: 97, def: 50, spd: 94, avatar: '✨' },
+      { id: 'dr-messi', n: 'Messi', wikiTitle: 'Lionel_Messi', country: '🇦🇷', tag: 'Close Control', era: '2010s', pos: 'НАП', stat: 98, atk: 97, def: 46, spd: 91, avatar: '🐐' },
+      { id: 'dr-ronaldinho', n: 'Ronaldinho', wikiTitle: 'Ronaldinho', country: '🇧🇷', tag: 'Magic', era: '2000s', pos: 'ЛП', stat: 97, atk: 95, def: 42, spd: 92, avatar: '✨' },
+      { id: 'dr-garrincha', n: 'Garrincha', wikiTitle: 'Garrincha', country: '🇧🇷', tag: 'Chaos Feet', era: '1980s', pos: 'ПАП', stat: 98, atk: 94, def: 38, spd: 95, avatar: '🌀' },
+      { id: 'dr-neymar', n: 'Neymar', wikiTitle: 'Neymar', country: '🇧🇷', tag: 'Streetball', era: '2010s', pos: 'ЛП', stat: 94, atk: 93, def: 40, spd: 92, avatar: '🎭' },
+      { id: 'dr-cr7', n: 'Cristiano', wikiTitle: 'Cristiano_Ronaldo', country: '🇵🇹', tag: 'Explosive', era: '2000s', pos: 'ПАП', stat: 96, atk: 96, def: 40, spd: 95, avatar: '🚀' },
+      { id: 'dr-best', n: 'George Best', wikiTitle: 'George_Best', country: '🏴', tag: 'Street Elegance', era: '1980s', pos: 'ПАП', stat: 97, atk: 94, def: 38, spd: 93, avatar: '🎩' },
+      { id: 'dr-zidane', n: 'Zidane', wikiTitle: 'Zinedine_Zidane', country: '🇫🇷', tag: 'Glide', era: '2000s', pos: 'ЦП', stat: 96, atk: 92, def: 66, spd: 78, avatar: '🔮' },
     ],
+    rotationPlayers: [
+      { id: 'dr-hazard', n: 'Hazard', wikiTitle: 'Eden_Hazard', country: '🇧🇪', tag: 'Low Center', era: '2010s', pos: 'ЛП', stat: 92, atk: 91, def: 40, spd: 91, avatar: '🌀' },
+      { id: 'dr-ribery', n: 'Ribéry', wikiTitle: 'Franck_Ribéry', country: '🇫🇷', tag: 'Twist', era: '2000s', pos: 'ЛП', stat: 90, atk: 88, def: 40, spd: 89, avatar: '🌀' },
+      { id: 'dr-figo', n: 'Figo', wikiTitle: 'Luís_Figo', country: '🇵🇹', tag: 'Feints', era: '2000s', pos: 'ПАП', stat: 91, atk: 89, def: 48, spd: 88, avatar: '🎩' },
+      { id: 'dr-salah', n: 'Salah', wikiTitle: 'Mohamed_Salah', country: '🇪🇬', tag: 'Cut Inside', era: '2010s', pos: 'ПАП', stat: 93, atk: 93, def: 38, spd: 94, avatar: '👑' },
+      { id: 'dr-di-maria', n: 'Di María', wikiTitle: 'Ángel_Di_María', country: '🇦🇷', tag: 'Slalom', era: '2010s', pos: 'ПАП', stat: 90, atk: 88, def: 40, spd: 90, avatar: '🪽' },
+      { id: 'dr-vinicius', n: 'Vinícius', wikiTitle: 'Vinícius_Júnior', country: '🇧🇷', tag: 'Chaos', era: '2020s', pos: 'ЛП', stat: 91, atk: 90, def: 38, spd: 96, avatar: '💨' },
+      { id: 'dr-mbappe', n: 'Mbappé', wikiTitle: 'Kylian_Mbappé', country: '🇫🇷', tag: 'Turbo', era: '2020s', pos: 'НАП', stat: 95, atk: 95, def: 38, spd: 99, avatar: '🚄' },
+      { id: 'dr-kaka', n: 'Kaká', wikiTitle: 'Kaká', country: '🇧🇷', tag: 'Stride', era: '2000s', pos: 'ЦП', stat: 93, atk: 91, def: 58, spd: 92, avatar: '🌟' },
+      { id: 'dr-musiala', n: 'Musiala', wikiTitle: 'Jamal_Musiala', country: '🇩🇪', tag: 'Glide', era: '2020s', pos: 'ЦП', stat: 90, atk: 88, def: 42, spd: 89, avatar: '🫧' },
+      { id: 'dr-bale', n: 'Bale', wikiTitle: 'Gareth_Bale', country: '🏴', tag: 'Power Run', era: '2010s', pos: 'ПАП', stat: 91, atk: 91, def: 38, spd: 95, avatar: '🏃' },
+      { id: 'dr-yamal', n: 'Yamal', wikiTitle: 'Lamine_Yamal', country: '🇪🇸', tag: 'Prodigy', era: '2020s', pos: 'ПАП', stat: 89, atk: 88, def: 38, spd: 91, avatar: '🌠' },
+      { id: 'dr-quaresma', n: 'Quaresma', wikiTitle: 'Ricardo_Quaresma', country: '🇵🇹', tag: 'Trivela', era: '2000s', pos: 'ПАП', stat: 88, atk: 86, def: 36, spd: 89, avatar: '🪄' },
+    ],
+    players: [],
   },
 ];
 

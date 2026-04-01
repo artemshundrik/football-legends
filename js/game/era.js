@@ -3,7 +3,44 @@ import { escapeHtml } from './utils.js';
 import { enhancePlayerPhotos, createFaceMarkup, createTeamBadge, createTeamStarBadge } from './media.js';
 import { recordMatchProfile } from './profile.js';
 
+const TEAM_SPOTLIGHTS = {
+  psg25: 'Перша по-справжньому цілісна версія PSG: не лише зірки, а структура, пресинг і глибина.',
+  mancity23: 'Тріплет Гвардіоли, де контроль м’яча став зброєю, а не просто стилем.',
+  barca11: 'Один із найчистіших піків позиційного футболу в історії гри.',
+  inter10: 'Команда, яка вибила Барсу й закрила тріплет через дисципліну, вертикаль і холод.',
+  chelsea12: 'Аутсайдерський чемпіонський похід у ЛЧ, який тримався на характері й великих сейвах.',
+  real17: 'Перша команда ери ЛЧ, що захистила титул і зробила це з шаленою глибиною складу.',
+  bayern20: 'Флік довів Баварію до тріплету на максимальному темпі й тотальному пресингу.',
+  liverpool19: 'Пік енергії Клоппа: темп, пресинг і великі вечори в Європі.',
+  barca06: 'Ранній великий Барселонський цикл, де магія Роналдіньйо задала тон цілій епосі.',
+  barca09: 'Секступл Гвардіоли, який перезібрав уявлення про домінування.',
+  milan03: 'Мілан, де інтелект, баланс і досвід були сильнішими за хаос.',
+  real02: 'Галактікос у їхньому романтичному піку: стиль, вага і великі особистості.',
+  juventus03: 'Машина Ліппі, що душила темп і змушувала суперника грати за її правилами.',
+  porto04: 'Один із найвідоміших андердог-тріумфів Ліги чемпіонів.',
+  liverpool05: 'Команда, яку назавжди пам’ятають через Стамбул і неможливе повернення.',
+  arsenal04: 'Непереможні Венгера: сезон Прем’єр-ліги без жодної поразки.',
+  manutd08: 'Пік пізнього Фергюсона: темп, глибина і баланс навколо Роналду.',
+  spain08: 'Покоління, яке запустило золоту еру збірної Іспанії.',
+  manutd99: 'Тріплет Фергюсона й один із найзнаковіших камбеків у фіналі ЛЧ.',
+  spain10: 'Чемпіони світу, які зробили контроль м’яча мовою великого турніру.',
+  france18: 'Збірна, яка виграла ЧС завдяки темпу, вертикалі і холоднокровності в плей-оф.',
+  germany14: 'Німеччина Льова на піку структури, глибини й турнірної зрілості.',
+  france98: 'Перше чемпіонство світу для Франції й народження команди епохи Зідана.',
+  france00: 'Рідкісний випадок, коли чемпіон світу одразу забрав і Євро.',
+  italy06: 'Оборонна майстерність, турнірна холодність і великий Buffon-Cannavaro run.',
+  brazil02: 'Остання чемпіонська Бразилія з тріо Ronaldo, Rivaldo і Ronaldinho.',
+  argentina22: 'Найемоційніша збірна турніру, яка довела історію Мессі до титулу.',
+  real22: 'Команда серії ремонтад, яка зламала одразу кілька грандів на шляху до кубка.',
+  chelsea21: 'Тухель за кілька місяців зібрав із Челсі одну з найщільніших оборон Європи.',
+  bayern13: 'Тріплет, де Роббен і Рібері стали обличчям домінації Баварії.',
+};
+
 export function createEraController(state, { goTo, goToEra }) {
+  function getTeamSpotlight(team) {
+    return TEAM_SPOTLIGHTS[team.id] || team.abilityDesc || 'Команда з яскравою ідентичністю, великим ядром і власним сценарієм матчу.';
+  }
+
   function getTeamLineupCoords(players) {
     const spreadLine = (linePlayers, y, left = 18, right = 82) => {
       if (!linePlayers.length) return [];
@@ -252,6 +289,7 @@ export function createEraController(state, { goTo, goToEra }) {
     list.innerHTML = '';
     teams.forEach((team, i) => {
       const abilityTitle = team.abilityTitle || team.ability?.split(':')[0] || '';
+      const spotlight = getTeamSpotlight(team);
       const div = document.createElement('div');
       div.className = 'team-row anim-in' + (team.id === state.selectedTeamId ? ' selected' : '');
       div.style.animationDelay = (i * 0.06) + 's';
@@ -264,10 +302,14 @@ export function createEraController(state, { goTo, goToEra }) {
           </div>
           <div class="team-row-bottom">
             ${createTeamStarBadge(team)}
-            <div class="team-row-ability-tag">★ ${escapeHtml(abilityTitle)}</div>
           </div>
         </div>
         <div class="team-row-rating">${team.rating}</div>
+        <div class="team-row-spotlight">
+          <div class="team-row-divider"></div>
+          <div class="team-row-ability-title">★ ${escapeHtml(abilityTitle)}</div>
+          <div class="team-row-spotlight-copy">${escapeHtml(spotlight)}</div>
+        </div>
       `;
       div.addEventListener('click', event => {
         if (event.target.closest('[data-team-preview]')) return;

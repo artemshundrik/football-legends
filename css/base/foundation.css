@@ -1,0 +1,137 @@
+:root {
+  --color-bg: #060606;
+  --color-surface-1: #101010;
+  --color-surface-2: #171717;
+  --color-border-soft: rgba(255,255,255,0.07);
+  --color-border-strong: rgba(255,255,255,0.12);
+  --color-text-primary: #f3f3f1;
+  --color-text-secondary: rgba(243,243,241,0.72);
+  --color-text-muted: rgba(243,243,241,0.38);
+  --color-accent: #c8f035;
+  --color-accent-soft: rgba(200,240,53,0.12);
+  --color-accent-strong: rgba(200,240,53,0.22);
+  --color-danger: #ff5757;
+  --color-gold: #f5c842;
+  --color-blue: #7d7d7d;
+  --color-overlay: #090909;
+  --glass-fill-strong: #141414;
+  --glass-fill-soft: #141414;
+  --glass-stroke: rgba(255,255,255,0.08);
+  --glass-highlight: transparent;
+  --glass-shadow: none;
+  --glass-blur-lg: 0px;
+  --glass-blur-md: 0px;
+
+  --bg: var(--color-bg);
+  --surface: var(--color-surface-1);
+  --surface2: var(--color-surface-2);
+  --border: var(--color-border-soft);
+  --accent: var(--color-accent);
+  --accent-dim: var(--color-accent-soft);
+  --text: var(--color-text-primary);
+  --muted: var(--color-text-muted);
+  --danger: var(--color-danger);
+  --gold: var(--color-gold);
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 22px;
+  --radius-xl: 24px;
+  --radius-2xl: 28px;
+  --radius-pill: 999px;
+  --radius-button: 20px;
+
+  --font-display: 'Manrope', sans-serif;
+  --font-body: 'Manrope', sans-serif;
+  --text-label: 10px;
+  --text-caption: 11px;
+  --text-body: 12px;
+  --text-title: 14px;
+  --text-hero: 42px;
+
+  --shadow-card: 0 10px 28px rgba(0,0,0,0.24);
+  --shadow-hero: 0 22px 60px rgba(0,0,0,0.34);
+  --shadow-elevated: 0 8px 40px rgba(0, 0, 0, 0.55);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --ui-safe-top: var(--safe-top);
+  --ui-safe-bottom: var(--safe-bottom);
+  --header-height: 56px;
+  --bottom-nav-row-height: 64px;
+  --bottom-nav-offset: calc(var(--bottom-nav-row-height) + 10px);
+
+  --tier-legend-bg:
+    radial-gradient(circle at top, rgba(255,236,166,0.28), transparent 28%),
+    linear-gradient(155deg, #281246 0%, #51308a 34%, #b78d2f 100%);
+  --tier-legend-border: rgba(245,200,66,0.4);
+  --tier-legend-shadow: 0 10px 24px rgba(70,32,130,0.38);
+  --tier-gold-bg:
+    radial-gradient(circle at top, rgba(255,248,214,0.25), transparent 28%),
+    linear-gradient(155deg, #2e2108 0%, #7a5a10 45%, #d7b34a 100%);
+  --tier-gold-border: rgba(245,200,66,0.35);
+  --tier-gold-shadow: 0 10px 24px rgba(180,130,20,0.28);
+  --tier-silver-bg:
+    radial-gradient(circle at top, rgba(255,255,255,0.2), transparent 28%),
+    linear-gradient(155deg, #161a24 0%, #4d5872 50%, #a0aac0 100%);
+  --tier-silver-border: rgba(150,160,190,0.35);
+  --tier-silver-shadow: 0 10px 24px rgba(60,70,120,0.3);
+  --tier-bronze-bg:
+    radial-gradient(circle at top, rgba(255,230,215,0.18), transparent 28%),
+    linear-gradient(155deg, #26140b 0%, #6d3615 44%, #b66d3b 100%);
+  --tier-bronze-border: rgba(180,110,50,0.35);
+  --tier-bronze-shadow: 0 10px 24px rgba(120,70,20,0.3);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  height: 100%;
+  min-height: 100svh;
+  min-height: 100dvh;
+  height: -webkit-fill-available;
+  background-color: #0b0b0b;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 14px;
+  overflow: hidden;
+  overscroll-behavior: none;
+  color-scheme: dark;
+}
+
+body.app-browser {
+  --ui-safe-top: 0px;
+  --ui-safe-bottom: 0px;
+}
+
+body.app-standalone {
+  --ui-safe-top: var(--safe-top);
+  --ui-safe-bottom: var(--safe-bottom);
+}
+
+#app {
+  height: 100%;
+  min-height: 100svh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  background-color: #0b0b0b;
+  background-image:
+    radial-gradient(ellipse 160% 40% at top center, rgba(200,240,53,0.22) 0%, transparent 100%),
+    radial-gradient(circle at top right, rgba(200,240,53,0.12), transparent 26%),
+    linear-gradient(180deg, #0b0b0b 0%, #121212 100%);
+}
+#app::before,
+#app::after {
+  display: none;
+}
+
