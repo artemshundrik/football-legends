@@ -14,6 +14,7 @@ const GOAT_ERA_MODES = [
 ];
 
 const GOAT_UI_LABEL = 'GOAT-СІТКА';
+let goatPoolScrollBound = false;
 
 export function createGoatController(state, { goTo }) {
   function formatGoatEra(era) {
@@ -120,6 +121,84 @@ export function createGoatController(state, { goTo }) {
       .join('');
   }
 
+  function renderGoatPool() {
+    if (!state.currentGoatCategory?.players?.length) return;
+    const overlay = document.getElementById('goat-pool-overlay');
+    const coreIds = new Set((state.currentGoatCategory.corePlayers || []).map(player => player.id));
+    const hasCorePools = coreIds.size > 0;
+    const corePlayers = hasCorePools
+      ? state.currentGoatCategory.players.filter(player => coreIds.has(player.id))
+      : state.currentGoatCategory.players;
+    const rotationPlayers = hasCorePools
+      ? state.currentGoatCategory.players.filter(player => !coreIds.has(player.id))
+      : [];
+    const orderedPlayers = hasCorePools ? [...corePlayers, ...rotationPlayers] : corePlayers;
+
+    function renderPoolItems(players, tone = 'neutral') {
+      return players
+        .map(player => {
+          const isCore = hasCorePools && coreIds.has(player.id);
+          const badge = isCore
+            ? '<div class="goat-pool-item-badge core">Core</div>'
+            : '';
+          return `
+          <div class="goat-pool-item">
+            ${createWikiFaceMarkup(player, `goat-pool-item-backdrop goat-pool-item-face-${tone}`)}
+            <div class="goat-pool-item-topline">
+              <div class="goat-pool-item-flag">${escapeHtml(player.country || '⚽')}</div>
+              ${badge}
+            </div>
+            <div class="goat-pool-item-art">
+              ${createWikiFaceMarkup(player, `goat-pool-item-face goat-pool-item-face-${tone}`)}
+            </div>
+            <div class="goat-pool-item-copy">
+              <div class="goat-pool-item-name">${escapeHtml(player.n)}</div>
+              <div class="goat-pool-item-tag">${escapeHtml(player.tag || '')}</div>
+              <div class="goat-pool-item-meta">${escapeHtml(formatGoatEra(player.era) || 'GOAT')} · ${escapeHtml(player.pos || '')}</div>
+            </div>
+          </div>
+        `;
+        })
+        .join('');
+    }
+
+    document.getElementById('goat-pool-kicker').textContent = 'Учасники сітки';
+    document.getElementById('goat-pool-title').textContent = state.currentGoatCategory.shortName || state.currentGoatCategory.name;
+    document.getElementById('goat-pool-copy').textContent = `Поточний список із ${state.currentGoatCategory.players.length} гравців для цього запуску.`;
+    document.getElementById('goat-pool-grid').innerHTML = `<div class="goat-pool-grid-block">${renderPoolItems(orderedPlayers, hasCorePools ? 'core' : 'neutral')}</div>`;
+    enhancePlayerPhotos(overlay);
+  }
+
+  function ensureGoatPoolScrollBehavior() {
+    if (goatPoolScrollBound) return;
+    const overlay = document.getElementById('goat-pool-overlay');
+    const grid = document.getElementById('goat-pool-grid');
+    if (!overlay || !grid) return;
+
+    grid.addEventListener('scroll', () => {
+      if (grid.scrollTop > 6) overlay.classList.add('is-expanded');
+    }, { passive: true });
+
+    goatPoolScrollBound = true;
+  }
+
+  function openGoatPool() {
+    if (!state.currentGoatCategory?.players?.length) return;
+    renderGoatPool();
+    const overlay = document.getElementById('goat-pool-overlay');
+    const grid = document.getElementById('goat-pool-grid');
+    ensureGoatPoolScrollBehavior();
+    overlay.classList.remove('is-expanded');
+    if (grid) grid.scrollTop = 0;
+    overlay.classList.add('show');
+  }
+
+  function closeGoatPool() {
+    const overlay = document.getElementById('goat-pool-overlay');
+    overlay.classList.remove('show');
+    overlay.classList.remove('is-expanded');
+  }
+
   function renderGoatRound() {
     const currentPairs = state.goatRounds[state.goatRoundIndex] || [];
     const pair = currentPairs[state.goatPairIndex];
@@ -216,6 +295,7 @@ export function createGoatController(state, { goTo }) {
 
   function goToGoatCategories() {
     document.getElementById('goat-result-overlay').classList.remove('show');
+    closeGoatPool();
     renderGoatCategories();
     renderGoatEraTabs();
     goTo('goat-cats');
@@ -236,17 +316,20 @@ export function createGoatController(state, { goTo }) {
     state.goatHistory = [];
     state.goatBracketSize = state.currentGoatCategory.players.length;
     document.getElementById('goat-result-overlay').classList.remove('show');
+    closeGoatPool();
     goTo('goat');
     renderGoatRound();
   }
 
   function playGoatAgain() {
     document.getElementById('goat-result-overlay').classList.remove('show');
+    closeGoatPool();
     if (state.currentGoatCategoryId) startGoatBracket(state.currentGoatCategoryId);
   }
 
   function goToGoatCategoriesFromResult() {
     document.getElementById('goat-result-overlay').classList.remove('show');
+    closeGoatPool();
     goToGoatCategories();
   }
 
@@ -276,5 +359,5 @@ export function createGoatController(state, { goTo }) {
     }
   }
 
-  return { GOAT_ERA_MODES, goToGoatCategories, startGoatBracket, playGoatAgain, goToGoatCategoriesFromResult, setGoatEraMode, shareGoatResult };
+  return { GOAT_ERA_MODES, goToGoatCategories, startGoatBracket, playGoatAgain, goToGoatCategoriesFromResult, setGoatEraMode, shareGoatResult, openGoatPool, closeGoatPool };
 }

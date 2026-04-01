@@ -97,6 +97,14 @@ export async function shareGoatResult() {
   return goatController.shareGoatResult();
 }
 
+export function openGoatPool() {
+  goatController.openGoatPool();
+}
+
+export function closeGoatPool() {
+  goatController.closeGoatPool();
+}
+
 // ── Navigation ──
 export function goTo(screenId) {
   const current = document.getElementById('screen-' + currentScreen) || document.querySelector('.screen.active');
@@ -175,6 +183,7 @@ const dreamController = createDreamController(state, { goTo });
 export function goToPlay() {
   document.getElementById('result-overlay').classList.remove('show');
   document.getElementById('goat-result-overlay').classList.remove('show');
+  document.getElementById('goat-pool-overlay').classList.remove('show');
   document.getElementById('round-flash').classList.remove('show');
   selectedTeamId = null;
   currentDreamTeamId = null;
@@ -211,6 +220,7 @@ export function goToQuizHub() {
 export function goToHome() {
   document.getElementById('result-overlay').classList.remove('show');
   document.getElementById('goat-result-overlay').classList.remove('show');
+  document.getElementById('goat-pool-overlay').classList.remove('show');
   document.getElementById('round-flash').classList.remove('show');
   selectedTeamId = null;
   pendingRoundAdvance = false;

@@ -32,6 +32,8 @@ export function bindAppEvents(actions) {
   bindClick('btn-result-home', actions.goToHome);
   bindClick('btn-goat-again', actions.playGoatAgain);
   bindClick('btn-goat-categories', actions.goToGoatCategoriesFromResult);
+  bindClick('btn-goat-pool', actions.openGoatPool);
+  bindClick('goat-pool-close', actions.closeGoatPool);
   bindClick('btn-dream-again', actions.replayDreamDraft);
   bindClick('btn-dream-other-team', actions.goToDreamTeams);
   bindClick('btn-quiz-submit', actions.submitQuizAnswer);
@@ -100,9 +102,13 @@ export function bindAppEvents(actions) {
   document.getElementById('team-lineup-overlay')?.addEventListener('click', event => {
     if (event.target === event.currentTarget) actions.closeTeamLineup();
   });
+  document.getElementById('goat-pool-overlay')?.addEventListener('click', event => {
+    if (event.target === event.currentTarget) actions.closeGoatPool();
+  });
 
   window.addEventListener('keydown', event => {
     if (event.key !== 'Escape') return;
+    actions.closeGoatPool();
     actions.closeStatsProfile();
     actions.closeTeamLineup();
   });

@@ -465,6 +465,9 @@
       <div class="goat-matchup anim-in">
         <div class="goat-vs-chip">Дуель раунду</div>
         <div class="goat-pair" id="goat-pair"></div>
+        <div class="goat-matchup-actions">
+          <button class="btn btn-glass btn-xl goat-pool-cta" id="btn-goat-pool">Учасники сітки</button>
+        </div>
       </div>
 
       <div class="goat-history anim-in">
@@ -569,6 +572,21 @@
         <button class="result-play-again btn btn-primary btn-xl" id="btn-goat-again">Ще сітка</button>
         <button class="result-home-btn btn btn-glass btn-xl" id="btn-goat-share">Поділитися</button>
         <button class="result-home-btn btn btn-glass btn-xl" id="btn-goat-categories">Інша категорія</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="overlay" id="goat-pool-overlay">
+    <div class="goat-pool-card result-sheet popup-shell popup-shell-sheet popup-surface popup-surface-sheet" id="goat-pool-card">
+      <div class="popup-body popup-body-sheet goat-pool-body">
+        <div class="result-pill popup-pill"></div>
+        <button class="goat-pool-close" id="goat-pool-close" type="button">✕</button>
+        <div class="goat-pool-head">
+          <div class="popup-kicker" id="goat-pool-kicker">Учасники сітки</div>
+          <div class="popup-title goat-pool-title" id="goat-pool-title">Нападники</div>
+          <div class="popup-copy goat-pool-copy" id="goat-pool-copy">Поточний список із 16 гравців для цього запуску.</div>
+        </div>
+        <div class="goat-pool-grid" id="goat-pool-grid"></div>
       </div>
     </div>
   </div>
